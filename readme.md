@@ -8,3 +8,4 @@ The span classes acts like fixed-capacity in-place containers operating on conti
 The span classes do not take ownership of the user-provided memory. User must ensure the life-time of the memory until the span has been destroyed.
 
 * vista::span is an extension of std::span.
+* vista::circular::span is a circular buffer.
