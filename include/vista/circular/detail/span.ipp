@@ -279,14 +279,13 @@ void span<T, E>::expand_back(size_type count) noexcept
 {
     assert(count <= capacity());
 
+    member.next = member.capacity() + index(member.next + count);
     if (count > capacity() - size())
     {
-        member.next = member.capacity() + index(member.next + count);
         member.size = capacity();
     }
     else
     {
-        member.next = member.capacity() + index(member.next + count);
         member.size += count;
     }
 }
