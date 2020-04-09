@@ -9,3 +9,4 @@ The span classes do not take ownership of the user-provided memory. User must en
 
 * vista::span is an extension of std::span.
 * vista::circular::span is a circular buffer.
+* vista::map::span is an associative array.
