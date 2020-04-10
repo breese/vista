@@ -188,6 +188,18 @@ public:
 
     //! @brief Returns iterator to element with given key.
     //!
+    //! If key not found, return end()
+    //!
+    //! Logarithmic time complexity.
+
+    VISTA_CXX14_CONSTEXPR
+    iterator find(const key_type&) noexcept;
+
+    VISTA_CXX14_CONSTEXPR
+    const_iterator find(const key_type&) const noexcept;
+
+    //! @brief Returns iterator to element with given key.
+    //!
     //! If key not found, then returns iterator to the entry at the position where
     //! the searched-for entry should have been, or the end iterator.
     //!

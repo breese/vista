@@ -177,10 +177,21 @@ void api_contains()
     BOOST_TEST(!span.contains(12));
 }
 
+void api_find()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int> span(storage);
+    span.insert({ 11, 1 });
+    BOOST_TEST_EQ(span.find(10), span.end());
+    BOOST_TEST_EQ(span.find(11), span.begin());
+    BOOST_TEST_EQ(span.find(12), span.end());
+}
+
 void api_lower_bound()
 {
     map::pair<int, int> storage[4];
     map::span<int, int> span(storage);
+    BOOST_TEST_EQ(span.lower_bound(11), span.end());
     span.insert({ 11, 1 });
     BOOST_TEST_EQ(span.lower_bound(10), span.begin());
     BOOST_TEST_EQ(span.lower_bound(11), span.begin());
@@ -239,6 +250,7 @@ void run()
     api_erase_key();
     api_erase_iterator();
     api_contains();
+    api_find();
     api_lower_bound();
     api_operator_index();
     api_begin_end();
@@ -388,6 +400,16 @@ void api_contains()
     BOOST_TEST(!span.contains(12));
 }
 
+void api_find()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int, 4> span(storage);
+    span.insert({ 11, 1 });
+    BOOST_TEST_EQ(span.find(10), span.end());
+    BOOST_TEST_EQ(span.find(11), span.begin());
+    BOOST_TEST_EQ(span.find(12), span.end());
+}
+
 void api_lower_bound()
 {
     map::pair<int, int> storage[4];
@@ -449,6 +471,7 @@ void run()
     api_erase_key();
     api_erase_iterator();
     api_contains();
+    api_find();
     api_lower_bound();
     api_operator_index();
     api_begin_end();

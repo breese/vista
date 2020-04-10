@@ -41,8 +41,10 @@ template <typename RandomAccessIterator, typename T, typename Compare>
 VISTA_CXX14_CONSTEXPR
 RandomAccessIterator lower_bound(RandomAccessIterator begin, RandomAccessIterator end, const T& needle, Compare compare)
 {
-    // Branchless binary search
     auto step = end - begin;
+    if (step == 0)
+        return end;
+    // Branchless binary search
     while (const auto half = step >> 1)
     {
         begin += compare(begin[half], needle) ? half : 0;
@@ -177,7 +179,27 @@ auto span<K, T, E, C>::erase(iterator position) noexcept(std::is_nothrow_move_as
 template <typename K, typename T, std::size_t E, typename C>
 constexpr bool span<K, T, E, C>::contains(const key_type& key) const noexcept
 {
-    return empty() ? false : (lower_bound(key)->first == key);
+    return find(key) != end();
+}
+
+template <typename K, typename T, std::size_t E, typename C>
+VISTA_CXX14_CONSTEXPR
+auto span<K, T, E, C>::find(const key_type& key) noexcept -> iterator
+{
+    auto where = lower_bound(key);
+    if (where == member.tail || key_comp()(key, where->first))
+        return end();
+    return where;
+}
+
+template <typename K, typename T, std::size_t E, typename C>
+VISTA_CXX14_CONSTEXPR
+auto span<K, T, E, C>::find(const key_type& key) const noexcept -> const_iterator
+{
+    auto where = lower_bound(key);
+    if (where == member.tail || key_comp()(key, where->first))
+        return end();
+    return where;
 }
 
 template <typename K, typename T, std::size_t E, typename C>
