@@ -213,12 +213,21 @@ public:
 
     //! @brief Returns reference to element with given key.
     //!
-    //! Logarithmic time complexity.
+    //! If key not found, insert element with copied key and default-constructed value.
     //!
-    //! @pre contains(key)
+    //! Logarithmic time complexity.
 
     VISTA_CXX14_CONSTEXPR
-    const mapped_type& operator[](const key_type& key) const noexcept;
+    mapped_type& operator[](const key_type& key) noexcept;
+
+    //! @brief Returns reference to element with given key.
+    //!
+    //! If key not found, insert element with moved key and default-constructed value.
+    //!
+    //! Logarithmic time complexity.
+
+    VISTA_CXX14_CONSTEXPR
+    mapped_type& operator[](key_type&& key) noexcept;
 
     //! @brief Returns iterator to the beginning of the span.
 

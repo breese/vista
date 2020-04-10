@@ -230,10 +230,25 @@ auto span<K, T, E, C>::lower_bound(const key_type& key) const noexcept -> const_
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto span<K, T, E, C>::operator[](const key_type& key) const noexcept -> const mapped_type&
+auto span<K, T, E, C>::operator[](const key_type& key) noexcept -> mapped_type&
 {
     auto where = lower_bound(key);
-    assert(where->first == key);
+    if (where == member.tail || key_comp()(key, where->first))
+    {
+        where = insert(where, value_type{ key, mapped_type{} });
+    }
+    return where->second;
+}
+
+template <typename K, typename T, std::size_t E, typename C>
+VISTA_CXX14_CONSTEXPR
+auto span<K, T, E, C>::operator[](key_type&& key) noexcept -> mapped_type&
+{
+    auto where = lower_bound(key);
+    if (where == member.tail || key_comp()(key, where->first))
+    {
+        where = insert(where, value_type{ std::move(key), mapped_type{} });
+    }
     return where->second;
 }
 

@@ -206,6 +206,13 @@ void api_operator_index()
     BOOST_TEST_EQ(span[11], 1);
 }
 
+void api_operator_index_empty()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int> span(storage);
+    BOOST_TEST_EQ(span[11], 0);
+}
+
 void api_begin_end()
 {
     map::pair<int, int> storage[4];
@@ -253,6 +260,7 @@ void run()
     api_find();
     api_lower_bound();
     api_operator_index();
+    api_operator_index_empty();
     api_begin_end();
     api_begin_end_const();
     api_cbegin_cend();
@@ -428,6 +436,13 @@ void api_operator_index()
     BOOST_TEST_EQ(span[11], 1);
 }
 
+void api_operator_index_empty()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int, 4> span(storage);
+    BOOST_TEST_EQ(span[11], 0);
+}
+
 void api_begin_end()
 {
     map::pair<int, int> storage[4];
@@ -474,6 +489,7 @@ void run()
     api_find();
     api_lower_bound();
     api_operator_index();
+    api_operator_index_empty();
     api_begin_end();
     api_begin_end_const();
     api_cbegin_cend();
