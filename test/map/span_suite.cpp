@@ -134,7 +134,16 @@ void api_insert_value()
     map::pair<int, int> storage[4];
     map::span<int, int> span(storage);
     BOOST_TEST_EQ(span.size(), 0);
-    span.insert({ 11, 1 });
+    BOOST_TEST_EQ(span.insert({ 11, 1 }), span.begin());
+    BOOST_TEST_EQ(span.size(), 1);
+}
+
+void api_insert_hint()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int> span(storage);
+    BOOST_TEST_EQ(span.size(), 0);
+    BOOST_TEST_EQ(span.insert(span.begin(), { 11, 1 }), span.begin());
     BOOST_TEST_EQ(span.size(), 1);
 }
 
@@ -216,6 +225,7 @@ void run()
     api_full();
     api_clear();
     api_insert_value();
+    api_insert_hint();
     api_erase_iterator();
     api_contains();
     api_lower_bound();
@@ -324,7 +334,16 @@ void api_insert_value()
     map::pair<int, int> storage[4];
     map::span<int, int, 4> span(storage);
     BOOST_TEST_EQ(span.size(), 0);
-    span.insert({ 11, 1 });
+    BOOST_TEST_EQ(span.insert({ 11, 1 }), span.begin());
+    BOOST_TEST_EQ(span.size(), 1);
+}
+
+void api_insert_hint()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int, 4> span(storage);
+    BOOST_TEST_EQ(span.size(), 0);
+    BOOST_TEST_EQ(span.insert(span.begin(), { 11, 1 }), span.begin());
     BOOST_TEST_EQ(span.size(), 1);
 }
 
@@ -405,6 +424,7 @@ void run()
     api_empty();
     api_full();
     api_insert_value();
+    api_insert_hint();
     api_erase_iterator();
     api_contains();
     api_lower_bound();
@@ -445,6 +465,14 @@ void insert_increasing()
                           expect.begin(), expect.end());
     }
     span.insert({ 44, 4 });
+    {
+        std::vector<map::pair<int, int>> expect = { { 11, 1 }, { 22, 2 }, { 33, 3 }, { 44, 4 } };
+        BOOST_TEST_ALL_EQ(storage, storage + span.size(),
+                          expect.begin(), expect.end());
+    }
+    // Insertion into full map has no effect
+    BOOST_TEST(span.full());
+    BOOST_TEST_EQ(span.insert({ 55, 5 }), span.end());
     {
         std::vector<map::pair<int, int>> expect = { { 11, 1 }, { 22, 2 }, { 33, 3 }, { 44, 4 } };
         BOOST_TEST_ALL_EQ(storage, storage + span.size(),

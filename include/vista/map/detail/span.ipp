@@ -116,9 +116,10 @@ void span<K, T, E, C>::clear() noexcept(std::is_trivially_destructible<value_typ
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-void span<K, T, E, C>::insert(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value)
+auto span<K, T, E, C>::insert(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
-    assert(!full());
+    if (full())
+        return end();
 
     // Insert at end and bubble into correct position
 
@@ -131,6 +132,15 @@ void span<K, T, E, C>::insert(value_type input) noexcept(std::is_nothrow_move_as
         swap(current[0], current[-1]);
         --current;
     }
+    return current;
+}
+
+template <typename K, typename T, std::size_t E, typename C>
+VISTA_CXX14_CONSTEXPR
+auto span<K, T, E, C>::insert(iterator, value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
+{
+    // Ignores hint
+    return insert(std::move(input));
 }
 
 template <typename K, typename T, std::size_t E, typename C>

@@ -139,12 +139,23 @@ public:
 
     //! @brief Inserts element with given key.
     //!
+    //! Notice that the return type differs from std::map.
+    //!
     //! Linear time complexity.
     //!
-    //! @pre !full()
+    //! @returns Iterator to inserted element, or end() if span already is full.
 
     VISTA_CXX14_CONSTEXPR
-    void insert(value_type) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value);
+    iterator insert(value_type) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value);
+
+    //! @brief Inserts element with given key.
+    //!
+    //! Linear time complexity.
+    //!
+    //! @returns Iterator to inserted element, or end() if span already is full.
+
+    VISTA_CXX14_CONSTEXPR
+    iterator insert(iterator hint, value_type) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value);
 
     //! @brief Erases the element at given position.
     //!
