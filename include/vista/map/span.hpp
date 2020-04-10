@@ -130,7 +130,7 @@ public:
 
     //! @brief Clears the span.
     //!
-    //! The content of the underlying memory will be replaced with default constructed values.
+    //! Elements are destroyed.
     //!
     //! @post size() == 0
 

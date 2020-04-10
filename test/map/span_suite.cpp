@@ -10,6 +10,7 @@
 
 #include <array>
 #include <vector>
+#include <string>
 #include <iterator>
 #include <boost/detail/lightweight_test.hpp>
 #include <vista/map/span.hpp>
@@ -705,12 +706,43 @@ void run()
 
 //-----------------------------------------------------------------------------
 
+namespace string_suite
+{
+
+void string_clear()
+{
+    map::pair<std::string, std::string> storage[4];
+    map::span<std::string, std::string> span(storage);
+    span.insert({ "alpha", "hydrogen" });
+    {
+        std::vector<map::pair<std::string, std::string>> expect = { { "alpha", "hydrogen" } };
+        BOOST_TEST_ALL_EQ(storage, storage + span.size(),
+                          expect.begin(), expect.end());
+    }
+    span.clear();
+    {
+        std::vector<map::pair<std::string, std::string>> expect = {};
+        BOOST_TEST_ALL_EQ(storage, storage + span.size(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void run()
+{
+    string_clear();
+}
+
+} // namespace string_suite
+
+//-----------------------------------------------------------------------------
+
 int main()
 {
     api_dynamic_suite::run();
     api_fixed_suite::run();
     insert_suite::run();
     erase_suite::run();
+    string_suite::run();
  
     return boost::report_errors();
 }

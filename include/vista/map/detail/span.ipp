@@ -108,9 +108,10 @@ void span<K, T, E, C>::clear() noexcept(std::is_trivially_destructible<value_typ
 {
     if (!std::is_trivially_destructible<value_type>::value)
     {
-        for (auto current = member.begin; current != member.end; ++current)
+        for (auto current = member.begin; current != member.tail; ++current)
         {
-            *current = value_type{};
+            // Invoke destructor
+            current->~value_type();
         }
     }
     member.tail = member.begin;
