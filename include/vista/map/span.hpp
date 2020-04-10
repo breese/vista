@@ -152,6 +152,26 @@ public:
     VISTA_CXX14_CONSTEXPR
     iterator insert(iterator hint, value_type) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value);
 
+    //! @brief Inserts in-place constructed element.
+    //!
+    //! Linear time complexity.
+    //!
+    //! @returns Iterator to inserted element, or end() if span already is full.
+
+    template <typename... Args>
+    VISTA_CXX14_CONSTEXPR
+    iterator emplace(Args&&...) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value);
+
+    //! @brief Inserts in-place constructed element.
+    //!
+    //! Linear time complexity.
+    //!
+    //! @returns Iterator to inserted element, or end() if span already is full.
+
+    template <typename... Args>
+    VISTA_CXX14_CONSTEXPR
+    iterator emplace_hint(iterator, Args&&...) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value);
+
     //! @brief Erases all elements with given key.
     //!
     //! The erased elements will be left in a moved-from state.

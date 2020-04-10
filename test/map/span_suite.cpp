@@ -148,6 +148,36 @@ void api_insert_hint()
     BOOST_TEST_EQ(span.size(), 1);
 }
 
+void api_emplace_value()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int> span(storage);
+    BOOST_TEST_EQ(span.size(), 0);
+    BOOST_TEST_EQ(span.emplace(11, 1), span.begin());
+    BOOST_TEST_EQ(span.size(), 1);
+}
+
+void api_emplace_piecewise()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int> span(storage);
+    BOOST_TEST_EQ(span.size(), 0);
+    BOOST_TEST_EQ(span.emplace(std::piecewise_construct,
+                               std::forward_as_tuple(11),
+                               std::forward_as_tuple(1)),
+                  span.begin());
+    BOOST_TEST_EQ(span.size(), 1);
+}
+
+void api_emplace_hint()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int> span(storage);
+    BOOST_TEST_EQ(span.size(), 0);
+    BOOST_TEST_EQ(span.emplace_hint(span.begin(), 11, 1), span.begin());
+    BOOST_TEST_EQ(span.size(), 1);
+}
+
 void api_erase_key()
 {
     map::pair<int, int> storage[4];
@@ -255,6 +285,9 @@ void run()
     api_clear();
     api_insert_value();
     api_insert_hint();
+    api_emplace_value();
+    api_emplace_piecewise();
+    api_emplace_hint();
     api_erase_key();
     api_erase_iterator();
     api_contains();
@@ -379,6 +412,36 @@ void api_insert_hint()
     BOOST_TEST_EQ(span.size(), 1);
 }
 
+void api_emplace_value()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int, 4> span(storage);
+    BOOST_TEST_EQ(span.size(), 0);
+    BOOST_TEST_EQ(span.emplace(11, 1), span.begin());
+    BOOST_TEST_EQ(span.size(), 1);
+}
+
+void api_emplace_piecewise()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int, 4> span(storage);
+    BOOST_TEST_EQ(span.size(), 0);
+    BOOST_TEST_EQ(span.emplace(std::piecewise_construct,
+                               std::forward_as_tuple(11),
+                               std::forward_as_tuple(1)),
+                  span.begin());
+    BOOST_TEST_EQ(span.size(), 1);
+}
+
+void api_emplace_hint()
+{
+    map::pair<int, int> storage[4];
+    map::span<int, int, 4> span(storage);
+    BOOST_TEST_EQ(span.size(), 0);
+    BOOST_TEST_EQ(span.emplace_hint(span.begin(), 11, 1), span.begin());
+    BOOST_TEST_EQ(span.size(), 1);
+}
+
 void api_erase_key()
 {
     map::pair<int, int> storage[4];
@@ -484,6 +547,9 @@ void run()
     api_full();
     api_insert_value();
     api_insert_hint();
+    api_emplace_value();
+    api_emplace_piecewise();
+    api_emplace_hint();
     api_erase_key();
     api_erase_iterator();
     api_contains();

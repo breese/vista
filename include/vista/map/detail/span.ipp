@@ -107,15 +107,31 @@ template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
 auto span<K, T, E, C>::insert(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
-    if (full())
-        return end();
+    return emplace(std::move(input));
+}
 
-    // Insert at end and bubble into correct position
+template <typename K, typename T, std::size_t E, typename C>
+VISTA_CXX14_CONSTEXPR
+auto span<K, T, E, C>::insert(iterator, value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
+{
+    // Ignores hint
+    return emplace(std::move(input));
+}
 
+template <typename K, typename T, std::size_t E, typename C>
+template <typename... Args>
+VISTA_CXX14_CONSTEXPR
+auto span<K, T, E, C>::emplace(Args&&... args) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
+{
     auto current = end();
-    *member.tail++ = std::move(input);
-    key_compare compare;
-    while ((current != begin()) && compare(current[0].first, current[-1].first))
+    if (full())
+        return current;
+
+    // Construct at end and bubble into correct position
+
+    member.tail = new(member.tail) value_type{std::forward<Args>(args)...};
+    ++member.tail;
+    while ((current != begin()) && key_comp()(current[0].first, current[-1].first))
     {
         using std::swap;
         swap(current[0], current[-1]);
@@ -125,11 +141,12 @@ auto span<K, T, E, C>::insert(value_type input) noexcept(std::is_nothrow_move_as
 }
 
 template <typename K, typename T, std::size_t E, typename C>
+template <typename... Args>
 VISTA_CXX14_CONSTEXPR
-auto span<K, T, E, C>::insert(iterator, value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
+auto span<K, T, E, C>::emplace_hint(iterator, Args&&... args) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
     // Ignores hint
-    return insert(std::move(input));
+    return emplace(std::forward<Args>(args)...);
 }
 
 template <typename K, typename T, std::size_t E, typename C>
