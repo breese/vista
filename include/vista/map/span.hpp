@@ -13,6 +13,7 @@
 
 #include <cstddef> // std::size_t
 #include <functional> // std::less
+#include <utility> // std::pair
 #include <vista/detail/config.hpp>
 #include <vista/detail/type_traits.hpp>
 
@@ -22,13 +23,7 @@ namespace map
 {
 
 template <typename T1, typename T2>
-struct pair
-{
-    constexpr bool operator==(const pair<T1, T2>&) const noexcept;
-    
-    T1 first;
-    T2 second;
-};
+using pair = std::pair<T1, T2>;
 
 //! @brief Associative span.
 //!

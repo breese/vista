@@ -15,20 +15,6 @@ namespace vista
 namespace map
 {
 
-//-----------------------------------------------------------------------------
-// map::pair
-//-----------------------------------------------------------------------------
-
-template <typename T1, typename T2>
-constexpr bool pair<T1, T2>::operator==(const pair<T1, T2>& other) const noexcept
-{
-    return first == other.first && second == other.second;
-}
-
-//-----------------------------------------------------------------------------
-// map::span
-//-----------------------------------------------------------------------------
-
 namespace
 {
 
