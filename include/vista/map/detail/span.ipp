@@ -170,6 +170,8 @@ auto span<K, T, E, C>::erase(iterator position) noexcept(std::is_nothrow_move_as
     assert(!empty());
     assert(position != end());
 
+    position->~value_type();
+
     // Move elements after erased element backwards
 
     for (auto current = position; current != member.tail - 1; ++current)
