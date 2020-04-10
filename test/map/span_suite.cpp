@@ -197,6 +197,12 @@ void api_cbegin_cend()
     BOOST_TEST_EQ(span.cbegin(), span.cend());
 }
 
+void api_key_compare()
+{
+    map::span<int, int> span;
+    BOOST_TEST(span.key_comp()(11, 22));
+}
+
 void run()
 {
     api_ctor_default();
@@ -217,6 +223,7 @@ void run()
     api_begin_end();
     api_begin_end_const();
     api_cbegin_cend();
+    api_key_compare();
 }
 
 } // namespace api_dynamic_suite
@@ -380,6 +387,12 @@ void api_cbegin_cend()
     BOOST_TEST_EQ(span.cbegin(), span.cend());
 }
 
+void api_key_compare()
+{
+    map::span<int, int, 4> span;
+    BOOST_TEST(span.key_comp()(11, 22));
+}
+
 void run()
 {
     api_ctor_default();
@@ -399,6 +412,7 @@ void run()
     api_begin_end();
     api_begin_end_const();
     api_cbegin_cend();
+    api_key_compare();
 }
 
 } // namespace api_fixed_suite

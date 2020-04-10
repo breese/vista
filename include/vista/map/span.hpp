@@ -198,6 +198,8 @@ public:
     constexpr const_iterator end() const noexcept;
     constexpr const_iterator cend() const noexcept;
 
+    constexpr key_compare key_comp() const noexcept;
+
 private:
     // Non-copyable
     span(const span&) = delete;

@@ -229,5 +229,11 @@ constexpr auto span<K, T, E, C>::cend() const noexcept -> const_iterator
     return member.tail;
 }
 
+template <typename K, typename T, std::size_t E, typename C>
+constexpr auto span<K, T, E, C>::key_comp() const noexcept -> key_compare
+{
+    return key_compare{};
+}
+
 } // namespace map
 } // namespace vista
