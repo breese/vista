@@ -145,6 +145,20 @@ auto span<K, T, E, C>::insert(iterator, value_type input) noexcept(std::is_nothr
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
+auto span<K, T, E, C>::erase(const key_type& key) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> size_type
+{
+    size_type count = 0;
+    auto where = lower_bound(key);
+    while (!(where == member.tail || key_comp()(key, where->first)))
+    {
+        where = erase(where);
+        ++count;
+    }
+    return count;
+}
+
+template <typename K, typename T, std::size_t E, typename C>
+VISTA_CXX14_CONSTEXPR
 auto span<K, T, E, C>::erase(iterator position) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> iterator
 {
     assert(!empty());

@@ -157,6 +157,17 @@ public:
     VISTA_CXX14_CONSTEXPR
     iterator insert(iterator hint, value_type) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value);
 
+    //! @brief Erases all elements with given key.
+    //!
+    //! The erased elements will be left in a moved-from state.
+    //!
+    //! Linear time complexity.
+    //!
+    //! @pre !empty()
+
+    VISTA_CXX14_CONSTEXPR
+    size_type erase(const key_type&) noexcept(std::is_nothrow_move_assignable<value_type>::value);
+
     //! @brief Erases the element at given position.
     //!
     //! The erased element will be left in a moved-from state.
