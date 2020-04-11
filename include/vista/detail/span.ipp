@@ -12,6 +12,8 @@ namespace vista
 {
 
 template <typename T, std::size_t E>
+template <bool Constraint,
+          typename std::enable_if<Constraint, int>::type>
 constexpr span<T, E>::span() noexcept
     : span(nullptr, nullptr)
 {

@@ -35,19 +35,30 @@ public:
 
     //! @brief Creates empty span.
     //!
+    //! @pre Extent == 0 or Extent == dynamic_extent
+    //!
+    //! @post data() == nullptr
     //! @post size() == 0
 
+    template <bool Constraint = (Extent == dynamic_extent || Extent == 0),
+              typename std::enable_if<Constraint, int>::type = 0>
     constexpr span() noexcept;
 
     //! @brief Creates span by copying.
+    //!
+    //! @post data() == other.data()
+    //! @post size() == other.size()
 
-    constexpr span(const span&) = default;
+    constexpr span(const span& other) = default;
 
     //! @brief Creates span by copying.
     //!
     //! Enables copying mutable span to immutable span.
     //!
     //! @pre Extent == N or Extent == dynamic_extent
+    //!
+    //! @post data() == other.data()
+    //! @post size() == other.size()
 
     template <typename OtherT,
               std::size_t OtherExtent,

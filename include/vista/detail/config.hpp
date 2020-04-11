@@ -28,7 +28,7 @@
 namespace vista
 {
 
-enum : std::size_t { dynamic_extent = std::size_t(0) };
+enum : std::size_t { dynamic_extent = std::size_t(~0) };
 
 } // namespace vista
 

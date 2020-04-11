@@ -313,45 +313,48 @@ namespace api_fixed_suite
 
 void fixed_ctor_default()
 {
-    vista::span<int, 4> span;
+    vista::span<int, 0> span;
     BOOST_TEST(span.empty());
     BOOST_TEST_EQ(span.size(), 0);
-    BOOST_TEST_EQ(span.capacity(), 4);
+    BOOST_TEST_EQ(span.capacity(), 0);
 }
 
 void fixed_ctor_copy()
 {
-    vista::span<int, 4> span;
-    BOOST_TEST(span.empty());
-    BOOST_TEST_EQ(span.size(), 0);
+    int array[4] = {};
+    vista::span<int, 4> span(array);
+    BOOST_TEST(!span.empty());
+    BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
     vista::span<int, 4> clone(span);
-    BOOST_TEST(clone.empty());
-    BOOST_TEST_EQ(clone.size(), 0);
+    BOOST_TEST(!clone.empty());
+    BOOST_TEST_EQ(clone.size(), 4);
     BOOST_TEST_EQ(clone.capacity(), 4);
 }
 
 void fixed_ctor_copy_convertible()
 {
-    vista::span<int, 4> span;
-    BOOST_TEST(span.empty());
-    BOOST_TEST_EQ(span.size(), 0);
+    int array[4] = {};
+    vista::span<int, 4> span(array);
+    BOOST_TEST(!span.empty());
+    BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
     vista::span<const int, 4> clone(span);
-    BOOST_TEST(clone.empty());
-    BOOST_TEST_EQ(clone.size(), 0);
+    BOOST_TEST(!clone.empty());
+    BOOST_TEST_EQ(clone.size(), 4);
     BOOST_TEST_EQ(clone.capacity(), 4);
 }
 
 void fixed_ctor_move()
 {
-    vista::span<int, 4> span;
-    BOOST_TEST(span.empty());
-    BOOST_TEST_EQ(span.size(), 0);
+    int array[4] = {};
+    vista::span<int, 4> span(array);
+    BOOST_TEST(!span.empty());
+    BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
     vista::span<int, 4> clone(std::move(span));
-    BOOST_TEST(clone.empty());
-    BOOST_TEST_EQ(clone.size(), 0);
+    BOOST_TEST(!clone.empty());
+    BOOST_TEST_EQ(clone.size(), 4);
     BOOST_TEST_EQ(clone.capacity(), 4);
 }
 
@@ -394,7 +397,7 @@ void fixed_ctor_const_array()
 void fixed_empty()
 {
     {
-        vista::span<int, 4> span;
+        vista::span<int, 0> span;
         BOOST_TEST_EQ(span.empty(), true);
     }
     {
