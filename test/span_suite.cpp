@@ -186,6 +186,30 @@ void dynamic_operator_index_const()
     BOOST_TEST_EQ(span[3], 44);
 }
 
+void dynamic_subspan()
+{
+    int array[4] = { 11, 22, 33, 44 };
+    vista::span<int> span(array);
+    BOOST_TEST_EQ(span.size(), 4);
+    BOOST_TEST_EQ(span.front(), 11);
+    auto subspan = span.subspan<2>();
+    BOOST_TEST_EQ(subspan.capacity(), 2);
+    BOOST_TEST_EQ(subspan.size(), 2);
+    BOOST_TEST_EQ(subspan.front(), 33);
+}
+
+void dynamic_subspan_count()
+{
+    int array[4] = { 11, 22, 33, 44 };
+    vista::span<int> span(array);
+    BOOST_TEST_EQ(span.size(), 4);
+    BOOST_TEST_EQ(span.front(), 11);
+    auto subspan = span.subspan<2, 2>();
+    BOOST_TEST_EQ(subspan.capacity(), 2);
+    BOOST_TEST_EQ(subspan.size(), 2);
+    BOOST_TEST_EQ(subspan.front(), 33);
+}
+
 void dynamic_remove_front()
 {
     int array[4] = { 11, 22, 33, 44 };
@@ -292,6 +316,8 @@ void run()
     dynamic_back_const();
     dynamic_operator_index();
     dynamic_operator_index_const();
+    dynamic_subspan();
+    dynamic_subspan_count();
     dynamic_remove_front();
     dynamic_remove_front_n();
     dynamic_remove_back();
@@ -483,6 +509,30 @@ void fixed_operator_index_const()
     BOOST_TEST_EQ(span[3], 44);
 }
 
+void fixed_subspan()
+{
+    int array[4] = { 11, 22, 33, 44 };
+    vista::span<int, 4> span(array);
+    BOOST_TEST_EQ(span.size(), 4);
+    BOOST_TEST_EQ(span.front(), 11);
+    auto subspan = span.subspan<2>();
+    BOOST_TEST_EQ(subspan.capacity(), 2);
+    BOOST_TEST_EQ(subspan.size(), 2);
+    BOOST_TEST_EQ(subspan.front(), 33);
+}
+
+void fixed_subspan_count()
+{
+    int array[4] = { 11, 22, 33, 44 };
+    vista::span<int, 4> span(array);
+    BOOST_TEST_EQ(span.size(), 4);
+    BOOST_TEST_EQ(span.front(), 11);
+    auto subspan = span.subspan<2, 2>();
+    BOOST_TEST_EQ(subspan.capacity(), 2);
+    BOOST_TEST_EQ(subspan.size(), 2);
+    BOOST_TEST_EQ(subspan.front(), 33);
+}
+
 void fixed_remove_front()
 {
     int array[4] = { 11, 22, 33, 44 };
@@ -590,6 +640,8 @@ void run()
     fixed_back_const();
     fixed_operator_index();
     fixed_operator_index_const();
+    fixed_subspan();
+    fixed_subspan_count();
     fixed_remove_front();
     fixed_remove_front_n();
     fixed_remove_back();

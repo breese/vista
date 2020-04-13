@@ -119,6 +119,17 @@ constexpr auto span<T, E>::operator[](difference_type position) const noexcept -
 }
 
 template <typename T, std::size_t E>
+template <std::size_t Offset, std::size_t Count>
+constexpr auto span<T, E>::subspan() const noexcept -> span<element_type, Count>
+{
+    VISTA_CXX14(assert(Offset <= capacity()));
+    VISTA_CXX14(assert(Count == dynamic_extent || Count <= capacity() - Offset));
+
+    return span<element_type, Count>(member.head + Offset,
+                                     (Count == dynamic_extent) ? (capacity() - Offset) : Count);
+}
+
+template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
 void span<T, E>::remove_front(size_type amount) noexcept
 {

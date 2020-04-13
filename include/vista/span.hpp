@@ -151,6 +151,16 @@ public:
 
     constexpr const_reference operator[](difference_type position) const noexcept;
 
+    //! @brief Returns a subspan.
+    //!
+    //! The subspan covers the range from data() + Offset to data() + Offset + Count.
+    //!
+    //! @pre Offset <= capacity()
+    //! @pre Count == dynamic_extent or Count <= capacity() - Offset
+
+    template <std::size_t Offset, std::size_t Count = dynamic_extent>
+    constexpr span<element_type, Count> subspan() const noexcept;
+
     //! @brief Removes elements from beginning of span.
     //!
     //! The span is modified, but the elements in the underlying storage
