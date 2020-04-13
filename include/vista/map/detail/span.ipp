@@ -53,7 +53,7 @@ constexpr span<K, T, E, C>::span(ContiguousIterator begin,
                                  ContiguousIterator end) noexcept
     : member{ &*begin, &*end, &*begin }
 {
-    VISTA_CXX14(assert(end - begin == capacity()));
+    VISTA_CXX14(assert(size_type(end - begin) == capacity()));
 }
 
 template <typename K, typename T, std::size_t E, typename C>
@@ -97,8 +97,8 @@ void span<K, T, E, C>::clear() noexcept(std::is_trivially_destructible<value_typ
         for (auto current = member.begin; current != member.tail; ++current)
         {
             // Overwrite with default-constructed instance
-            current->~value_type();
-            current = new(current) value_type{};
+            destroy_at(current);
+            current = construct_at(current);
         }
     }
     member.tail = member.begin;
@@ -130,8 +130,8 @@ auto span<K, T, E, C>::emplace(Args&&... args) noexcept(std::is_nothrow_move_ass
 
     // Construct at end and bubble into correct position
 
-    member.tail->~value_type();
-    member.tail = new(member.tail) value_type{std::forward<Args>(args)...};
+    destroy_at(member.tail);
+    member.tail = construct_at(member.tail, std::forward<Args>(args)...);
     ++member.tail;
     while ((current != begin()) && key_comp()(current[0].first, current[-1].first))
     {
@@ -172,8 +172,8 @@ auto span<K, T, E, C>::erase(iterator position) noexcept(std::is_nothrow_move_as
     assert(!empty());
     assert(position != end());
 
-    position->~value_type();
-    position = new(position) value_type{};
+    destroy_at(position);
+    position = construct_at(position);
 
     // Move elements after erased element backwards
 
@@ -303,6 +303,21 @@ template <typename K, typename T, std::size_t E, typename C>
 constexpr auto span<K, T, E, C>::key_comp() const noexcept -> key_compare
 {
     return key_compare{};
+}
+
+template <typename K, typename T, std::size_t E, typename C>
+template <typename... Args>
+VISTA_CXX14_CONSTEXPR
+auto span<K, T, E, C>::construct_at(pointer storage, Args&&... args) -> pointer
+{
+    return new (storage) value_type{std::forward<Args>(args)...};
+}
+
+template <typename K, typename T, std::size_t E, typename C>
+VISTA_CXX14_CONSTEXPR
+void span<K, T, E, C>::destroy_at(pointer storage)
+{
+    storage->~value_type();
 }
 
 } // namespace map

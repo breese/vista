@@ -265,6 +265,13 @@ private:
     span(const span&) = delete;
     span& operator=(const span&) = default;
 
+    template <typename... Args>
+    VISTA_CXX14_CONSTEXPR
+    pointer construct_at(pointer, Args&&...);
+
+    VISTA_CXX14_CONSTEXPR
+    void destroy_at(pointer);
+
 private:
     template <typename, size_type E1>
     struct member_storage
