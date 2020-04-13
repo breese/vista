@@ -96,8 +96,9 @@ void span<K, T, E, C>::clear() noexcept(std::is_trivially_destructible<value_typ
     {
         for (auto current = member.begin; current != member.tail; ++current)
         {
-            // Invoke destructor
+            // Overwrite with default-constructed instance
             current->~value_type();
+            current = new(current) value_type{};
         }
     }
     member.tail = member.begin;
@@ -129,6 +130,7 @@ auto span<K, T, E, C>::emplace(Args&&... args) noexcept(std::is_nothrow_move_ass
 
     // Construct at end and bubble into correct position
 
+    member.tail->~value_type();
     member.tail = new(member.tail) value_type{std::forward<Args>(args)...};
     ++member.tail;
     while ((current != begin()) && key_comp()(current[0].first, current[-1].first))
@@ -171,6 +173,7 @@ auto span<K, T, E, C>::erase(iterator position) noexcept(std::is_nothrow_move_as
     assert(position != end());
 
     position->~value_type();
+    position = new(position) value_type{};
 
     // Move elements after erased element backwards
 

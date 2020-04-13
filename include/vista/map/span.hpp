@@ -125,7 +125,7 @@ public:
 
     //! @brief Clears the span.
     //!
-    //! Elements are destroyed.
+    //! The storage of the cleared elements will be left in a default-constructed state.
     //!
     //! @post size() == 0
 
@@ -174,7 +174,7 @@ public:
 
     //! @brief Erases all elements with given key.
     //!
-    //! The erased elements will be left in a moved-from state.
+    //! The storage of the erased element will be left in a default-constructed state.
     //!
     //! Linear time complexity.
     //!
@@ -185,7 +185,7 @@ public:
 
     //! @brief Erases the element at given position.
     //!
-    //! The erased element will be left in a moved-from state.
+    //! The storage of the erased element will be left in a default-constructed state.
     //!
     //! Linear time complexity.
     //!
@@ -259,6 +259,8 @@ public:
     constexpr key_compare key_comp() const noexcept;
 
 private:
+    static_assert(std::is_default_constructible<value_type>::value, "pair<Key, T> must be default constructible");
+
     // Non-copyable
     span(const span&) = delete;
     span& operator=(const span&) = default;
