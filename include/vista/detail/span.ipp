@@ -41,9 +41,10 @@ constexpr span<T, E>::span(pointer first, pointer last) noexcept
 }
 
 template <typename T, std::size_t E>
-template <std::size_t M>
-constexpr span<T, E>::span(value_type (&array)[M]) noexcept
-        : span(array, array + M)
+template <std::size_t M,
+          typename std::enable_if<(E == M || E == dynamic_extent), int>::type>
+constexpr span<T, E>::span(element_type (&array)[M]) noexcept
+    : span(array, array + M)
 {
 }
 

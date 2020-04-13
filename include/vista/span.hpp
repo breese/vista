@@ -55,7 +55,7 @@ public:
     //!
     //! Enables copying mutable span to immutable span.
     //!
-    //! @pre Extent == N or Extent == dynamic_extent
+    //! @pre Extent == OtherExtent or Extent == dynamic_extent
     //!
     //! @post data() == other.data()
     //! @post size() == other.size()
@@ -84,9 +84,12 @@ public:
     constexpr span(pointer first, pointer last) noexcept;
 
     //! @brief Creates span from array.
+    //!
+    //! @pre Extent == M or Extent == dynamic_extent
 
-    template <std::size_t M>
-    explicit constexpr span(value_type (&array)[M]) noexcept;
+    template <std::size_t M,
+              typename std::enable_if<(Extent == M || Extent == dynamic_extent), int>::type = 0>
+    explicit constexpr span(element_type (&array)[M]) noexcept;
 
     //! @brief Checks if span is empty.
 
