@@ -21,6 +21,8 @@ namespace vista
 //!
 //! Optimized version for sorted random-access range.
 //!
+//! Logarithmic time complexity.
+//!
 //! @pre is_sorted(first, last)
 
 template <typename RandomAccessIterator,
@@ -29,6 +31,14 @@ VISTA_CXX14_CONSTEXPR
 RandomAccessIterator lower_bound_sorted(RandomAccessIterator first,
                                         RandomAccessIterator last,
                                         const T& needle) noexcept;
+
+//! @brief Returns position where element is or would have been.
+//!
+//! Optimized version for sorted random-access range.
+//!
+//! Logarithmic time complexity.
+//!
+//! @pre is_sorted(first, last)
 
 template <typename RandomAccessIterator,
           typename T,
@@ -46,6 +56,25 @@ RandomAccessIterator lower_bound_sorted(RandomAccessIterator first,
 //!
 //! Shuffles elements such that all elements in the range are sorted.
 //!
+//! Linear time complexity.
+//!
+//! @pre is_sorted(first, last - 1)
+//! @posst is_sorted(first, last)
+
+template <typename RandomAccessIterator>
+VISTA_CXX14_CONSTEXPR
+RandomAccessIterator push_sorted(RandomAccessIterator first,
+                                 RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
+
+//! @brief Inserts trailing element into sorted range.
+//!
+//! Assumes that all elements in the range are sorted except for the trailing
+//! element at position last - 1.
+//!
+//! Shuffles elements such that all elements in the range are sorted.
+//!
+//! Linear time complexity.
+//!
 //! @pre is_sorted(first, last - 1)
 //! @posst is_sorted(first, last)
 
@@ -62,6 +91,8 @@ RandomAccessIterator push_sorted(RandomAccessIterator first,
 //!
 //! Shuffles elements such that the first element is in trailing position and
 //! the remaining elements are sorted.
+//!
+//! Linear time complexity.
 //!
 //! @pre is_sorted(first, last)
 //! @poss is_sorted(first, last - 1)

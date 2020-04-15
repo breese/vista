@@ -47,6 +47,16 @@ RandomAccessIterator lower_bound_sorted(RandomAccessIterator first,
     return first + compare(*first, needle);
 }
 
+template <typename RandomAccessIterator>
+VISTA_CXX14_CONSTEXPR
+RandomAccessIterator push_sorted(RandomAccessIterator first,
+                                 RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
+{
+    return push_sorted(std::move(first),
+                       std::move(last),
+                       std::less<decltype(*first)>{});
+}
+
 template <typename RandomAccessIterator, typename Compare>
 VISTA_CXX14_CONSTEXPR
 RandomAccessIterator push_sorted(RandomAccessIterator first,
