@@ -19,7 +19,6 @@ function(vista_add_test name)
 endfunction()
 
 vista_add_test(span_suite span_suite.cpp)
-vista_add_test(algorithm_suite algorithm_suite.cpp)
 
 vista_add_test(circular_span_suite circular/span_suite.cpp)
 vista_add_test(circular_span_iterator_suite circular/span_iterator_suite.cpp)
@@ -28,5 +27,7 @@ vista_add_test(circular_span_algorithm_suite circular/span_algorithm_suite.cpp)
 vista_add_test(circular_span_numeric_suite circular/span_numeric_suite.cpp)
 vista_add_test(circular_array_suite circular/array_suite.cpp)
 vista_add_test(circular_array_numeric_suite circular/array_numeric_suite.cpp)
+
+vista_add_test(sorted_algorithm_suite sorted/algorithm_suite.cpp)
 
 vista_add_test(map_span_suite map/span_suite.cpp)

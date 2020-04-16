@@ -8,29 +8,29 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <functional> // std::less
-
 namespace vista
+{
+namespace sorted
 {
 
 template <typename RandomAccessIterator, typename T>
 VISTA_CXX14_CONSTEXPR
-RandomAccessIterator lower_bound_sorted(RandomAccessIterator first,
-                                        RandomAccessIterator last,
-                                        const T& needle) noexcept
+RandomAccessIterator lower_bound(RandomAccessIterator first,
+                                 RandomAccessIterator last,
+                                 const T& needle) noexcept
 {
-    return lower_bound_sorted(std::move(first),
-                              std::move(last),
-                              needle,
-                              std::less<T>{});
+    return lower_bound(std::move(first),
+                       std::move(last),
+                       needle,
+                       [] (const T& lhs, const T& rhs) { return lhs < rhs; });
 }
 
 template <typename RandomAccessIterator, typename T, typename Compare>
 VISTA_CXX14_CONSTEXPR
-RandomAccessIterator lower_bound_sorted(RandomAccessIterator first,
-                                        RandomAccessIterator last,
-                                        const T& needle,
-                                        Compare compare) noexcept
+RandomAccessIterator lower_bound(RandomAccessIterator first,
+                                 RandomAccessIterator last,
+                                 const T& needle,
+                                 Compare compare) noexcept
 {
     if (first == last)
         return last;
@@ -49,19 +49,20 @@ RandomAccessIterator lower_bound_sorted(RandomAccessIterator first,
 
 template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
-RandomAccessIterator push_sorted(RandomAccessIterator first,
-                                 RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
+RandomAccessIterator push(RandomAccessIterator first,
+                          RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
 {
-    return push_sorted(std::move(first),
-                       std::move(last),
-                       std::less<decltype(*first)>{});
+    using type = decltype(*first);
+    return push(std::move(first),
+                std::move(last),
+                [] (const type& lhs, const type& rhs) { return lhs < rhs; });
 }
 
 template <typename RandomAccessIterator, typename Compare>
 VISTA_CXX14_CONSTEXPR
-RandomAccessIterator push_sorted(RandomAccessIterator first,
-                                 RandomAccessIterator last,
-                                 Compare compare) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
+RandomAccessIterator push(RandomAccessIterator first,
+                          RandomAccessIterator last,
+                          Compare compare) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
 {
     if (first == last)
         return last;
@@ -78,8 +79,8 @@ RandomAccessIterator push_sorted(RandomAccessIterator first,
 
 template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
-RandomAccessIterator pop_sorted(RandomAccessIterator first,
-                                RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
+RandomAccessIterator pop(RandomAccessIterator first,
+                         RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
 {
     if (first == last)
         return last;
@@ -92,4 +93,5 @@ RandomAccessIterator pop_sorted(RandomAccessIterator first,
     return last - 1;
 }
 
+} // namespace sorted
 } // namespace vista

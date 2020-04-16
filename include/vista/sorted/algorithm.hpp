@@ -1,5 +1,5 @@
-#ifndef VISTA_ALGORITHM_HPP
-#define VISTA_ALGORITHM_HPP
+#ifndef VISTA_SORTED_ALGORITHM_HPP
+#define VISTA_SORTED_ALGORITHM_HPP
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -16,6 +16,8 @@
 
 namespace vista
 {
+namespace sorted
+{
 
 //! @brief Returns position where element is or would have been.
 //!
@@ -28,9 +30,9 @@ namespace vista
 template <typename RandomAccessIterator,
           typename T>
 VISTA_CXX14_CONSTEXPR
-RandomAccessIterator lower_bound_sorted(RandomAccessIterator first,
-                                        RandomAccessIterator last,
-                                        const T& needle) noexcept;
+RandomAccessIterator lower_bound(RandomAccessIterator first,
+                                 RandomAccessIterator last,
+                                 const T& needle) noexcept;
 
 //! @brief Returns position where element is or would have been.
 //!
@@ -44,10 +46,10 @@ template <typename RandomAccessIterator,
           typename T,
           typename Compare = std::less<T>>
 VISTA_CXX14_CONSTEXPR
-RandomAccessIterator lower_bound_sorted(RandomAccessIterator first,
-                                        RandomAccessIterator last,
-                                        const T& needle,
-                                        Compare compare) noexcept;
+RandomAccessIterator lower_bound(RandomAccessIterator first,
+                                 RandomAccessIterator last,
+                                 const T& needle,
+                                 Compare compare) noexcept;
 
 //! @brief Inserts trailing element into sorted range.
 //!
@@ -63,8 +65,8 @@ RandomAccessIterator lower_bound_sorted(RandomAccessIterator first,
 
 template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
-RandomAccessIterator push_sorted(RandomAccessIterator first,
-                                 RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
+RandomAccessIterator push(RandomAccessIterator first,
+                          RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
 
 //! @brief Inserts trailing element into sorted range.
 //!
@@ -81,9 +83,9 @@ RandomAccessIterator push_sorted(RandomAccessIterator first,
 template <typename RandomAccessIterator,
           typename Compare = std::less<decltype(*std::declval<RandomAccessIterator>())>>
 VISTA_CXX14_CONSTEXPR
-RandomAccessIterator push_sorted(RandomAccessIterator first,
-                                 RandomAccessIterator last,
-                                 Compare compare) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
+RandomAccessIterator push(RandomAccessIterator first,
+                          RandomAccessIterator last,
+                          Compare compare) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
 
 //! @brief Removes first element from sorted range.
 //!
@@ -99,11 +101,12 @@ RandomAccessIterator push_sorted(RandomAccessIterator first,
 
 template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
-RandomAccessIterator pop_sorted(RandomAccessIterator first,
-                                RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
+RandomAccessIterator pop(RandomAccessIterator first,
+                         RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
 
+} // namespace sorted
 } // namespace vista
 
-#include <vista/detail/algorithm.ipp>
+#include <vista/sorted/detail/algorithm.ipp>
 
-#endif // VISTA_ALGORITHM_HPP
+#endif // VISTA_SORTED_ALGORITHM_HPP
