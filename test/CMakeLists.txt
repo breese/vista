@@ -29,5 +29,4 @@ vista_add_test(circular_array_suite circular/array_suite.cpp)
 vista_add_test(circular_array_numeric_suite circular/array_numeric_suite.cpp)
 
 vista_add_test(sorted_algorithm_suite sorted/algorithm_suite.cpp)
-
-vista_add_test(map_span_suite map/span_suite.cpp)
+vista_add_test(sorted_span_suite sorted/span_suite.cpp)
