@@ -1,5 +1,5 @@
-#ifndef VISTA_MAP_SPAN_HPP
-#define VISTA_MAP_SPAN_HPP
+#ifndef VISTA_MAP_ARRAY_HPP
+#define VISTA_MAP_ARRAY_HPP
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -11,11 +11,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <cstddef> // std::size_t
-#include <functional> // std::less
-#include <utility> // std::pair
-#include <vista/detail/config.hpp>
-#include <vista/detail/type_traits.hpp>
+#include <vista/sorted/span.hpp>
 
 namespace vista
 {
@@ -25,91 +21,48 @@ namespace map
 template <typename T1, typename T2>
 using pair = std::pair<T1, T2>;
 
-//! @brief Associative span.
+//! @brief Fixed-capacity associative array.
 //!
-//! A view that turens contiguous memory into an associative array.
-//!
-//! The memory is not owned by the span. The owner must ensure that the span is
-//! destroyed before the memory is released.
-//!
-//! The view is non-copyable to avoid having two views with different states
-//! that manipulate the same memory.
+//! Stores all values in-place in continguous memory embedded into the array.
+//! Empty slots contains default constructed values. No dynamic memory is allocated.
 //!
 //! Violation of any precondition results in undefined behavior.
 
 template <typename Key,
           typename T,
-          std::size_t Extent = dynamic_extent,
+          std::size_t N,
           typename Compare = std::less<Key>>
-class span
+class array
 {
     static_assert(std::is_default_constructible<Key>::value, "Key must be default constructible");
-    static_assert(std::is_move_assignable<Key>::value, "Key must be move assignable");
     static_assert(std::is_default_constructible<T>::value, "T must be default constructible");
-    static_assert(std::is_move_assignable<T>::value, "T must be move assignable");
 
 public:
     using key_type = Key;
     using mapped_type = T;
-    using value_type = pair<Key, T>;
-    using size_type = std::size_t;
+    using value_type = map::pair<Key, T>;
     using key_compare = Compare;
-    using pointer = typename std::add_pointer<value_type>::type;
-    using const_pointer = typename std::add_pointer<typename std::add_const<value_type>::type>::type;
-    using iterator = pointer; // RandomAccessIterator
-    using const_iterator = const_pointer; // RandomAccessIterator
+    struct value_compare
+    {
+        bool operator()(const value_type& lhs, const value_type& rhs)
+        {
+            return Compare{}(lhs.first, rhs.first);
+        }
+    };
+private:
+    using span_type = sorted::template span<value_type, N, value_compare>;
+public:
+    using size_type = typename span_type::size_type;
+    using pointer = typename span_type::pointer;
+    using iterator = typename span_type::iterator;
+    using const_iterator = typename span_type::const_iterator;
 
-    //! @brief Creates empty associative span.
-    //!
-    //! When Extent == dynamic_extent the snap also has zero capacity. No
-    //! elements can be inserted into a zero capacity span. The span must
-    //! therefore be recreated before use.
-    //!
-    //! @post capacity() == 0 if Extent == dynamic_extent
-    //! @post capacity() == Extent otherwise
-    //! @post size() == 0
-
-    constexpr span() noexcept;
-
-    //! @brief Creates associative span by moving.
-    //!
-    //! State of moved-from span is valid but unspecified.
-
-    constexpr span(span&&) noexcept = default;
-
-    //! @brief Creates associative span from iterators.
-    //!
-    //! @pre Extent == std::distance(begin, end) or Extent == dynamic_extent
-    //! @post capacity() == std::distance(begin, end)
-    //! @post size() == 0
-
-    template <typename ContiguousIterator>
-    constexpr span(ContiguousIterator begin,
-                   ContiguousIterator end) noexcept;
-
-    //! @brief Creates associative span from array.
+    //! @brief Creates empty associative array.
     //!
     //! @post capacity() == N
     //! @post size() == 0
 
-    template <std::size_t N,
-              typename std::enable_if<(Extent == N || Extent == dynamic_extent), int>::type = 0>
-    explicit constexpr span(value_type (&array)[N]) noexcept;
-
-    //! @brief Recreates associative span by moving.
-    //!
-    //! State of moved-from span is valid but unspecified.
-
-    VISTA_CXX14_CONSTEXPR
-    span& operator=(span&&) noexcept = default;
-
-    //! @brief Returns the maximum possible number of elements in span.
-
-    constexpr size_type capacity() const noexcept;
-
-    //! @brief Returns the number of elements in span.
-
-    constexpr size_type size() const noexcept;
+    constexpr array() noexcept;
 
     //! @brief Checks if span is empty.
     //!
@@ -122,6 +75,20 @@ public:
     //! Span is full when size() == capacity()
 
     constexpr bool full() const noexcept;
+
+    //! @brief Clears the span.
+    //!
+    //! The storage of the cleared elements will be left in a default-constructed state.
+    //!
+    //! @post size() == 0
+
+    //! @brief Returns the maximum possible number of elements in span.
+
+    constexpr size_type capacity() const noexcept;
+
+    //! @brief Returns the number of elements in span.
+
+    constexpr size_type size() const noexcept;
 
     //! @brief Clears the span.
     //!
@@ -172,6 +139,7 @@ public:
     VISTA_CXX14_CONSTEXPR
     iterator emplace_hint(iterator, Args&&...) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value);
 
+
     //! @brief Erases all elements with given key.
     //!
     //! The storage of the erased element will be left in a default-constructed state.
@@ -192,14 +160,14 @@ public:
     //! @pre !empty()
     //! @pre position != end()
 
-    VISTA_CXX14_CONSTEXPR
     iterator erase(iterator position) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Checks if span contains key.
     //!
     //! Logarithmic time complexity.
 
-    constexpr bool contains(const key_type&) const noexcept;
+    VISTA_CXX14_CONSTEXPR
+    bool contains(const key_type&) const noexcept;
 
     //! @brief Returns iterator to element with given key.
     //!
@@ -259,12 +227,6 @@ public:
     constexpr key_compare key_comp() const noexcept;
 
 private:
-    static_assert(std::is_default_constructible<value_type>::value, "pair<Key, T> must be default constructible");
-
-    // Non-copyable
-    span(const span&) = delete;
-    span& operator=(const span&) = default;
-
     template <typename... Args>
     VISTA_CXX14_CONSTEXPR
     pointer construct_at(pointer, Args&&...);
@@ -273,38 +235,13 @@ private:
     void destroy_at(pointer);
 
 private:
-    template <typename, size_type E1>
-    struct member_storage
-    {
-        constexpr size_type capacity() const noexcept
-        {
-            return E1;
-        }
-
-        iterator begin;
-        iterator end;
-        iterator tail;
-    };
-
-    template <typename T1>
-    struct member_storage<T1, dynamic_extent>
-    {
-        constexpr size_type capacity() const noexcept
-        {
-            return end - tail;
-        }
-
-        iterator begin;
-        iterator end;
-        iterator tail;
-    };
-
-    struct member_storage<T, Extent> member;
+    value_type storage[N];
+    span_type span;
 };
 
 } // namespace map
 } // namespace vista
 
-#include <vista/map/detail/span.ipp>
+#include <vista/map/detail/array.ipp>
 
-#endif // VISTA_MAP_SPAN_HPP
+#endif // VISTA_MAP_ARRAY_HPP
