@@ -25,3 +25,4 @@ endif()
 
 enable_testing()
 add_subdirectory(test)
+add_subdirectory(benchmark EXCLUDE_FROM_ALL)
