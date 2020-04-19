@@ -18,10 +18,19 @@
 namespace vista
 {
 
+//! @brief Span.
+//!
+//! Non-const member functions can be used from constexpr functions (from C++14),
+//! but not on a constexpr span.
+//!
+//! Violation of any precondition results in undefined behavior.
+
 template <typename T, std::size_t Extent = dynamic_extent>
 class span
 {
     static_assert(detail::is_complete<T>::value, "T must be complete");
+    static_assert(std::is_object<T>::value, "T must be an object");
+    static_assert(!std::is_abstract<T>::value, "T must not be an abstract class");
 
 public:
     using element_type = T;
