@@ -690,7 +690,7 @@ void span<T, E>::member_storage<T1, E1>::assign(const member_storage& other,
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
 constexpr auto span<T, E>::member_storage<T1, E1>::modulo(size_type value,
-                                                          size_type n) noexcept -> size_type
+                                                          size_type n) const noexcept -> size_type
 {
     return ((n & (n - 1)) == 0)
         ? value & (n - 1) // Power of two
@@ -810,7 +810,7 @@ void span<T, E>::member_storage<T1, dynamic_extent>::assign(const member_storage
 template <typename T, std::size_t E>
 template <typename T1>
 constexpr auto span<T, E>::member_storage<T1, dynamic_extent>::modulo(size_type value,
-                                                                      size_type n) noexcept -> size_type
+                                                                      size_type n) const noexcept -> size_type
 {
     return ((n & (n - 1)) == 0)
         ? value & (n - 1) // Power of two
