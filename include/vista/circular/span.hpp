@@ -640,6 +640,8 @@ private:
         VISTA_CXX14_CONSTEXPR
         void assign(const member_storage&, pointer) noexcept;
 
+        constexpr size_type modulo(size_type, size_type) noexcept;
+
         pointer data;
         size_type size;
         size_type next;
@@ -679,6 +681,8 @@ private:
 
         VISTA_CXX14_CONSTEXPR
         void assign(const member_storage&, pointer) noexcept;
+
+        constexpr size_type modulo(size_type, size_type) noexcept;
 
         pointer data;
         size_type cap;

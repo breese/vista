@@ -493,13 +493,13 @@ constexpr auto span<T, E>::last_unused_segment() const noexcept -> const_segment
 template <typename T, std::size_t E>
 constexpr auto span<T, E>::index(size_type position) const noexcept -> size_type
 {
-    return position % member.capacity();
+    return member.modulo(position, member.capacity());
 }
 
 template <typename T, std::size_t E>
 constexpr auto span<T, E>::vindex(size_type position) const noexcept -> size_type
 {
-    return position % (2 * member.capacity());
+    return member.modulo(position, 2 * member.capacity());
 }
 
 template <typename T, std::size_t E>
@@ -687,6 +687,16 @@ void span<T, E>::member_storage<T1, E1>::assign(const member_storage& other,
     this->next = other.next;
 }
 
+template <typename T, std::size_t E>
+template <typename T1, std::size_t E1>
+constexpr auto span<T, E>::member_storage<T1, E1>::modulo(size_type value,
+                                                          size_type n) noexcept -> size_type
+{
+    return ((n & (n - 1)) == 0)
+        ? value & (n - 1) // Power of two
+        : (value % n);
+}
+
 //-----------------------------------------------------------------------------
 // span<T>::member_storage dynamic extent
 //-----------------------------------------------------------------------------
@@ -795,6 +805,16 @@ void span<T, E>::member_storage<T1, dynamic_extent>::assign(const member_storage
     capacity(other.capacity());
     this->size = other.size;
     this->next = other.next;
+}
+
+template <typename T, std::size_t E>
+template <typename T1>
+constexpr auto span<T, E>::member_storage<T1, dynamic_extent>::modulo(size_type value,
+                                                                      size_type n) noexcept -> size_type
+{
+    return ((n & (n - 1)) == 0)
+        ? value & (n - 1) // Power of two
+        : (value % n);
 }
 
 //-----------------------------------------------------------------------------
