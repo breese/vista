@@ -19,6 +19,9 @@ namespace api_dynamic_suite
 
 void dynamic_ctor_default()
 {
+    static_assert(std::is_default_constructible<vista::span<int>>::value, "span<int> must be default-constructible");
+    static_assert(std::is_nothrow_default_constructible<vista::span<int>>::value, "span<int> must be nothrow default-constructible");
+
     vista::span<int> span;
     BOOST_TEST(span.empty());
     BOOST_TEST_EQ(span.size(), 0);
@@ -27,6 +30,9 @@ void dynamic_ctor_default()
 
 void dynamic_ctor_copy()
 {
+    static_assert(std::is_copy_constructible<vista::span<int>>::value, "span<int> must be copy-constructible");
+    static_assert(std::is_nothrow_copy_constructible<vista::span<int>>::value, "span<int> must be nothrow copy-constructible");
+
     vista::span<int> span;
     BOOST_TEST(span.empty());
     BOOST_TEST_EQ(span.size(), 0);
@@ -51,6 +57,9 @@ void dynamic_ctor_copy_convertible()
 
 void dynamic_ctor_move()
 {
+    static_assert(std::is_move_constructible<vista::span<int>>::value, "span<int> must be move-constructible");
+    static_assert(std::is_nothrow_move_constructible<vista::span<int>>::value, "span<int> must be nothrow move-constructible");
+
     vista::span<int> span;
     BOOST_TEST(span.empty());
     BOOST_TEST_EQ(span.size(), 0);
@@ -339,6 +348,10 @@ namespace api_fixed_suite
 
 void fixed_ctor_default()
 {
+    static_assert(std::is_default_constructible<vista::span<int, 0>>::value, "span<int, 0> must be default-constructible");
+    static_assert(std::is_nothrow_default_constructible<vista::span<int, 0>>::value, "span<int, 0> must be nothrow default-constructible");
+    static_assert(!std::is_default_constructible<vista::span<int, 4>>::value, "span<int, 4> must not be default-constructible");
+
     vista::span<int, 0> span;
     BOOST_TEST(span.empty());
     BOOST_TEST_EQ(span.size(), 0);
@@ -347,6 +360,9 @@ void fixed_ctor_default()
 
 void fixed_ctor_copy()
 {
+    static_assert(std::is_copy_constructible<vista::span<int, 4>>::value, "span<int, 4> must be copy-constructible");
+    static_assert(std::is_nothrow_copy_constructible<vista::span<int, 4>>::value, "span<int, 4> must be nothrow copy-constructible");
+
     int array[4] = {};
     vista::span<int, 4> span(array);
     BOOST_TEST(!span.empty());
@@ -373,6 +389,9 @@ void fixed_ctor_copy_convertible()
 
 void fixed_ctor_move()
 {
+    static_assert(std::is_move_constructible<vista::span<int, 4>>::value, "span<int, 4> must be move-constructible");
+    static_assert(std::is_nothrow_move_constructible<vista::span<int, 4>>::value, "span<int, 4> must be nothrow move-constructible");
+
     int array[4] = {};
     vista::span<int, 4> span(array);
     BOOST_TEST(!span.empty());
