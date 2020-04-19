@@ -19,6 +19,7 @@ function(vista_add_test name)
 endfunction()
 
 vista_add_test(span_suite span_suite.cpp)
+vista_add_test(constexpr_span_suite constexpr_span_suite.cpp)
 
 vista_add_test(circular_span_suite circular/span_suite.cpp)
 vista_add_test(circular_span_iterator_suite circular/span_iterator_suite.cpp)
