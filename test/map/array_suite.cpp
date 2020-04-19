@@ -17,12 +17,17 @@ using namespace vista;
 
 //-----------------------------------------------------------------------------
 
+namespace std
+{
+
 template <typename Key, typename T>
 std::ostream& operator<<(std::ostream& stream, const vista::map::pair<Key, T>& data)
 {
     stream << '{' << data.first << ',' << data.second << '}';
     return stream;
 }
+
+} // namespace std
 
 //-----------------------------------------------------------------------------
 
