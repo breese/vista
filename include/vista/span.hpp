@@ -12,8 +12,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <cstddef>
-#include <type_traits>
 #include <vista/detail/config.hpp>
+#include <vista/detail/type_traits.hpp>
 
 namespace vista
 {
@@ -21,6 +21,8 @@ namespace vista
 template <typename T, std::size_t Extent = dynamic_extent>
 class span
 {
+    static_assert(detail::is_complete<T>::value, "T must be complete");
+
 public:
     using element_type = T;
     using value_type = typename std::remove_cv<element_type>::type;

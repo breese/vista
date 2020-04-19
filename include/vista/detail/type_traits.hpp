@@ -18,6 +18,19 @@ namespace vista
 namespace detail
 {
 
+template <typename, typename = std::size_t>
+struct is_complete
+    : public std::false_type
+{
+};
+
+template <typename T>
+struct is_complete<T,
+                   decltype(sizeof(T))>
+    : public std::true_type
+{
+};
+
 #if __cpp_lib_is_swappable >= 201603L
 
 template <typename T>
