@@ -402,28 +402,28 @@ void pop_increasing()
 {
     std::array<int, 4> heap = { 44, 33, 22, 11 }; // Result of push_suite::push_increasing
     auto last = heap.end();
-    heap::pop(heap.begin(), last, std::less<int>());
+    heap::pop(heap.begin(), last);
     *--last = 0;
     {
         std::array<int, 4> expect = { 33, 11, 22, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
-    heap::pop(heap.begin(), last, std::less<int>());
+    heap::pop(heap.begin(), last);
     *--last = 0;
     {
         std::array<int, 4> expect = { 22, 11, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
-    heap::pop(heap.begin(), last, std::less<int>());
+    heap::pop(heap.begin(), last);
     *--last = 0;
     {
         std::array<int, 4> expect = { 11, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
-    heap::pop(heap.begin(), last, std::less<int>());
+    heap::pop(heap.begin(), last);
     *--last = 0;
     {
         std::array<int, 4> expect = { 0, 0, 0, 0 };
