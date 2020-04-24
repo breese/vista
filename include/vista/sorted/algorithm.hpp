@@ -61,7 +61,7 @@ RandomAccessIterator lower_bound(RandomAccessIterator first,
 //! Linear time complexity.
 //!
 //! @pre is_sorted(first, last - 1)
-//! @posst is_sorted(first, last)
+//! @post is_sorted(first, last)
 
 template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
