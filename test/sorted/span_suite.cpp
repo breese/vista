@@ -25,8 +25,29 @@ void api_ctor_default()
     sorted::span<int> span;
     BOOST_TEST_EQ(span.capacity(), 0);
     BOOST_TEST_EQ(span.size(), 0);
-    BOOST_TEST(span.empty());
-    BOOST_TEST(span.full());
+}
+
+void api_ctor_move()
+{
+    sorted::span<int> span;
+    BOOST_TEST_EQ(span.capacity(), 0);
+    BOOST_TEST_EQ(span.size(), 0);
+    sorted::span<int> clone(std::move(span));
+    BOOST_TEST_EQ(clone.capacity(), 0);
+    BOOST_TEST_EQ(clone.size(), 0);
+}
+
+void api_ctor_move_assign()
+{
+    sorted::span<int> span;
+    BOOST_TEST_EQ(span.capacity(), 0);
+    BOOST_TEST_EQ(span.size(), 0);
+    sorted::span<int> clone;
+    BOOST_TEST_EQ(clone.capacity(), 0);
+    BOOST_TEST_EQ(clone.size(), 0);
+    clone = std::move(span);
+    BOOST_TEST_EQ(clone.capacity(), 0);
+    BOOST_TEST_EQ(clone.size(), 0);
 }
 
 void api_ctor_iterator()
@@ -35,8 +56,6 @@ void api_ctor_iterator()
     sorted::span<int> span(storage.begin(), storage.end());
     BOOST_TEST_EQ(span.capacity(), 4);
     BOOST_TEST_EQ(span.size(), 0);
-    BOOST_TEST(span.empty());
-    BOOST_TEST(!span.full());
 }
 
 void api_capacity()
@@ -122,6 +141,8 @@ void api_comp()
 void run()
 {
     api_ctor_default();
+    api_ctor_move();
+    api_ctor_move_assign();
     api_ctor_iterator();
     api_capacity();
     api_size();
@@ -150,6 +171,29 @@ void api_ctor_default()
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
+}
+
+void api_ctor_move()
+{
+    sorted::span<int, 4> span;
+    BOOST_TEST_EQ(span.capacity(), 4);
+    BOOST_TEST_EQ(span.size(), 0);
+    sorted::span<int, 4> clone(std::move(span));
+    BOOST_TEST_EQ(clone.capacity(), 4);
+    BOOST_TEST_EQ(clone.size(), 0);
+}
+
+void api_ctor_move_assign()
+{
+    sorted::span<int, 4> span;
+    BOOST_TEST_EQ(span.capacity(), 4);
+    BOOST_TEST_EQ(span.size(), 0);
+    sorted::span<int, 4> clone;
+    BOOST_TEST_EQ(clone.capacity(), 4);
+    BOOST_TEST_EQ(clone.size(), 0);
+    clone = std::move(span);
+    BOOST_TEST_EQ(clone.capacity(), 4);
+    BOOST_TEST_EQ(clone.size(), 0);
 }
 
 void api_ctor_iterator()
@@ -245,6 +289,8 @@ void api_comp()
 void run()
 {
     api_ctor_default();
+    api_ctor_move();
+    api_ctor_move_assign();
     api_ctor_iterator();
     api_capacity();
     api_size();

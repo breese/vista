@@ -54,6 +54,10 @@ public:
 
     constexpr span() noexcept;
 
+    //! @brief Creates sorted span by moving.
+
+    constexpr span(span&&) noexcept = default;
+
     //! @brief Creates sorted span from iterators.
     //!
     //! @pre Extent == std::distance(begin, end) or Extent == dynamic_extent
@@ -63,6 +67,13 @@ public:
     template <typename ContiguousIterator>
     constexpr span(ContiguousIterator begin,
                    ContiguousIterator end) noexcept;
+
+    //! @brief Recreates sorted span by moving.
+    //!
+    //! State of moved-from span is valid but unspecified.
+
+    VISTA_CXX14_CONSTEXPR
+    span& operator=(span&&) noexcept = default;
 
     //! @brief Checks if span is empty.
 
@@ -152,6 +163,12 @@ public:
     //! @brief Returns function that compares values.
 
     constexpr compare comp() const noexcept;
+
+public:
+    // Span is non-copyable because more spans operating on the same storage
+    // with their own internal state would cause invariants to break.
+    span(const span&) = delete;
+    span& operator=(const span&) = delete;
 
 private:
     template <typename, size_type E1>
