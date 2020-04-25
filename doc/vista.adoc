@@ -1,0 +1,27 @@
+:doctype: book
+:toc: left
+:toclevels: 2
+:source-highlighter: pygments
+:source-language: C++
+:prewrap!:
+:pygments-style: vs
+:icons: font
+:stem: latexmath
+
+= Vista
+
+Bjørn Reese
+
+== Introduction
+
+Vista is a header-only C++11 library that contains various span classes.
+
+The span classes acts like fixed-capacity in-place containers operating on contiguous memory provided by the user.
+
+The span classes do not take ownership of the user-provided memory. User must ensure the life-time of the memory until the span has been destroyed.
+
+
+== Circular Queue
+
+<<circular/span.adoc#,Circular Span>>:: The circular span is a view that makes user-owned contiguous storage appear like a circular queue.
+<<circular/array.adoc#,Circular Array>>:: The fixed-sized circular array is a circular queue operating on an embedded `std::array<T, N>`. Unlike `std::array<T, N>` this class also keeps track of how many elements have been inserted.
