@@ -25,5 +25,6 @@ endif()
 
 enable_testing()
 add_subdirectory(test)
+add_subdirectory(example)
 add_subdirectory(benchmark EXCLUDE_FROM_ALL)
 add_subdirectory(doc EXCLUDE_FROM_ALL)
