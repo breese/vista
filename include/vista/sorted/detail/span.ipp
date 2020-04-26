@@ -65,6 +65,19 @@ constexpr bool span<T, E, C>::full() const noexcept
 
 template <typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
+auto span<T, E, C>::operator[](size_type position) noexcept -> reference
+{
+    return member.begin[position];
+}
+
+template <typename T, std::size_t E, typename C>
+constexpr auto span<T, E, C>::operator[](size_type position) const noexcept -> const_reference
+{
+    return member.begin[position];
+}
+
+template <typename T, std::size_t E, typename C>
+VISTA_CXX14_CONSTEXPR
 void span<T, E, C>::clear() noexcept
 {
     member.tail = member.begin;

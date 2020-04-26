@@ -43,6 +43,8 @@ public:
     using compare = Compare;
     using pointer = typename std::add_pointer<value_type>::type;
     using const_pointer = typename std::add_pointer<typename std::add_const<value_type>::type>::type;
+    using reference = typename std::add_lvalue_reference<value_type>::type;
+    using const_reference = typename std::add_lvalue_reference<typename std::add_const<value_type>::type>::type;
     using iterator = pointer; // RandomAccessIterator
     using const_iterator = const_pointer; // RandomAccessIterator
 
@@ -99,6 +101,19 @@ public:
     //! @brief Returns the maximum possible number of elements in span.
 
     constexpr size_type capacity() const noexcept;
+
+    //! @brief Returns reference to element at position.
+    //!
+    //! @pre size() > position
+
+    VISTA_CXX14_CONSTEXPR
+    reference operator[](size_type position) noexcept;
+
+    //! @brief Returns reference to element at position.
+    //!
+    //! @pre size() > position
+
+    constexpr const_reference operator[](size_type position) const noexcept;
 
     //! @brief Clears the span.
     //!

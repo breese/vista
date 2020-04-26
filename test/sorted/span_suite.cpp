@@ -90,6 +90,14 @@ void api_full()
     BOOST_TEST(span.full());
 }
 
+void api_index_operator()
+{
+    std::array<int, 4> storage = {};
+    sorted::span<int> span(storage.begin(), storage.end());
+    span.push(11);
+    BOOST_TEST_EQ(span[0], 11);
+}
+
 void api_push()
 {
     std::array<int, 4> storage = {};
@@ -157,6 +165,7 @@ void run()
     api_size();
     api_empty();
     api_full();
+    api_index_operator();
     api_push();
     api_pop_value();
     api_pop_iterator();
@@ -247,6 +256,14 @@ void api_full()
     BOOST_TEST(!span.full());
 }
 
+void api_index_operator()
+{
+    std::array<int, 4> storage = {};
+    sorted::span<int, 4> span(storage.begin(), storage.end());
+    span.push(11);
+    BOOST_TEST_EQ(span[0], 11);
+}
+
 void api_push()
 {
     std::array<int, 4> storage = {};
@@ -314,6 +331,7 @@ void run()
     api_size();
     api_empty();
     api_full();
+    api_index_operator();
     api_push();
     api_pop_value();
     api_pop_iterator();
