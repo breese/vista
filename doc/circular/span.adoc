@@ -754,7 +754,7 @@ specified `Extent` template argument. Dynamic extent is used by default.
  +
  +
  `constexpr const_iterator cbegin() const noexcept`
- | Returns an interator to the beginning of the span.
+ | Returns an iterator to the beginning of the span.
 | `constexpr{wj}footnote:constexpr11[] iterator end() noexcept`
  +
  +
@@ -762,7 +762,7 @@ specified `Extent` template argument. Dynamic extent is used by default.
  +
  +
  `constexpr const_iterator cend() const noexcept`
- | Returns an interator to the end of the span.
+ | Returns an iterator to the end of the span.
 | `constexpr{wj}footnote:constexpr11[] reverse_iterator rbegin() noexcept`
  +
  +
@@ -770,7 +770,7 @@ specified `Extent` template argument. Dynamic extent is used by default.
  +
  +
  `constexpr const_reverse_iterator crbegin() const noexcept`
- | Returns a reverse interator to the beginning of the span.
+ | Returns a reverse iterator to the beginning of the span.
 | `constexpr{wj}footnote:constexpr11[] reverse_iterator rend() noexcept`
  +
  +
@@ -778,7 +778,7 @@ specified `Extent` template argument. Dynamic extent is used by default.
  +
  +
  `constexpr const_reverse_iterator crend() const noexcept`
- | Returns a reverse interator to the end of the span.
+ | Returns a reverse iterator to the end of the span.
 | `constexpr{wj}footnote:constexpr11[] segment first_segment() noexcept`
  +
  +
