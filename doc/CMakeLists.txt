@@ -20,12 +20,14 @@ endfunction()
 
 vista_add_doc(vista-doc-vista vista.adoc)
 include(circular/CMakeLists.txt)
+include(sorted/CMakeLists.txt)
 
 if (AsciiDoctor_FOUND)
 
   add_custom_target(doc
     DEPENDS vista-doc-vista
     DEPENDS vista-doc-circular
+    DEPENDS vista-doc-sorted
     )
 
 else() # No AsciiDoctor

@@ -1,0 +1,335 @@
+:doctype: book
+:toc: left
+:toclevels: 2
+:source-highlighter: pygments
+:source-language: C++
+:prewrap!:
+:pygments-style: vs
+:icons: font
+:stem: latexmath
+
+= Sorted Span
+
+[NOTE]
+.Precondition
+====
+[source,c++]
+----
+using namespace vista;
+----
+====
+
+== Introduction
+
+The `sorted::span<T>` template class is a span that uses contiguous storage to
+maintain elements in a sorted sequence.
+
+Insertion and removal are linear time complexity, and lookup is logarithmic
+time complexity.
+
+[#sorted-tuturial]
+== Tutorial
+
+=== Online Rank
+
+The online rank tutorial demonstrates a simple use of the sorted span.
+
+The class provides an interface where we can insert new values, and where we can read the n^th^ value using `std::ratio`.
+
+[source,c++,numbered]
+----
+template <typename T, std::size_t N>
+class rank
+{
+public:
+    using value_type = T;
+    using size_type = std::size_t;
+
+    constexpr rank() noexcept;
+
+    // Insert new value
+    void push(value_type value) noexcept;
+
+    // Return nth value
+    template <typename Ratio>
+    value_type value() const noexcept;
+};
+----
+
+The values will be stored in a C array. They are sorted upon insertion by a sorted span.
+
+[source,c++,numbered]
+----
+template <typename T, std::size_t N>
+class rank
+{
+public:
+    using value_type = T;
+    using size_type = std::size_t;
+
+    rank();
+
+    void push(value_type value);
+
+    template <typename Ratio>
+    value_type value() const;
+
+private:
+    // Span and its storage
+    T storage[N];
+    sorted::span<T, N> span;
+};
+----
+
+The span is instructed to use the C array during initialization.
+
+[source,c++,numbered]
+----
+template <typename T, std::size_t N>
+rank<T, N>::rank()
+    : span(storage)
+{
+}
+----
+
+The `rank::push` member function simply directs to the span.
+
+[source,c++,numbered]
+----
+template <typename T, std::size_t N>
+void rank<T, N>::push(value_type value)
+{
+    span.push(std::move(value));
+}
+----
+
+The `rank::value` member function uses a template argument to specify the relative ratio into the sorted array.
+
+[source,c++,numbered]
+----
+template <typename T, std::size_t N>
+auto rank<T, N>::value() const -> value_type
+{
+    const size_type index = Ratio::num * (span.size() - 1) / Ratio::den;
+    return span[index];
+}
+----
+
+The `rank::value` member function is called like this:
+
+[source,c++,numbered]
+----
+  using middle_t = std::ratio<1, 2>;
+  auto value = rank.value<middle_t>(); // Returns the middle value in the sorted array
+----
+
+
+[#sorted-span-ref]
+== Reference
+
+
+Defined in header `<vista/sorted/span.hpp>`.
+
+Defined in namespace `vista::sorted`.
+[source,c++]
+----
+template <
+    typename T,
+    std::size_t Extent = dynamic_extent,
+    typename Compare = std::less<T>
+> class span;
+----
+The sorted span template class maintains a sorted sequence in continguous storage.
+The storage is not owned by the span. The owner must ensure that the span is
+destroyed before the storage is released.
+
+The size is the current number of elements in the span.
+
+The capacity is the maximum number of elements that can be inserted without
+overwriting old elements. The capacity cannot be changed.
+
+The extent determines the capacity of the span.
+With `dynamic_extent` the capacity is derived from the input arguments
+at construction or assignment time. Otherwise the capacity is fixed to the
+specified `Extent` template argument. Dynamic extent is used by default.
+
+=== Template arguments
+
+[frame="topbot",grid="rows",stripes=none]
+|===
+| `T` | Element type.
+ +
+ +
+ _Constraint:_ `T` must be a complete type.
+ +
+ _Constraint:_ `T` must be _MoveAssignable_.
+| `Extent` | The maximum number of elements in the span.
+| `Compare` | A _BinaryPredicate_ determining the sorting order.
+|===
+
+=== Member types
+
+[%header,frame="topbot",grid="rows",stripes=none]
+|===
+| Member type | Definition
+| `value_type` | `T`
+| `size_type` | `std::size_t`
+| `pointer` | `value_type*`
+| `const_pointer` | `const value_type*`
+| `reference` | `value_type&`
+| `const_reference` | `const value_type&`
+| `iterator` | _RandomAccessIterator_ with `value_type`
+| `const_iterator` | _RandomAccessIterator_ with `const value_type`
+| `compare` | `Compare`
+|===
+
+=== Member functions
+
+[%header,frame="topbot",grid="rows",stripes=none]
+|===
+| Member function | Description
+| `constexpr span() noexcept` | Creates an empty span.
+ +
+ +
+ No elements can be inserted into an empty span. The span must be recreated before use.
+ +
+ +
+ _Ensures:_ `capacity() == 0` if `Extent == dynamic_extent`
+ +
+ _Ensures:_ `capacity() == Extent` otherwise
+ +
+ _Ensures:_ `size() == 0`
+| `constexpr span(span&& other) noexcept` | Creates span by moving.
+ +
+ +
+ The state of the moved-from span is valid but unspecified.
+ +
+ +
+ _Ensures:_ `capacity() == other.capacity()`
+ +
+ _Ensures:_ `size() == other.size()`
+| `template <std::size_t N>
+ +
+ explicit constexpr span(value_type (&)[N]) noexcept` | Creates empty span from an array object with compatible extent.
+ +
+ +
+ _Constraint:_ `Extent == N` or `Extent == dynamic_extent`
+ +
+ +
+ _Ensures:_ `capacity() == N`
+ +
+ _Ensures:_ `size() == 0`
+| `template <typename ContiguousIterator>
+ +
+ constexpr span(ContiguousIterator begin, ContiguousIterator end) noexcept` | Creates a span from iterators.
+ +
+ +
+ _Expects:_ `Extent == std::distance(begin, end)` or `Extent == dynamic_extent`
+ +
+ +
+ _Ensures:_ `capacity() == std::distance(begin, end)`
+ +
+ _Ensures:_ `size() == 0`
+| `constexpr{wj}footnote:constexpr11[Not constexpr in pass:[C++11].] span& operator=(span&&) noexcept` | Recreates span by moving.
+ +
+ +
+ The state of the moved-from span is valid but unspecified.
+ +
+ +
+ _Ensures:_ `capacity() == other.capacity()`
+ +
+ _Ensures:_ `size() == other.size()`
+| `constexpr bool empty() const noexcept` | Checks if span is empty.
+| `constexpr bool full() const noexcept` | Checks if span is full.
+| `constexpr size_type capacity() const noexcept` | Returns the maximum possible number of elements in the span.
+| `constexpr size_type size() const noexcept` | Returns the number of elements in the span.
+| `constexpr{wj}footnote:constexpr11[] reference operator[](size_type position) noexcept` | Returns a reference to the element at the given position in the span.
+ +
+ +
+ _Expects:_ `position < size()`
+| `constexpr const_reference operator[](size_type position) const noexcept` | Returns a reference to the element at the given position in the span.
+ +
+ +
+ _Expects:_ `position < size()`
+| `constexpr{wj}footnote:constexpr11[] void clear() noexcept` | Clears the span.
+ +
+ +
+ The cleared elements in the underlying storage are not destroyed.
+ +
+ +
+ _Ensures:_ `size() == 0`
+| `constexpr{wj}footnote:constexpr11[] iterator push(value_type) noexcept(_see Remarks_)` | Inserts an element into sorted position.
+ +
+ +
+ Linear time complexity.
+ +
+ +
+ Returns iterator to inserted element, or the end iterator if span already is full.
+ +
+ +
+ _Constraint:_ `value_type` must be _MoveAssignable_ and _Swappable_.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ +
+ _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_ and nothrown _Swappable_.
+| `constexpr{wj}footnote:constexpr11[] void pop(const value_type&) noexcept(_see Remarks_)` | Removes the given element.
+ +
+ +
+ Linear time complexity.
+ +
+ +
+ When there are duplicated elements, only the first matching element is removed.
+ +
+ +
+ The removed element in the underlying storage is not destroyed.
+ +
+ +
+ _Expects:_ `size() > 0`
+ +
+ +
+ _Remarks:_ `noexcept` if `value_type` is nothrow _Swappable_.
+| `constexpr{wj}footnote:constexpr11[] void pop(iterator) noexcept(_see Remarks_)` | Removes the element at the given position.
+ +
+ +
+ Linear time complexity.
+ +
+ +
+ The removed element in the underlying storage is not destroyed.
+ +
+ +
+ _Expects:_ `size() > 0`
+ +
+ +
+ _Remarks:_ `noexcept` if `value_type` is nothrow _Swappable_.
+| `constexpr{wj}footnote:constexpr11[] iterator lower_bound(const value_type&) noexcept`
+ +
+ +
+ `constexpr{wj}footnote:constexpr11[] const_iterator lower_bound(const value_type&) const noexcept`
+ | Returns iterator to element with given value.
+ +
+ +
+ Logarithmic time complexity.
+ +
+ +
+ If key not found, then returns iterator to the entry at the position where
+ the searched-for entry should have been, or the end iterator.
+| `constexpr{wj}footnote:constexpr11[] iterator begin() noexcept`
+ +
+ +
+ `constexpr const_iterator begin() const noexcept`
+ +
+ +
+ `constexpr const_iterator cbegin() const noexcept`
+ | Returns an iterator to the beginning of the span.
+| `constexpr{wj}footnote:constexpr11[] iterator end() noexcept`
+ +
+ +
+ `constexpr const_iterator end() const noexcept`
+ +
+ +
+ `constexpr const_iterator cend() const noexcept`
+ | Returns an iterator to the end of the span.
+| `constexpr compare comp() const noexcept` | Returns function that compares values.
+|===
