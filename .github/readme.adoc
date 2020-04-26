@@ -1,5 +1,7 @@
-Vista
-=====
+:doctype: book
+:icons: font
+
+= Vista
 
 Vista is a header-only C++11 library that contains various span classes.
 
@@ -7,8 +9,6 @@ The span classes acts like fixed-capacity in-place containers operating on conti
 
 The span classes do not take ownership of the user-provided memory. User must ensure the life-time of the memory until the span has been destroyed.
 
-* vista::span is an extension of std::span.
-* vista::circular::span is a circular buffer.
-* vista::sorted::span is a sorted array.
-* vista::priority::span is a priotiy queue.
-* vista::map::array is an associative array.
+There classes that provides extentions to `std::span`, circular buffers, sorted arrays, priority queues, and associative arrays.
+
+See <<../doc/vista.adoc#,documentation>> for further information.
