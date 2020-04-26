@@ -16,6 +16,24 @@ using namespace vista;
 
 //-----------------------------------------------------------------------------
 
+// Permuted ordering with base 0x55555555
+// 22 = 0x55555543
+// 11 = 0x5555555E
+// 55 = 0x55555562
+// 33 = 0x55555574
+// 44 = 0x55555579
+
+template <typename T, T base>
+struct xless
+{
+    constexpr bool operator()(const T& lhs, const T& rhs) noexcept
+    {
+        return std::less<T>{}(lhs ^ base, rhs ^ base);
+    }
+};
+
+//-----------------------------------------------------------------------------
+
 namespace push_suite
 {
 
@@ -87,35 +105,78 @@ void push_increasing_predicate()
     }
 }
 
+void push_increasing_custom()
+{
+    xless<int, 0x55555555> custom;
+
+    std::array<int, 5> heap = {};
+    auto last = heap.begin();
+    *last++ = 11;
+    heap::push(heap.begin(), last, custom);
+    {
+        std::array<int, 5> expect = { 11, 0, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 22;
+    heap::push(heap.begin(), last, custom);
+    {
+        std::array<int, 5> expect = { 11, 22, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 33;
+    heap::push(heap.begin(), last, custom);
+    {
+        std::array<int, 5> expect = { 33, 22, 11, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 44;
+    heap::push(heap.begin(), last, custom);
+    {
+        std::array<int, 5> expect = { 44, 33, 11, 22, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 55;
+    heap::push(heap.begin(), last, custom);
+    {
+        std::array<int, 5> expect = { 44, 33, 11, 22, 55 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
 void push_decreasing()
 {
     std::array<int, 4> heap = {};
     auto last = heap.begin();
-    *last++ = 99;
+    *last++ = 44;
     heap::push(heap.begin(), last);
     {
-        std::array<int, 4> expect = { 99, 0, 0, 0 };
+        std::array<int, 4> expect = { 44, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
-    *last++ = 88;
+    *last++ = 33;
     heap::push(heap.begin(), last);
     {
-        std::array<int, 4> expect = { 99, 88, 0, 0 };
+        std::array<int, 4> expect = { 44, 33, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
-    *last++ = 77;
+    *last++ = 22;
     heap::push(heap.begin(), last);
     {
-        std::array<int, 4> expect = { 99, 88, 77, 0 };
+        std::array<int, 4> expect = { 44, 33, 22, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
-    *last++ = 66;
+    *last++ = 11;
     heap::push(heap.begin(), last);
     {
-        std::array<int, 4> expect = { 99, 88, 77, 66 };
+        std::array<int, 4> expect = { 44, 33, 22, 11 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
@@ -125,31 +186,74 @@ void push_decreasing_predicate()
 {
     std::array<int, 4> heap = {};
     auto last = heap.begin();
-    *last++ = 99;
+    *last++ = 44;
     heap::push(heap.begin(), last, std::greater<int>{});
     {
-        std::array<int, 4> expect = { 99, 0, 0, 0 };
+        std::array<int, 4> expect = { 44, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
-    *last++ = 88;
+    *last++ = 33;
     heap::push(heap.begin(), last, std::greater<int>{});
     {
-        std::array<int, 4> expect = { 88, 99, 0, 0 };
+        std::array<int, 4> expect = { 33, 44, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
-    *last++ = 77;
+    *last++ = 22;
     heap::push(heap.begin(), last, std::greater<int>{});
     {
-        std::array<int, 4> expect = { 77, 99, 88, 0 };
+        std::array<int, 4> expect = { 22, 44, 33, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
-    *last++ = 66;
+    *last++ = 11;
     heap::push(heap.begin(), last, std::greater<int>{});
     {
-        std::array<int, 4> expect = { 66, 77, 88, 99 };
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void push_decreasing_custom()
+{
+    xless<int, 0x55555555> custom;
+
+    std::array<int, 5> heap = {};
+    auto last = heap.begin();
+    *last++ = 55;
+    heap::push(heap.begin(), last, custom);
+    {
+        std::array<int, 5> expect = { 55, 0, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 44;
+    heap::push(heap.begin(), last, custom);
+    {
+        std::array<int, 5> expect = { 44, 55, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 33;
+    heap::push(heap.begin(), last, custom);
+    {
+        std::array<int, 5> expect = { 44, 55, 33, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 22;
+    heap::push(heap.begin(), last, custom);
+    {
+        std::array<int, 5> expect = { 44, 55, 33, 22, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 11;
+    heap::push(heap.begin(), last, custom);
+    {
+        std::array<int, 5> expect = { 44, 55, 33, 22, 11 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
@@ -385,8 +489,10 @@ void run()
 {
     push_increasing();
     push_increasing_predicate();
+    push_increasing_custom();
     push_decreasing();
     push_decreasing_predicate();
+    push_decreasing_custom();
     push_sequence();
     push_sequence_predicate();
 }
@@ -466,28 +572,71 @@ void pop_increasing_predicate()
     }
 }
 
+void pop_increasing_custom()
+{
+    xless<int, 0x55555555> custom;
+
+    std::array<int, 5> heap = { 44, 33, 11, 22, 55 }; // Result of push_suite::push_increasing_custom
+    auto last = heap.end();
+    heap::pop(heap.begin(), last, custom);
+    *--last = 0;
+    {
+        std::array<int, 5> expect = { 33, 55, 11, 22, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    heap::pop(heap.begin(), last, custom);
+    *--last = 0;
+    {
+        std::array<int, 5> expect = { 55, 22, 11, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    heap::pop(heap.begin(), last, custom);
+    *--last = 0;
+    {
+        std::array<int, 5> expect = { 11, 22, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    heap::pop(heap.begin(), last, custom);
+    *--last = 0;
+    {
+        std::array<int, 5> expect = { 22, 0, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    heap::pop(heap.begin(), last, custom);
+    *--last = 0;
+    {
+        std::array<int, 5> expect = { 0, 0, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
 void pop_decreasing()
 {
-    std::array<int, 4> heap = { 99, 88, 77, 66 }; // Result of push_suite::push_decreasing
+    std::array<int, 4> heap = { 44, 33, 22, 11 }; // Result of push_suite::push_decreasing
     auto last = heap.end();
     heap::pop(heap.begin(), last, std::less<int>());
     *--last = 0;
     {
-        std::array<int, 4> expect = { 88, 66, 77, 0 };
+        std::array<int, 4> expect = { 33, 11, 22, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::less<int>());
     *--last = 0;
     {
-        std::array<int, 4> expect = { 77, 66, 0, 0 };
+        std::array<int, 4> expect = { 22, 11, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::less<int>());
     *--last = 0;
     {
-        std::array<int, 4> expect = { 66, 0, 0, 0 };
+        std::array<int, 4> expect = { 11, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
@@ -502,26 +651,26 @@ void pop_decreasing()
 
 void pop_decreasing_predicate()
 {
-    std::array<int, 4> heap = { 66, 77, 88, 99 }; // Result of push_suite::push_decreasing_predicate
+    std::array<int, 4> heap = { 11, 22, 33, 44 }; // Result of push_suite::push_decreasing_predicate
     auto last = heap.end();
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 4> expect = { 77, 99, 88, 0 };
+        std::array<int, 4> expect = { 22, 44, 33, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 4> expect = { 88, 99, 0, 0 };
+        std::array<int, 4> expect = { 33, 44, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 4> expect = { 99, 0, 0, 0 };
+        std::array<int, 4> expect = { 44, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
@@ -529,6 +678,49 @@ void pop_decreasing_predicate()
     *--last = 0;
     {
         std::array<int, 4> expect = { 0, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void pop_decreasing_custom()
+{
+    xless<int, 0x55555555> custom;
+
+    std::array<int, 5> heap = { 44, 55, 33, 22, 11 }; // Result of push_suite::push_decreasing_custom
+    auto last = heap.end();
+    heap::pop(heap.begin(), last, custom);
+    *--last = 0;
+    {
+        std::array<int, 5> expect = { 33, 55, 11, 22, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    heap::pop(heap.begin(), last, custom);
+    *--last = 0;
+    {
+        std::array<int, 5> expect = { 55, 22, 11, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    heap::pop(heap.begin(), last, custom);
+    *--last = 0;
+    {
+        std::array<int, 5> expect = { 11, 22, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    heap::pop(heap.begin(), last, custom);
+    *--last = 0;
+    {
+        std::array<int, 5> expect = { 22, 0, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
+                          expect.begin(), expect.end());
+    }
+    heap::pop(heap.begin(), last, custom);
+    *--last = 0;
+    {
+        std::array<int, 5> expect = { 0, 0, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
@@ -647,83 +839,82 @@ void pop_sequence()
 
 void pop_sequence_predicate()
 {
-    // FIXME: Use new results
-    std::array<int, 15> heap = { 1, 2, 4, 3, 5, 6, 11, 9, 8, 12, 7, 10, 15, 13, 14 }; // Result of push_suite::push_sequence_predicate
+    std::array<int, 15> heap = { 1, 2, 3, 4, 7, 6, 11, 9, 5, 12, 8, 10, 13, 15, 14 }; // Result of push_suite::push_sequence_predicate
     auto last = heap.end();
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 15> expect = { 2, 3, 4, 8, 5, 6, 11, 9, 14, 12, 7, 10, 15, 13, 0 };
+        std::array<int, 15> expect = { 2, 4, 3, 5, 7, 6, 11, 9, 14, 12, 8, 10, 13, 15, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 15> expect = { 3, 5, 4, 8, 7, 6, 11, 9, 14, 12, 13, 10, 15, 0, 0 };
+        std::array<int, 15> expect = { 3, 4, 6, 5, 7, 10, 11, 9, 14, 12, 8, 15, 13, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 15> expect = { 4, 5, 6, 8, 7, 10, 11, 9, 14, 12, 13, 15, 0, 0, 0 };
+        std::array<int, 15> expect = { 4, 5, 6, 9, 7, 10, 11, 13, 14, 12, 8, 15, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 15> expect = { 5, 7, 6, 8, 12, 10, 11, 9, 14, 15, 13, 0, 0, 0, 0 };
+        std::array<int, 15> expect = { 5, 7, 6, 9, 8, 10, 11, 13, 14, 12, 15, 0, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 15> expect = { 6, 7, 10, 8, 12, 13, 11, 9, 14, 15, 0, 0, 0, 0, 0 };
+        std::array<int, 15> expect = { 6, 7, 10, 9, 8, 15, 11, 13, 14, 12, 0, 0, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 15> expect = { 7, 8, 10, 9, 12, 13, 11, 15, 14, 0, 0, 0, 0, 0, 0 };
+        std::array<int, 15> expect = { 7, 8, 10, 9, 12, 15, 11, 13, 14, 0, 0, 0, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 15> expect = { 8, 9, 10, 14, 12, 13, 11, 15, 0, 0, 0, 0, 0, 0, 0 };
+        std::array<int, 15> expect = { 8, 9, 10, 13, 12, 15, 11, 14, 0, 0, 0, 0, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 15> expect = { 9, 12, 10, 14, 15, 13, 11, 0, 0, 0, 0, 0, 0, 0, 0 };
+        std::array<int, 15> expect = { 9, 12, 10, 13, 14, 15, 11, 0, 0, 0, 0, 0, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 15> expect = { 10, 12, 11, 14, 15, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        std::array<int, 15> expect = { 10, 12, 11, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 15> expect = { 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        std::array<int, 15> expect = { 11, 12, 15, 13, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
     heap::pop(heap.begin(), last, std::greater<int>());
     *--last = 0;
     {
-        std::array<int, 15> expect = { 12, 14, 13, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        std::array<int, 15> expect = { 12, 13, 15, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         BOOST_TEST_ALL_EQ(heap.begin(), heap.end(),
                           expect.begin(), expect.end());
     }
@@ -761,8 +952,10 @@ void run()
 {
     pop_increasing();
     pop_increasing_predicate();
+    pop_increasing_custom();
     pop_decreasing();
     pop_decreasing_predicate();
+    pop_decreasing_custom();
     pop_sequence();
     pop_sequence_predicate();
 }
