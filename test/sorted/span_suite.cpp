@@ -50,6 +50,14 @@ void api_ctor_move_assign()
     BOOST_TEST_EQ(clone.size(), 0);
 }
 
+void api_ctor_array()
+{
+    int storage[4] = {};
+    sorted::span<int> span(storage);
+    BOOST_TEST_EQ(span.capacity(), 4);
+    BOOST_TEST_EQ(span.size(), 0);
+}
+
 void api_ctor_iterator()
 {
     std::array<int, 4> storage = {};
@@ -143,6 +151,7 @@ void run()
     api_ctor_default();
     api_ctor_move();
     api_ctor_move_assign();
+    api_ctor_array();
     api_ctor_iterator();
     api_capacity();
     api_size();
@@ -194,6 +203,14 @@ void api_ctor_move_assign()
     clone = std::move(span);
     BOOST_TEST_EQ(clone.capacity(), 4);
     BOOST_TEST_EQ(clone.size(), 0);
+}
+
+void api_ctor_array()
+{
+    int storage[4] = {};
+    sorted::span<int, 4> span(storage);
+    BOOST_TEST_EQ(span.capacity(), 4);
+    BOOST_TEST_EQ(span.size(), 0);
 }
 
 void api_ctor_iterator()
@@ -291,6 +308,7 @@ void run()
     api_ctor_default();
     api_ctor_move();
     api_ctor_move_assign();
+    api_ctor_array();
     api_ctor_iterator();
     api_capacity();
     api_size();

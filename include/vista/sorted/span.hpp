@@ -58,6 +58,15 @@ public:
 
     constexpr span(span&&) noexcept = default;
 
+    //! @brief Creates sorted span from array.
+    //!
+    //! @post capacity() == N
+    //! @post size() == 0
+
+    template <std::size_t N,
+              typename std::enable_if<(Extent == N || Extent == dynamic_extent), int>::type = 0>
+    explicit constexpr span(value_type (&array)[N]) noexcept;
+
     //! @brief Creates sorted span from iterators.
     //!
     //! @pre Extent == std::distance(begin, end) or Extent == dynamic_extent

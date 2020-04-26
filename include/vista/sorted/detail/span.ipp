@@ -23,6 +23,14 @@ constexpr span<T, E, C>::span() noexcept
 }
 
 template <typename T, std::size_t E, typename C>
+template <std::size_t N,
+          typename std::enable_if<(E == N || E == dynamic_extent), int>::type>
+constexpr span<T, E, C>::span(value_type (&array)[N]) noexcept
+    : member{ array, array + N, array }
+{
+}
+
+template <typename T, std::size_t E, typename C>
 template <typename ContiguousIterator>
 constexpr span<T, E, C>::span(ContiguousIterator begin,
                               ContiguousIterator end) noexcept
