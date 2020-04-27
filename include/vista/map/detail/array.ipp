@@ -17,33 +17,34 @@ namespace map
 {
 
 template <typename K, typename T, std::size_t N, typename C>
-constexpr array<K, T, N, C>::array() noexcept
-    : span(storage, storage + N)
+constexpr array<K, T, N, C>::member_storage::member_storage() noexcept
+    : span(storage, storage + N),
+      tail(storage)
 {
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 constexpr auto array<K, T, E, C>::capacity() const noexcept -> size_type
 {
-    return span.capacity();
+    return member.span.capacity();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 constexpr auto array<K, T, E, C>::size() const noexcept -> size_type
 {
-    return span.size();
+    return member.tail - member.span.begin();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 constexpr bool array<K, T, E, C>::empty() const noexcept
 {
-    return span.empty();
+    return size() == 0;
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 constexpr bool array<K, T, E, C>::full() const noexcept
 {
-    return span.full();
+    return size() == capacity();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
@@ -59,14 +60,17 @@ void array<K, T, E, C>::clear() noexcept(std::is_trivially_destructible<value_ty
             current = construct_at(current);
         }
     }
-    span.clear();
+    member.tail = begin();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
 auto array<K, T, E, C>::insert(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
-    return span.push(std::move(input));
+    assert(!full());
+
+    *member.tail++ = std::move(input);
+    return sorted::push(begin(), member.tail, value_comp());
 }
 
 template <typename K, typename T, std::size_t E, typename C>
@@ -83,7 +87,7 @@ VISTA_CXX14_CONSTEXPR
 auto array<K, T, E, C>::emplace(Args&&... args) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
     // FIXME: construct_at(end()) and push (like push_heap?)
-    return span.push(value_type{ std::forward<Args>(args)... });
+    return insert(value_type{ std::forward<Args>(args)... });
 }
 
 template <typename K, typename T, std::size_t E, typename C>
@@ -121,7 +125,7 @@ auto array<K, T, E, C>::erase(iterator position) noexcept(std::is_nothrow_move_a
     position = construct_at(position);
 
     // Move entry to end and decrease span size
-    span.pop(position);
+    member.tail = sorted::pop(position, member.tail);
 
     return position;
 }
@@ -207,44 +211,50 @@ template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
 auto array<K, T, E, C>::begin() noexcept -> iterator
 {
-    return span.begin();
+    return member.span.begin();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 constexpr auto array<K, T, E, C>::begin() const noexcept -> const_iterator
 {
-    return span.begin();
+    return member.span.begin();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 constexpr auto array<K, T, E, C>::cbegin() const noexcept -> const_iterator
 {
-    return span.cbegin();
+    return member.span.cbegin();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
 auto array<K, T, E, C>::end() noexcept -> iterator
 {
-    return span.end();
+    return member.tail;
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 constexpr auto array<K, T, E, C>::end() const noexcept -> const_iterator
 {
-    return span.end();
+    return member.tail;
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 constexpr auto array<K, T, E, C>::cend() const noexcept -> const_iterator
 {
-    return span.cend();
+    return member.tail;
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 constexpr auto array<K, T, E, C>::key_comp() const noexcept -> key_compare
 {
     return key_compare{};
+}
+
+template <typename K, typename T, std::size_t E, typename C>
+constexpr auto array<K, T, E, C>::value_comp() const noexcept -> value_compare
+{
+    return value_compare{};
 }
 
 template <typename K, typename T, std::size_t E, typename C>

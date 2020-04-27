@@ -11,7 +11,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <vista/sorted/span.hpp>
+#include <vista/span.hpp>
 
 namespace vista
 {
@@ -50,7 +50,7 @@ public:
         }
     };
 private:
-    using span_type = sorted::template span<value_type, N, value_compare>;
+    using span_type = vista::template span<value_type, N>;
 public:
     using size_type = typename span_type::size_type;
     using pointer = typename span_type::pointer;
@@ -62,7 +62,7 @@ public:
     //! @post capacity() == N
     //! @post size() == 0
 
-    constexpr array() noexcept;
+    constexpr array() noexcept = default;
 
     //! @brief Checks if span is empty.
     //!
@@ -226,6 +226,7 @@ public:
     constexpr const_iterator cend() const noexcept;
 
     constexpr key_compare key_comp() const noexcept;
+    constexpr value_compare value_comp() const noexcept;
 
 private:
     template <typename... Args>
@@ -236,8 +237,14 @@ private:
     void destroy_at(pointer);
 
 private:
-    value_type storage[N];
-    span_type span;
+    struct member_storage
+    {
+        constexpr member_storage() noexcept;
+
+        value_type storage[N];
+        span_type span;
+        iterator tail;
+    } member;
 };
 
 } // namespace map

@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+#include <tuple>
 #include <boost/detail/lightweight_test.hpp>
 #include <vista/map/array.hpp>
 
