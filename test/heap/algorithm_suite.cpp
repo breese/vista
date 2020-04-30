@@ -26,7 +26,7 @@ using namespace vista;
 template <typename T, T base>
 struct xless
 {
-    constexpr bool operator()(const T& lhs, const T& rhs) noexcept
+    constexpr bool operator()(const T& lhs, const T& rhs) const noexcept
     {
         return std::less<T>{}(lhs ^ base, rhs ^ base);
     }
