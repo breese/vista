@@ -35,4 +35,5 @@ vista_add_test(sorted_span_suite sorted/span_suite.cpp)
 vista_add_test(heap_algorithm_suite heap/algorithm_suite.cpp)
 vista_add_test(priority_span_suite priority/span_suite.cpp)
 
+vista_add_test(map_span_suite map/span_suite.cpp)
 vista_add_test(map_array_suite map/array_suite.cpp)

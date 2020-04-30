@@ -217,6 +217,148 @@ void run()
 
 //-----------------------------------------------------------------------------
 
+namespace insert_suite
+{
+
+void insert_increasing()
+{
+    map::array<int, int, 4> array;
+    array.insert({ 11, 1 });
+    {
+        std::vector<map::pair<int, int>> expect = { { 11, 1 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.insert({ 22, 2 });
+    {
+        std::vector<map::pair<int, int>> expect = { { 11, 1 }, { 22, 2 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.insert({ 33, 3 });
+    {
+        std::vector<map::pair<int, int>> expect = { { 11, 1 }, { 22, 2 }, { 33, 3 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.insert({ 44, 4 });
+    {
+        std::vector<map::pair<int, int>> expect = { { 11, 1 }, { 22, 2 }, { 33, 3 }, { 44, 4 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void insert_decreasing()
+{
+    map::array<int, int, 4> array;
+    array.insert({ 44, 4 });
+    {
+        std::vector<map::pair<int, int>> expect = { { 44, 4 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.insert({ 33, 3 });
+    {
+        std::vector<map::pair<int, int>> expect = { { 33, 3 }, { 44, 4 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.insert({ 22, 2 });
+    {
+        std::vector<map::pair<int, int>> expect = { { 22, 2 }, { 33, 3 }, { 44, 4 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.insert({ 11, 1 });
+    {
+        std::vector<map::pair<int, int>> expect = { { 11, 1 }, { 22, 2 }, { 33, 3 }, { 44, 4 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void run()
+{
+    insert_increasing();
+    insert_decreasing();
+}
+
+} // namespace insert_suite
+
+//-----------------------------------------------------------------------------
+
+namespace emplace_suite
+{
+
+void emplace_increasing()
+{
+    map::array<int, int, 4> array;
+    array.emplace(11, 1);
+    {
+        std::vector<map::pair<int, int>> expect = { { 11, 1 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.emplace(22, 2);
+    {
+        std::vector<map::pair<int, int>> expect = { { 11, 1 }, { 22, 2 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.emplace(33, 3);
+    {
+        std::vector<map::pair<int, int>> expect = { { 11, 1 }, { 22, 2 }, { 33, 3 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.emplace(44, 4);
+    {
+        std::vector<map::pair<int, int>> expect = { { 11, 1 }, { 22, 2 }, { 33, 3 }, { 44, 4 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void emplace_decreasing()
+{
+    map::array<int, int, 4> array;
+    array.emplace(44, 4);
+    {
+        std::vector<map::pair<int, int>> expect = { { 44, 4 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.emplace(33, 3);
+    {
+        std::vector<map::pair<int, int>> expect = { { 33, 3 }, { 44, 4 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.emplace(22, 2);
+    {
+        std::vector<map::pair<int, int>> expect = { { 22, 2 }, { 33, 3 }, { 44, 4 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+    array.emplace(11, 1);
+    {
+        std::vector<map::pair<int, int>> expect = { { 11, 1 }, { 22, 2 }, { 33, 3 }, { 44, 4 } };
+        BOOST_TEST_ALL_EQ(array.begin(), array.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void run()
+{
+    emplace_increasing();
+    emplace_decreasing();
+}
+
+} // namespace emplace_suite
+
+//-----------------------------------------------------------------------------
+
 namespace erase_suite
 {
 
@@ -342,6 +484,8 @@ void run()
 int main()
 {
     api_suite::run();
+    insert_suite::run();
+    emplace_suite::run();
     erase_suite::run();
     string_suite::run();
 

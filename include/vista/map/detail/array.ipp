@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <cassert>
-#include <vista/sorted/algorithm.hpp>
+#include <vista/detail/memory.hpp>
 
 namespace vista
 {
@@ -17,34 +17,12 @@ namespace map
 {
 
 template <typename K, typename T, std::size_t N, typename C>
-constexpr array<K, T, N, C>::member_storage::member_storage() noexcept
-    : span(storage, storage + N),
-      tail(storage)
+constexpr array<K, T, N, C>::array() noexcept
+    : super(member.storage, member.storage + N)
 {
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-constexpr auto array<K, T, E, C>::capacity() const noexcept -> size_type
-{
-    return member.span.capacity();
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-constexpr auto array<K, T, E, C>::size() const noexcept -> size_type
-{
-    return member.tail - member.span.begin();
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-constexpr bool array<K, T, E, C>::empty() const noexcept
-{
-    return size() == 0;
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-constexpr bool array<K, T, E, C>::full() const noexcept
-{
-    return size() == capacity();
+    // The storage is not constructed until after the construction of the
+    // underlying span, but the underlying span only stores its address for
+    // later use.
 }
 
 template <typename K, typename T, std::size_t E, typename C>
@@ -56,21 +34,11 @@ void array<K, T, E, C>::clear() noexcept(std::is_trivially_destructible<value_ty
         for (auto current = begin(); current != end(); ++current)
         {
             // Overwrite with default-constructed instance
-            destroy_at(current);
-            current = construct_at(current);
+            vista::detail::destroy_at(current);
+            current = vista::detail::construct_at(current);
         }
     }
-    member.tail = begin();
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::insert(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
-{
-    assert(!full());
-
-    *member.tail++ = std::move(input);
-    return sorted::push(begin(), member.tail, value_comp());
+    super::clear();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
@@ -86,8 +54,17 @@ template <typename... Args>
 VISTA_CXX14_CONSTEXPR
 auto array<K, T, E, C>::emplace(Args&&... args) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
-    // FIXME: construct_at(end()) and push (like push_heap?)
-    return insert(value_type{ std::forward<Args>(args)... });
+    assert(!full());
+
+    // Expand span with available slot
+    auto position = super::expand_back();
+
+    // Construct value in-place at available slot
+    vista::detail::destroy_at(position);
+    vista::detail::construct_at(position, std::forward<Args>(args)...);
+
+    // Push into sorted position
+    return super::reorder_back();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
@@ -117,17 +94,14 @@ template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
 auto array<K, T, E, C>::erase(iterator position) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> iterator
 {
-    assert(!empty());
-    assert(position != end());
+    if (position == end())
+        return position;
 
     // Replace entry with default-constructed value
-    destroy_at(position);
-    position = construct_at(position);
+    vista::detail::destroy_at(position);
+    position = vista::detail::construct_at(position);
 
-    // Move entry to end and decrease span size
-    member.tail = sorted::pop(position, member.tail);
-
-    return position;
+    return super::remove(position);
 }
 
 template <typename K, typename T, std::size_t E, typename C>
@@ -159,32 +133,6 @@ auto array<K, T, E, C>::find(const key_type& key) const noexcept -> const_iterat
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::lower_bound(const key_type& key) noexcept -> iterator
-{
-    return sorted::lower_bound(begin(),
-                               end(),
-                               key,
-                               [this] (const value_type& value, const key_type& key)
-                               {
-                                   return key_comp()(value.first, key);
-                               });
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::lower_bound(const key_type& key) const noexcept -> const_iterator
-{
-    return sorted::lower_bound(begin(),
-                               end(),
-                               key,
-                               [this] (const value_type& value, const key_type& key)
-                               {
-                                   return key_comp()(value.first, key);
-                               });
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-VISTA_CXX14_CONSTEXPR
 auto array<K, T, E, C>::operator[](const key_type& key) noexcept -> mapped_type&
 {
     auto where = lower_bound(key);
@@ -205,71 +153,6 @@ auto array<K, T, E, C>::operator[](key_type&& key) noexcept -> mapped_type&
         where = insert(where, value_type{ std::move(key), mapped_type{} });
     }
     return where->second;
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::begin() noexcept -> iterator
-{
-    return member.span.begin();
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-constexpr auto array<K, T, E, C>::begin() const noexcept -> const_iterator
-{
-    return member.span.begin();
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-constexpr auto array<K, T, E, C>::cbegin() const noexcept -> const_iterator
-{
-    return member.span.cbegin();
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::end() noexcept -> iterator
-{
-    return member.tail;
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-constexpr auto array<K, T, E, C>::end() const noexcept -> const_iterator
-{
-    return member.tail;
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-constexpr auto array<K, T, E, C>::cend() const noexcept -> const_iterator
-{
-    return member.tail;
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-constexpr auto array<K, T, E, C>::key_comp() const noexcept -> key_compare
-{
-    return key_compare{};
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-constexpr auto array<K, T, E, C>::value_comp() const noexcept -> value_compare
-{
-    return value_compare{};
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-template <typename... Args>
-VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::construct_at(pointer storage, Args&&... args) -> pointer
-{
-    return new (storage) value_type{std::forward<Args>(args)...};
-}
-
-template <typename K, typename T, std::size_t E, typename C>
-VISTA_CXX14_CONSTEXPR
-void array<K, T, E, C>::destroy_at(pointer storage)
-{
-    storage->~value_type();
 }
 
 } // namespace map

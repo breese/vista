@@ -11,7 +11,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <vista/span.hpp>
+#include <array>
+#include <vista/map/span.hpp>
 
 namespace vista
 {
@@ -24,7 +25,8 @@ using pair = std::pair<T1, T2>;
 //! @brief Fixed-capacity associative array.
 //!
 //! Stores all values in-place in continguous memory embedded into the array.
-//! Empty slots contains default constructed values. No dynamic memory is allocated.
+//! Empty slots contains default constructed values. Dynamic memory is only
+//! allocated if required by the key or value constructors.
 //!
 //! Violation of any precondition results in undefined behavior.
 
@@ -33,62 +35,47 @@ template <typename Key,
           std::size_t N,
           typename Compare = std::less<Key>>
 class array
+    : protected map::span<Key, T, N, Compare>
 {
-    static_assert(std::is_default_constructible<Key>::value, "Key must be default constructible");
-    static_assert(std::is_default_constructible<T>::value, "T must be default constructible");
+    using super = map::template span<Key, T, N, Compare>;
 
 public:
-    using key_type = Key;
-    using mapped_type = T;
-    using value_type = map::pair<Key, T>;
-    using key_compare = Compare;
-    struct value_compare
-    {
-        bool operator()(const value_type& lhs, const value_type& rhs)
-        {
-            return Compare{}(lhs.first, rhs.first);
-        }
-    };
-private:
-    using span_type = vista::template span<value_type, N>;
-public:
-    using size_type = typename span_type::size_type;
-    using pointer = typename span_type::pointer;
-    using iterator = typename span_type::iterator;
-    using const_iterator = typename span_type::const_iterator;
+    using key_type = typename super::key_type;
+    using mapped_type = typename super::mapped_type;
+    using value_type = typename super::value_type;
+    using key_compare = typename super::key_compare;
+    using value_compare = typename super::value_compare;
+    using size_type = typename super::size_type;
+    using pointer = typename super::pointer;
+    using iterator = typename super::iterator;
+    using const_iterator = typename super::const_iterator;
 
-    //! @brief Creates empty associative array.
+    //! @brief Creates associative array.
     //!
     //! @post capacity() == N
     //! @post size() == 0
 
-    constexpr array() noexcept = default;
+    constexpr array() noexcept;
 
     //! @brief Checks if span is empty.
     //!
     //! Span is empty when size() == 0
 
-    constexpr bool empty() const noexcept;
+    using super::empty;
 
     //! @brief Checks if span is full.
     //!
     //! Span is full when size() == capacity()
 
-    constexpr bool full() const noexcept;
-
-    //! @brief Clears the span.
-    //!
-    //! The storage of the cleared elements will be left in a default-constructed state.
-    //!
-    //! @post size() == 0
+    using super::full;
 
     //! @brief Returns the maximum possible number of elements in span.
 
-    constexpr size_type capacity() const noexcept;
+    using super::capacity;
 
     //! @brief Returns the number of elements in span.
 
-    constexpr size_type size() const noexcept;
+    using super::size;
 
     //! @brief Clears the span.
     //!
@@ -107,8 +94,7 @@ public:
     //!
     //! @returns Iterator to inserted element, or end() if span already is full.
 
-    VISTA_CXX14_CONSTEXPR
-    iterator insert(value_type) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value);
+    using super::insert;
 
     //! @brief Inserts element with given key.
     //!
@@ -145,8 +131,6 @@ public:
     //! The storage of the erased element will be left in a default-constructed state.
     //!
     //! Linear time complexity.
-    //!
-    //! @pre !empty()
 
     VISTA_CXX14_CONSTEXPR
     size_type erase(const key_type&) noexcept(std::is_nothrow_move_assignable<value_type>::value);
@@ -157,8 +141,7 @@ public:
     //!
     //! Linear time complexity.
     //!
-    //! @pre !empty()
-    //! @pre position != end()
+    //! @pre position points to valid element.
 
     VISTA_CXX14_CONSTEXPR
     iterator erase(iterator position) noexcept(std::is_nothrow_move_assignable<value_type>::value);
@@ -189,17 +172,17 @@ public:
     //!
     //! Logarithmic time complexity.
 
-    VISTA_CXX14_CONSTEXPR
-    iterator lower_bound(const key_type&) noexcept;
-
-    VISTA_CXX14_CONSTEXPR
-    const_iterator lower_bound(const key_type&) const noexcept;
+    using super::lower_bound;
 
     //! @brief Returns reference to element with given key.
     //!
     //! If key not found, insert element with copied key and default-constructed value.
     //!
     //! Logarithmic time complexity.
+    //!
+    //! @pre contains(key) or !full()
+    //!
+    //! @returns Reference to value associated with key.
 
     VISTA_CXX14_CONSTEXPR
     mapped_type& operator[](const key_type& key) noexcept;
@@ -209,42 +192,35 @@ public:
     //! If key not found, insert element with moved key and default-constructed value.
     //!
     //! Logarithmic time complexity.
+    //!
+    //! @pre contains(key) or !full()
+    //!
+    //! @returns Reference to value associated with key.
 
     VISTA_CXX14_CONSTEXPR
     mapped_type& operator[](key_type&& key) noexcept;
 
     //! @brief Returns iterator to the beginning of the span.
 
-    VISTA_CXX14_CONSTEXPR iterator begin() noexcept;
-    constexpr const_iterator begin() const noexcept;
-    constexpr const_iterator cbegin() const noexcept;
+    using super::begin;
+    using super::cbegin;
 
     //! @brief Returns iterator to the ending of the span.
 
-    VISTA_CXX14_CONSTEXPR iterator end() noexcept;
-    constexpr const_iterator end() const noexcept;
-    constexpr const_iterator cend() const noexcept;
+    using super::end;
+    using super::cend;
 
-    constexpr key_compare key_comp() const noexcept;
-    constexpr value_compare value_comp() const noexcept;
-
-private:
-    template <typename... Args>
-    VISTA_CXX14_CONSTEXPR
-    pointer construct_at(pointer, Args&&...);
-
-    VISTA_CXX14_CONSTEXPR
-    void destroy_at(pointer);
+    using super::key_comp;
+    using super::value_comp;
 
 private:
-    struct member_storage
+    struct
     {
-        constexpr member_storage() noexcept;
-
         value_type storage[N];
-        span_type span;
-        iterator tail;
     } member;
+
+private:
+    static_assert(std::is_default_constructible<value_type>::value, "value_type must be default constructible");
 };
 
 } // namespace map
