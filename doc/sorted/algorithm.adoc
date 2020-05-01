@@ -1,0 +1,118 @@
+:doctype: book
+:toc: left
+:toclevels: 2
+:source-highlighter: pygments
+:source-language: C++
+:prewrap!:
+:pygments-style: vs
+:icons: font
+:stem: latexmath
+
+= Sorted Algorithms
+
+[NOTE]
+.Precondition
+====
+[source,c++]
+----
+using namespace vista;
+----
+====
+
+== Introduction
+
+The `sorted` algorithms operate on already sorted sequences. They include:
+
+- Binary search. Optimized version of `std::lower_bound()`.
+- Incremental insertion and removal. Provides same functionality for sorted sequences as `std::push_heap()` and `std::pop_heap()` does for binary heaps.
+
+== Reference
+
+Defined in header `<vista/sorted/algorithm.hpp>`.
+
+Defined in namespace `vista::sorted`.
+
+=== Non-member functions
+
+[%header,frame="topbot",grid="rows",stripes=none]
+|===
+| Function | Description
+| `template <typename RandomAccessIterator, typename T>
+ +
+ constexpr{wj}footnote:constexpr11[Not constexpr in pass:[C++11].] lower_bound(RandomAccessIterator first, RandomAccessIterator last, const T& value) noexcept`
+ +
+ +
+ `template <typename RandomAccessIterator, typename T, typename Compare>
+ +
+ constexpr{wj}footnote:constexpr11[Not constexpr in pass:[C++11].] lower_bound(RandomAccessIterator first, RandomAccessIterator last, const T& value, Compare compare) noexcept`
+ | Returns position where element is or would have been.
+ +
+ +
+ Optimized search for sorted sequence.
+ +
+ +
+ `Compare` is a _BinaryPredicate_ that must correspond to the sorting order of the range.
+ The default comparator is the less-than predicate.
+ +
+ +
+ Logarithmic time complexity.
+ +
+ +
+ _Expects:_ `is_sorted(first, last)`
+| `template <typename RandomAccessIterator>
+ +
+ constexpr{wj}footnote:constexpr11[] push(RandomAccessIterator first, RandomAccessIterator last) noexcept(_see Remarks_)`
+ +
+ +
+ `template <typename RandomAccessIterator, typename Compare>
+ +
+ constexpr{wj}footnote:constexpr11[] push(RandomAccessIterator first, RandomAccessIterator last, Compare compare) noexcept(_see Remarks_)`
+ | Inserts trailing element into sorted range.
+ +
+ +
+ Assumes that all elements in the range are sorted except for the tailing element
+ at position `last - 1`. Shuffles elements such that the range become sorted.
+ +
+ +
+ `Compare` is a _BinaryPredicate_ that determine the sorting order. The default
+ comparator is the less-than predicate.
+ +
+ +
+ Linear time complexity.
+ +
+ +
+ _Constraint:_ `decltype(*first)` must be _Swappable_.
+ +
+ +
+ _Expects:_ `is_sorted(first, last - 1)`
+ +
+ +
+ _Ensures:_ `is_sorted(first, last)`
+ +
+ +
+ _Remarks:_ `noexcept` if `decltype(*first)` is nothrow _Swappable_.
+ | `template <typename RandomAccessIterator>
+ +
+ constexpr{wj}footnote:constexpr11[] pop(RandomAccessIterator first, RandomAccessIterator last) noexcept(_see Remarks_)`
+ | Removes first element from sorted range.
+ +
+ +
+ Assumes that all elements in the range are sorted. Shuffles elements such that
+ first element is in the trailing position at `last - 1` and the remaining
+ elements are sorted.
+ +
+ +
+ Linear time complexity.
+ +
+ +
+ _Constraint:_ `decltype(*first)` must be _Swappable_.
+ +
+ +
+ _Expects:_ `is_sorted(first, last)`
+ +
+ +
+ _Ensures:_ `is_sorted(first, last - 1)`
+ +
+ +
+ _Remarks:_ `noexcept` if `decltype(*first)` is nothrow _Swappable_.
+|===

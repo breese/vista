@@ -20,12 +20,11 @@ The span classes acts like fixed-capacity in-place containers operating on conti
 
 The span classes do not take ownership of the user-provided memory. User must ensure the life-time of the memory until the span has been destroyed.
 
-
 == Circular Queue
 
 <<circular/span.adoc#,Circular Span>>:: The circular span is a view that makes user-owned contiguous storage appear like a circular queue.
 <<circular/array.adoc#,Circular Array>>:: The fixed-sized circular array is a circular queue operating on an embedded `std::array<T, N>`. Unlike `std::array<T, N>` this class also keeps track of how many elements have been inserted.
 
-== Sorted List
+== Sorted Algorithm
 
-<<sorted/span.adoc#,Sorted Span>>:: The sorted span is a view that makes user-owned contiguous storage appear like a sorted list.
+<<sorted/algorithm.adoc#,Sorted Algorithm>>:: The sorted algorithms operate on sorted sequences.
