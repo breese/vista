@@ -38,7 +38,7 @@ constexpr span<K, T, E, C>::span(ContiguousIterator begin,
     : super(&*begin, &*end),
       member{ &*begin }
 {
-    VISTA_CXX14(assert(size_type(last - first) == capacity()));
+    VISTA_CXX14(assert(size_type(end - begin) == capacity()));
 }
 
 template <typename K, typename T, std::size_t E, typename C>
