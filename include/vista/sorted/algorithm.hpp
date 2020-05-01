@@ -44,7 +44,7 @@ RandomAccessIterator lower_bound(RandomAccessIterator first,
 
 template <typename RandomAccessIterator,
           typename T,
-          typename Compare = std::less<T>>
+          typename Compare>
 VISTA_CXX14_CONSTEXPR
 RandomAccessIterator lower_bound(RandomAccessIterator first,
                                  RandomAccessIterator last,
