@@ -135,7 +135,7 @@ public:
     //! Linear time complexity.
 
     VISTA_CXX14_CONSTEXPR
-    iterator remove(iterator position) noexcept(std::is_nothrow_move_assignable<value_type>::value);
+    iterator remove(iterator position) noexcept(vista::detail::is_nothrow_swappable<value_type>::value);
 
     //! @brief Inserts unspecified element at the end of the span.
     //!

@@ -80,7 +80,7 @@ auto span<K, T, E, C>::insert(value_type input) noexcept(std::is_nothrow_move_as
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto span<K, T, E, C>::remove(iterator position) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> iterator
+auto span<K, T, E, C>::remove(iterator position) noexcept(vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
     if (position != member.tail)
     {
