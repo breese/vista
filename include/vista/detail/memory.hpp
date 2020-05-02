@@ -21,8 +21,7 @@ namespace detail
 
 #if __cplusplus >= 202002L
 
-template <typename T, typename... Args>
-using construct_at = std::construct_at<T, Args...>;
+using std::construct_at;
 
 #else
 
@@ -36,8 +35,7 @@ constexpr T * construct_at(T *p, Args&&... args)
 
 #if __cplusplus >= 201703L
 
-template <typename T>
-using destroy_at = std::destroy_at<T>;
+using std::destroy_at;
 
 #else
 
