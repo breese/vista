@@ -63,12 +63,6 @@ constexpr auto span<T, E>::size() const noexcept -> size_type
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::capacity() const noexcept -> size_type
-{
-    return member.capacity();
-}
-
-template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
 auto span<T, E>::data() noexcept -> pointer
 {
@@ -128,7 +122,7 @@ constexpr auto span<T, E>::subspan() const noexcept -> span<element_type, Count>
     VISTA_CXX14(assert(Count == dynamic_extent || Count <= capacity() - Offset));
 
     return span<element_type, Count>(member.head + Offset,
-                                     (Count == dynamic_extent) ? (capacity() - Offset) : Count);
+                                     (Count == dynamic_extent) ? (size() - Offset) : Count);
 }
 
 template <typename T, std::size_t E>

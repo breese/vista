@@ -186,10 +186,10 @@ void api_ctor_default()
 void api_ctor_move()
 {
     map::span<int, int, 4> span;
-    BOOST_TEST_EQ(span.capacity(), 4);
+    BOOST_TEST_EQ(span.capacity(), 0); // No underlying storage
     BOOST_TEST_EQ(span.size(), 0);
     map::span<int, int, 4> clone(std::move(span));
-    BOOST_TEST_EQ(clone.capacity(), 4);
+    BOOST_TEST_EQ(clone.capacity(), 0);
     BOOST_TEST_EQ(clone.size(), 0);
 }
 

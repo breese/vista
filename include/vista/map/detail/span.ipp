@@ -60,6 +60,12 @@ constexpr auto span<K, T, E, C>::size() const noexcept -> size_type
 }
 
 template <typename K, typename T, std::size_t E, typename C>
+constexpr auto span<K, T, E, C>::capacity() const noexcept -> size_type
+{
+    return super::size();
+}
+
+template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
 void span<K, T, E, C>::clear() noexcept
 {

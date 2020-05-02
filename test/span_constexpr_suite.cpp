@@ -28,7 +28,6 @@ VISTA_CXX14_CONSTEXPR
 void dynamic_ctor_default()
 {
     constexpr vista::span<int> span;
-    static_assert(span.capacity() == 0, "");
     static_assert(span.size() == 0, "");
     static_assert(span.data() == nullptr, "");
 }
@@ -37,11 +36,9 @@ VISTA_CXX14_CONSTEXPR
 void dynamic_ctor_copy()
 {
     constexpr vista::span<const int> span(data::increasing);
-    static_assert(span.capacity() == 4, "");
     static_assert(span.size() == 4, "");
     static_assert(span.data() == data::increasing, "");
     constexpr vista::span<const int> clone(span);
-    static_assert(clone.capacity() == 4, "");
     static_assert(clone.size() == 4, "");
     static_assert(clone.data() == data::increasing, "");
 }
@@ -50,7 +47,6 @@ VISTA_CXX14_CONSTEXPR
 void dynamic_ctor_array()
 {
     constexpr vista::span<const int> span(data::increasing);
-    static_assert(span.capacity() == 4, "");
     static_assert(!span.empty(), "");
     static_assert(span.size() == 4, "");
     static_assert(span.data() == data::increasing, "");
@@ -126,7 +122,6 @@ VISTA_CXX14_CONSTEXPR
 void fixed_ctor_default()
 {
     constexpr vista::span<int, 0> span;
-    static_assert(span.capacity() == 0, "");
     static_assert(span.size() == 0, "");
     static_assert(span.data() == nullptr, "");
 }
@@ -135,11 +130,9 @@ VISTA_CXX14_CONSTEXPR
 void fixed_ctor_copy()
 {
     constexpr vista::span<const int, 4> span(data::increasing);
-    static_assert(span.capacity() == 4, "");
     static_assert(span.size() == 4, "");
     static_assert(span.data() == data::increasing, "");
     constexpr vista::span<const int, 4> clone(span);
-    static_assert(clone.capacity() == 4, "");
     static_assert(clone.size() == 4, "");
     static_assert(clone.data() == data::increasing, "");
 }
@@ -148,7 +141,6 @@ VISTA_CXX14_CONSTEXPR
 void fixed_ctor_array()
 {
     constexpr vista::span<const int, 4> span(data::increasing);
-    static_assert(span.capacity() == 4, "");
     static_assert(!span.empty(), "");
     static_assert(span.size() == 4, "");
     static_assert(span.data() == data::increasing, "");

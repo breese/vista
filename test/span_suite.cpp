@@ -24,7 +24,6 @@ void dynamic_ctor_default()
 
     vista::span<int> span;
     BOOST_TEST_EQ(span.size(), 0);
-    BOOST_TEST_EQ(span.capacity(), 0);
 }
 
 void dynamic_ctor_copy()
@@ -34,20 +33,16 @@ void dynamic_ctor_copy()
 
     vista::span<int> span;
     BOOST_TEST_EQ(span.size(), 0);
-    BOOST_TEST_EQ(span.capacity(), 0);
     vista::span<int> clone(span);
     BOOST_TEST_EQ(clone.size(), 0);
-    BOOST_TEST_EQ(clone.capacity(), 0);
 }
 
 void dynamic_ctor_copy_convertible()
 {
     vista::span<int> span;
     BOOST_TEST_EQ(span.size(), 0);
-    BOOST_TEST_EQ(span.capacity(), 0);
     vista::span<const int> clone(span);
     BOOST_TEST_EQ(clone.size(), 0);
-    BOOST_TEST_EQ(clone.capacity(), 0);
 }
 
 void dynamic_ctor_copy_assign()
@@ -57,13 +52,10 @@ void dynamic_ctor_copy_assign()
 
     vista::span<int> span;
     BOOST_TEST_EQ(span.size(), 0);
-    BOOST_TEST_EQ(span.capacity(), 0);
     vista::span<int> clone;
     BOOST_TEST_EQ(clone.size(), 0);
-    BOOST_TEST_EQ(clone.capacity(), 0);
     clone = span;
     BOOST_TEST_EQ(clone.size(), 0);
-    BOOST_TEST_EQ(clone.capacity(), 0);
 }
 
 void dynamic_ctor_move()
@@ -73,10 +65,8 @@ void dynamic_ctor_move()
 
     vista::span<int> span;
     BOOST_TEST_EQ(span.size(), 0);
-    BOOST_TEST_EQ(span.capacity(), 0);
     vista::span<int> clone(std::move(span));
     BOOST_TEST_EQ(clone.size(), 0);
-    BOOST_TEST_EQ(clone.capacity(), 0);
 }
 
 void dynamic_ctor_pointers()
@@ -84,7 +74,6 @@ void dynamic_ctor_pointers()
     int array[4] = {};
     vista::span<int> span(&array[0], &array[4]);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void dynamic_ctor_pointer_size()
@@ -92,7 +81,6 @@ void dynamic_ctor_pointer_size()
     int array[4] = {};
     vista::span<int> span(&array[0], 4);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void dynamic_ctor_array()
@@ -100,7 +88,6 @@ void dynamic_ctor_array()
     int array[4] = {};
     vista::span<int> span(array);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void dynamic_ctor_const_array()
@@ -108,7 +95,6 @@ void dynamic_ctor_const_array()
     int array[4] = {};
     vista::span<const int> span(array);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void dynamic_empty()
@@ -129,13 +115,6 @@ void dynamic_size()
     int array[4] = { 11, 22, 33, 44 };
     vista::span<int> span(array);
     BOOST_TEST_EQ(span.size(), 4);
-}
-
-void dynamic_capacity()
-{
-    int array[4] = { 11, 22, 33, 44 };
-    vista::span<int> span(array);
-    BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void dynamic_data()
@@ -207,7 +186,6 @@ void dynamic_subspan()
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.front(), 11);
     auto subspan = span.subspan<2>();
-    BOOST_TEST_EQ(subspan.capacity(), 2);
     BOOST_TEST_EQ(subspan.size(), 2);
     BOOST_TEST_EQ(subspan.front(), 33);
 }
@@ -219,7 +197,6 @@ void dynamic_subspan_count()
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.front(), 11);
     auto subspan = span.subspan<2, 2>();
-    BOOST_TEST_EQ(subspan.capacity(), 2);
     BOOST_TEST_EQ(subspan.size(), 2);
     BOOST_TEST_EQ(subspan.front(), 33);
 }
@@ -323,7 +300,6 @@ void run()
     dynamic_ctor_const_array();
     dynamic_empty();
     dynamic_size();
-    dynamic_capacity();
     dynamic_data();
     dynamic_data_const();
     dynamic_front();
@@ -361,7 +337,6 @@ void fixed_ctor_default()
 
     vista::span<int, 0> span;
     BOOST_TEST_EQ(span.size(), 0);
-    BOOST_TEST_EQ(span.capacity(), 0);
 }
 
 void fixed_ctor_copy()
@@ -372,10 +347,8 @@ void fixed_ctor_copy()
     int array[4] = {};
     vista::span<int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
     vista::span<int, 4> clone(span);
     BOOST_TEST_EQ(clone.size(), 4);
-    BOOST_TEST_EQ(clone.capacity(), 4);
 }
 
 void fixed_ctor_copy_convertible()
@@ -383,10 +356,8 @@ void fixed_ctor_copy_convertible()
     int array[4] = {};
     vista::span<int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
     vista::span<const int, 4> clone(span);
     BOOST_TEST_EQ(clone.size(), 4);
-    BOOST_TEST_EQ(clone.capacity(), 4);
 }
 
 void fixed_ctor_copy_assign()
@@ -397,13 +368,10 @@ void fixed_ctor_copy_assign()
     int array[4] = {};
     vista::span<int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
     vista::span<int, 4> clone(array);
     BOOST_TEST_EQ(clone.size(), 4);
-    BOOST_TEST_EQ(clone.capacity(), 4);
     clone = span;
     BOOST_TEST_EQ(clone.size(), 4);
-    BOOST_TEST_EQ(clone.capacity(), 4);
 }
 
 void fixed_ctor_move()
@@ -414,10 +382,8 @@ void fixed_ctor_move()
     int array[4] = {};
     vista::span<int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
     vista::span<int, 4> clone(std::move(span));
     BOOST_TEST_EQ(clone.size(), 4);
-    BOOST_TEST_EQ(clone.capacity(), 4);
 }
 
 void fixed_ctor_pointers()
@@ -425,7 +391,6 @@ void fixed_ctor_pointers()
     int array[4] = {};
     vista::span<int, 4> span(&array[0], &array[4]);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void fixed_ctor_pointer_size()
@@ -433,7 +398,6 @@ void fixed_ctor_pointer_size()
     int array[4] = {};
     vista::span<int, 4> span(&array[0], 4);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void fixed_ctor_array()
@@ -441,7 +405,6 @@ void fixed_ctor_array()
     int array[4] = {};
     vista::span<int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void fixed_ctor_const_array()
@@ -449,7 +412,6 @@ void fixed_ctor_const_array()
     int array[4] = {};
     vista::span<const int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void fixed_empty()
@@ -470,13 +432,6 @@ void fixed_size()
     int array[4] = { 11, 22, 33, 44 };
     vista::span<int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 4);
-}
-
-void fixed_capacity()
-{
-    int array[4] = { 11, 22, 33, 44 };
-    vista::span<int, 4> span(array);
-    BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void fixed_data()
@@ -548,7 +503,6 @@ void fixed_subspan()
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.front(), 11);
     auto subspan = span.subspan<2>();
-    BOOST_TEST_EQ(subspan.capacity(), 2);
     BOOST_TEST_EQ(subspan.size(), 2);
     BOOST_TEST_EQ(subspan.front(), 33);
 }
@@ -560,7 +514,6 @@ void fixed_subspan_count()
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.front(), 11);
     auto subspan = span.subspan<2, 2>();
-    BOOST_TEST_EQ(subspan.capacity(), 2);
     BOOST_TEST_EQ(subspan.size(), 2);
     BOOST_TEST_EQ(subspan.front(), 33);
 }
@@ -664,7 +617,6 @@ void run()
     fixed_ctor_const_array();
     fixed_empty();
     fixed_size();
-    fixed_capacity();
     fixed_data();
     fixed_data_const();
     fixed_front();

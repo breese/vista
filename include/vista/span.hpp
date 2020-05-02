@@ -118,10 +118,6 @@ public:
 
     constexpr size_type size() const noexcept;
 
-    //! @brief Returns the maximum possible number of elements in span.
-
-    constexpr size_type capacity() const noexcept;
-
     //! @brief Returns pointer to beginning of span.
 
     VISTA_CXX14_CONSTEXPR

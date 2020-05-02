@@ -59,7 +59,7 @@ constexpr auto span<T, E, C>::size() const noexcept -> size_type
 template <typename T, std::size_t E, typename C>
 constexpr auto span<T, E, C>::capacity() const noexcept -> size_type
 {
-    return member.span.capacity();
+    return member.span.size();
 }
 
 template <typename T, std::size_t E, typename C>

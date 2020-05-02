@@ -106,7 +106,7 @@ public:
 
     //! @brief Returns the maximum possible number of elements in span.
 
-    using super::capacity;
+    constexpr size_type capacity() const noexcept;
 
     //! @brief Clears the span.
     //!
