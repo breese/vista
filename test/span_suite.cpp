@@ -23,7 +23,6 @@ void dynamic_ctor_default()
     static_assert(std::is_nothrow_default_constructible<vista::span<int>>::value, "span<int> must be nothrow default-constructible");
 
     vista::span<int> span;
-    BOOST_TEST(span.empty());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
 }
@@ -34,11 +33,9 @@ void dynamic_ctor_copy()
     static_assert(std::is_nothrow_copy_constructible<vista::span<int>>::value, "span<int> must be nothrow copy-constructible");
 
     vista::span<int> span;
-    BOOST_TEST(span.empty());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
     vista::span<int> clone(span);
-    BOOST_TEST(clone.empty());
     BOOST_TEST_EQ(clone.size(), 0);
     BOOST_TEST_EQ(clone.capacity(), 0);
 }
@@ -46,11 +43,25 @@ void dynamic_ctor_copy()
 void dynamic_ctor_copy_convertible()
 {
     vista::span<int> span;
-    BOOST_TEST(span.empty());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
     vista::span<const int> clone(span);
-    BOOST_TEST(clone.empty());
+    BOOST_TEST_EQ(clone.size(), 0);
+    BOOST_TEST_EQ(clone.capacity(), 0);
+}
+
+void dynamic_ctor_copy_assign()
+{
+    static_assert(std::is_copy_assignable<vista::span<int>>::value, "span<int> must be copy-assignable");
+    static_assert(std::is_nothrow_copy_assignable<vista::span<int>>::value, "span<int> must be nothrow copy-assignable");
+
+    vista::span<int> span;
+    BOOST_TEST_EQ(span.size(), 0);
+    BOOST_TEST_EQ(span.capacity(), 0);
+    vista::span<int> clone;
+    BOOST_TEST_EQ(clone.size(), 0);
+    BOOST_TEST_EQ(clone.capacity(), 0);
+    clone = span;
     BOOST_TEST_EQ(clone.size(), 0);
     BOOST_TEST_EQ(clone.capacity(), 0);
 }
@@ -61,11 +72,9 @@ void dynamic_ctor_move()
     static_assert(std::is_nothrow_move_constructible<vista::span<int>>::value, "span<int> must be nothrow move-constructible");
 
     vista::span<int> span;
-    BOOST_TEST(span.empty());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
     vista::span<int> clone(std::move(span));
-    BOOST_TEST(clone.empty());
     BOOST_TEST_EQ(clone.size(), 0);
     BOOST_TEST_EQ(clone.capacity(), 0);
 }
@@ -74,7 +83,6 @@ void dynamic_ctor_pointers()
 {
     int array[4] = {};
     vista::span<int> span(&array[0], &array[4]);
-    BOOST_TEST(!span.empty());
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -83,7 +91,6 @@ void dynamic_ctor_pointer_size()
 {
     int array[4] = {};
     vista::span<int> span(&array[0], 4);
-    BOOST_TEST(!span.empty());
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -92,7 +99,6 @@ void dynamic_ctor_array()
 {
     int array[4] = {};
     vista::span<int> span(array);
-    BOOST_TEST(!span.empty());
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -101,7 +107,6 @@ void dynamic_ctor_const_array()
 {
     int array[4] = {};
     vista::span<const int> span(array);
-    BOOST_TEST(!span.empty());
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -309,6 +314,8 @@ void run()
 {
     dynamic_ctor_default();
     dynamic_ctor_copy();
+    dynamic_ctor_copy_convertible();
+    dynamic_ctor_copy_assign();
     dynamic_ctor_move();
     dynamic_ctor_pointers();
     dynamic_ctor_pointer_size();
@@ -350,26 +357,23 @@ void fixed_ctor_default()
 {
     static_assert(std::is_default_constructible<vista::span<int, 0>>::value, "span<int, 0> must be default-constructible");
     static_assert(std::is_nothrow_default_constructible<vista::span<int, 0>>::value, "span<int, 0> must be nothrow default-constructible");
-    static_assert(!std::is_default_constructible<vista::span<int, 4>>::value, "span<int, 4> must not be default-constructible");
+    static_assert(!std::is_default_constructible<vista::span<int, 4>>::value, "span<int, N> must not be default-constructible");
 
     vista::span<int, 0> span;
-    BOOST_TEST(span.empty());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
 }
 
 void fixed_ctor_copy()
 {
-    static_assert(std::is_copy_constructible<vista::span<int, 4>>::value, "span<int, 4> must be copy-constructible");
-    static_assert(std::is_nothrow_copy_constructible<vista::span<int, 4>>::value, "span<int, 4> must be nothrow copy-constructible");
+    static_assert(std::is_copy_constructible<vista::span<int, 4>>::value, "span<int, N> must be copy-constructible");
+    static_assert(std::is_nothrow_copy_constructible<vista::span<int, 4>>::value, "span<int, N> must be nothrow copy-constructible");
 
     int array[4] = {};
     vista::span<int, 4> span(array);
-    BOOST_TEST(!span.empty());
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
     vista::span<int, 4> clone(span);
-    BOOST_TEST(!clone.empty());
     BOOST_TEST_EQ(clone.size(), 4);
     BOOST_TEST_EQ(clone.capacity(), 4);
 }
@@ -378,27 +382,40 @@ void fixed_ctor_copy_convertible()
 {
     int array[4] = {};
     vista::span<int, 4> span(array);
-    BOOST_TEST(!span.empty());
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
     vista::span<const int, 4> clone(span);
-    BOOST_TEST(!clone.empty());
+    BOOST_TEST_EQ(clone.size(), 4);
+    BOOST_TEST_EQ(clone.capacity(), 4);
+}
+
+void fixed_ctor_copy_assign()
+{
+    static_assert(std::is_copy_assignable<vista::span<int, 4>>::value, "span<int, N> must be copy-assignable");
+    static_assert(std::is_nothrow_copy_assignable<vista::span<int, 4>>::value, "span<int, N> must be nothrow copy-assignable");
+
+    int array[4] = {};
+    vista::span<int, 4> span(array);
+    BOOST_TEST_EQ(span.size(), 4);
+    BOOST_TEST_EQ(span.capacity(), 4);
+    vista::span<int, 4> clone(array);
+    BOOST_TEST_EQ(clone.size(), 4);
+    BOOST_TEST_EQ(clone.capacity(), 4);
+    clone = span;
     BOOST_TEST_EQ(clone.size(), 4);
     BOOST_TEST_EQ(clone.capacity(), 4);
 }
 
 void fixed_ctor_move()
 {
-    static_assert(std::is_move_constructible<vista::span<int, 4>>::value, "span<int, 4> must be move-constructible");
-    static_assert(std::is_nothrow_move_constructible<vista::span<int, 4>>::value, "span<int, 4> must be nothrow move-constructible");
+    static_assert(std::is_move_constructible<vista::span<int, 4>>::value, "span<int, N> must be move-constructible");
+    static_assert(std::is_nothrow_move_constructible<vista::span<int, 4>>::value, "span<int, N> must be nothrow move-constructible");
 
     int array[4] = {};
     vista::span<int, 4> span(array);
-    BOOST_TEST(!span.empty());
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
     vista::span<int, 4> clone(std::move(span));
-    BOOST_TEST(!clone.empty());
     BOOST_TEST_EQ(clone.size(), 4);
     BOOST_TEST_EQ(clone.capacity(), 4);
 }
@@ -407,7 +424,6 @@ void fixed_ctor_pointers()
 {
     int array[4] = {};
     vista::span<int, 4> span(&array[0], &array[4]);
-    BOOST_TEST(!span.empty());
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -416,7 +432,6 @@ void fixed_ctor_pointer_size()
 {
     int array[4] = {};
     vista::span<int, 4> span(&array[0], 4);
-    BOOST_TEST(!span.empty());
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -425,7 +440,6 @@ void fixed_ctor_array()
 {
     int array[4] = {};
     vista::span<int, 4> span(array);
-    BOOST_TEST(!span.empty());
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -434,7 +448,6 @@ void fixed_ctor_const_array()
 {
     int array[4] = {};
     vista::span<const int, 4> span(array);
-    BOOST_TEST(!span.empty());
     BOOST_TEST_EQ(span.size(), 4);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -643,6 +656,7 @@ void run()
     fixed_ctor_default();
     fixed_ctor_copy();
     fixed_ctor_copy_convertible();
+    fixed_ctor_copy_assign();
     fixed_ctor_move();
     fixed_ctor_pointers();
     fixed_ctor_pointer_size();

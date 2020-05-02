@@ -102,6 +102,14 @@ public:
               typename std::enable_if<(Extent == M || Extent == dynamic_extent), int>::type = 0>
     explicit constexpr span(element_type (&array)[M]) noexcept;
 
+    //! @brief Recreates span by coyping.
+    //!
+    //! @post data() == other.data()
+    //! @post size() == other.size()
+
+    VISTA_CXX14_CONSTEXPR
+    span& operator=(const span& other) noexcept = default;
+
     //! @brief Checks if span is empty.
 
     constexpr bool empty() const noexcept;
