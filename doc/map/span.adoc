@@ -1,0 +1,265 @@
+:doctype: book
+:toc: left
+:toclevels: 2
+:source-highlighter: pygments
+:source-language: C++
+:prewrap!:
+:pygments-style: vs
+:icons: font
+:stem: latexmath
+
+= Map Span
+
+== Introduction
+
+The map span is a fixed-capacity associative span.
+
+== Tutorial
+
+=== In-Place Construction
+
+Constructing an element in-place is done by expanding the span, constructing
+the element in the expanded storage, and reordering the constructed element.
+
+[source,c++,numbered]
+----
+  map::pair<std::string, int> storage[4] = {};
+  map::span<std::string, int> span(storage);
+
+  assert(!span.full());
+
+  auto position = span.expand_back();
+  std::construct_at(position, "key", 42); // Use placement-new before C++20
+  position = reorder_back();
+
+  assert(span.lower_bound("key") == position);
+  assert(position->first == "key");
+  assert(position->second == 42);
+----
+
+
+== Design Rationale
+
+This section describes the choice behind the design of the map span. See also
+the general <<../rationale.adoc#,span rationale>>.
+
+=== Non-copyable
+
+The map span is not copyable. If two spans are operating on the same underlying
+storage, then they may break the class invariants of each other. For instance,
+if the first span removes an element (the removed element is moved to the position
+immediately after the span) then the second span looks at a range where its last
+element no longer is in the correct order.
+
+The map span is movable, but it is undefined behavior to use the moved-from span.
+
+== Reference
+
+Defined in header `<vista/map/span.hpp>`.
+
+Defined in namespace `vista::map`.
+[source,c++]
+----
+template <
+    typename Key,
+    typename T,
+    std::size_t Extent = dynamic_extent,
+    typename Compare = std::less<Key>>
+> class span;
+----
+The map span template class is an associative array view of some continguos
+storage. The storage is not owned by the span. The owner must ensure that the
+span is destroyed before the storage is released.
+
+The map span does not construct or destroy elements in the underlying storage.
+Some operations may leave elements in a moved-from state.
+
+The size is the current number of elements in the span.
+
+The capacity is the maximum number of elements that can be inserted. The
+capacity cannot be changed.
+
+The extent determines the capacity of the span.
+With `dynamic_extent` the capacity is derived from the input arguments
+at construction or assignment time. Otherwise the capacity is fixed to the
+specified `Extent` template argument. Dynamic extent is used by default.
+
+=== Template arguments
+
+[frame="topbot",grid="rows",stripes=none]
+|===
+| `Key` | Key type.
+ +
+ +
+ _Constraint:_ `Key` must be a complete type.
+| `T` | Element type.
+ +
+ +
+ _Constraint:_ `T` must be a complete type.
+| `Extent` | The maximum number of elements in the span.
+| `Compare` | A _BinaryPredicate_ determining the order.
+|===
+
+=== Member types
+
+[%header,frame="topbot",grid="rows",stripes=none]
+|===
+| Member type | Definition
+| `key_type` | `Key`
+| `mapped_type` | `T`
+| `value_type` | `pair<Key, T>`
+| `size_type` | `std::size_t`
+| `pointer` | `value_type*`
+| `iterator` | _RandomAccessIterator_ with `value_type`
+| `const_iterator` | _RandomAccessIterator_ with `const value_type`
+| `key_compare` | `Compare`
+| `value_compare` | _BinaryPredicate_
+|===
+
+=== Member functions
+
+[%header,frame="topbot",grid="rows",stripes=none]
+|===
+| Member function | Description
+| `constexpr span() noexcept` | Creates an empty map span with zero capacity.
+ +
+ +
+ No elements can be inserted into a zero-capacity span. The span must
+ therefore be recreated before use.
+ +
+ +
+ _Expects:_ `Extent == 0` or `Extent == dynamic_extent`
+ +
+ +
+ _Ensures:_ `capacity() == 0`
+ +
+ _Ensures:_ `size() == 0`
+| `constexpr span(span&& other) noexcept` | Creates span by moving.
+ +
+ +
+ The state of the moved-from span is valid but unspecified.
+ +
+ +
+ _Ensures:_ `capacity() == other.capacity()`
+ +
+ _Ensures:_ `size() == other.size()`
+| `template <std::size_t N>
+ +
+ constexpr span(value_type (&array)[N]) noexcept` | Creates empty span from array.
+ +
+ +
+ The span uses the array as the underlying storage.
+ +
+ +
+ _Constrait:_ `N == Extent` unless `Extent == dynamic_extent`
+ +
+ +
+ _Ensures:_ `capacity() == N`
+ +
+ _Ensures:_ `size() == 0`
+| `template <typename ContiguousIterator>
+ +
+ constexpr span(ContiguousIterator begin, ContiguousIterator end) noexcept` | Creates a span from iterators.
+ +
+ +
+ _Expects:_ `Extent == std::distance(begin, end)` or `Extent == dynamic_extent`
+ +
+ +
+ _Ensures:_ `capacity() == std::distance(begin, end)`
+ +
+ _Ensures:_ `size() == 0`
+| `constexpr bool empty() const noexcept` | Checks if span is empty.
+| `constexpr bool full() const noexcept` | Checks if span is full.
+ +
+ +
+ Span is full when `size() == capacity()`.
+| `constexpr size_type capacity() const noexcept` | Returns the maximum possible number of elements in the span.
+| `constexpr size_type size() const noexcept` | Returns the number of elements in the span.
+| `constexpr{wj}footnote:constexpr11[Not constexpr in pass:[C++11].] void clear() noexcept` | Clears the span.
+ +
+ +
+ The elements are not destroyed in the underlying storage.
+ +
+ +
+ _Ensures:_ `size() == 0`
+| `constexpr{wj}footnote:constexpr11[] iterator insert(value_type) noexcept(_see Remarks_)` | Inserts element with given key.
+ +
+ +
+ Returns iterator to inserted element, or the end iterator if `full()`.
+ Notice that the return type differs from `std::map`.
+ +
+ +
+ Linear time complexity.
+ +
+ +
+ _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_ and nothrow _Swappable_.
+| `constexpr{wj}footnote:constexpr11[] iterator remove(iterator position) noexcept(_see Remarks_)` | Removes element at given position.
+ +
+ +
+ The removed element is not destroyed in the underlying storage.
+ +
+ +
+ Linear time complexity.
+ +
+ +
+ _Remarks:_ `noexcept` if `value_type` is nothrow _Swappable_.
+| `constexpr{wj}footnote:constexpr11[] iterator expand_back() noexcept` | Inserts unspecified element at the end of the span.
+ +
+ +
+ The span is expanded to include the next element in the underlying storage
+ after the current end.
+ +
+ +
+ Returns iterator to inserted element.
+ +
+ +
+ The span may not be expanded beyond capacity.
+ +
+ +
+ This function breaks the class invariants which must be restored with
+ `reorder_back()`. The purpose of these two functions is to enable the storage
+ owner to do in-place construction.
+ +
+ +
+ _Expects:_ `!full()`
+| `constexpr{wj}footnote:constexpr11[] iterator reorder_back() noexcept(_see Remarks_)` | Moves the back element into its proper position.
+ +
+ +
+ This function restores the class invariants broken by a single `expand_back()`.
+ +
+ +
+ Returns iterator to position of back element after reordering.
+ +
+ +
+ Linear time complexity.
+| `constexpr{wj}footnote:constexpr11[] iterator lower_bound(const key_type&) noexcept
+ +
+ +
+ constexpr{wj}footnote:constexpr11[] const_iterator lower_bound(const key_type&) const noexcept`
+ | Returns iterator to element with given key.
+ +
+ +
+ If key not found, then returns iterator to entry at the position where the
+ searched-for entry would have been located, or the end iterator.
+ +
+ +
+ Logarithmic time complexity.
+| `constexpr{wj}footnote:constexpr11[] iterator begin() noexcept
+ +
+ +
+ constexpr const_iterator begin() const noexcept
+ +
+ +
+ constexpr const_iterator cbegin() const noexcept`
+ | Returns an iterator to the beginning of the span.
+| `constexpr{wj}footnote:constexpr11[] iterator end() noexcept
+ +
+ +
+ constexpr const_iterator end() const noexcept
+ +
+ +
+ constexpr const_iterator cend() const noexcept`
+ | Returns an iterator to the end of the span.
+| `constexpr key_compare key_comp() const noexcept` | Returns key comparison predicate.
+| `constexpr value_compare value_comp() const noexcept` | Returns value comparison predicate.
+|===

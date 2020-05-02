@@ -34,6 +34,7 @@ using namespace vista;
 Spans operate on borrowed continguous memory. Some <<rationale.adoc#,design decisions>> are common to all spans.
 
 - <<circular/span.adoc#,Circular span>> is a view that makes user-owned contiguous storage appear like a circular queue.
+- <<map/span.adoc#,Map span>> is a view that makes user-owned contiguous storage appear like an associative array.
 
 == Fixed-Capacity Container
 
