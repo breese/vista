@@ -19,6 +19,7 @@ function(vista_add_doc name source)
 endfunction()
 
 vista_add_doc(vista-doc-vista vista.adoc)
+vista_add_doc(vista-doc-rationale rationale.adoc)
 include(circular/CMakeLists.txt)
 include(sorted/CMakeLists.txt)
 
@@ -26,6 +27,7 @@ if (AsciiDoctor_FOUND)
 
   add_custom_target(doc
     DEPENDS vista-doc-vista
+    DEPENDS vista-doc-rationale
     DEPENDS vista-doc-circular
     DEPENDS vista-doc-sorted
     )

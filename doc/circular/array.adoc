@@ -9,15 +9,6 @@
 
 = Circular Array
 
-[NOTE]
-.Precondition
-====
-[source,c++]
-----
-using namespace vista;
-----
-====
-
 == Introduction
 
 The `circular::array<T, N>` template class is a fixed-size double-ended circular queue.

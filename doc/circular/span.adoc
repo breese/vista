@@ -10,15 +10,6 @@
 
 = Circular Span
 
-[NOTE]
-.Precondition
-====
-[source,c++]
-----
-using namespace vista;
-----
-====
-
 == Introduction
 
 The `circular::span<T>` template class is a span that turns continguous storage
@@ -272,20 +263,7 @@ values at the end of the span, and then used reverse iterators in the algorithm.
 == Design Rationale
 
 This section describes the choices behind the design of the circular span.
-
-[#rationale-extent]
-=== Extent
-
-The extent is an optional template argument that specifies the capacity of the
-span at compile-time. The capacity is part of the span type and therefore does
-not have to be stored as a member variable.
-
-If the `Extent` template argument is omitted, or specified as `dynamic_extent`,
-the capacity is determined when the span is constructed. The capacity does not
-change after construction, unless the span is recreated by assignment. For this
-case, the capacity is stored as a member variable.
-
-The extent has been introduced for alignment with `std::span<T, Extent>`.
+See also the general <<../rationale.adoc#,span rationale>>.
 
 [#rationale-lazy-destruction]
 === Lazy Destruction
@@ -460,7 +438,7 @@ specified `Extent` template argument. Dynamic extent is used by default.
  +
  _Ensures:_ `capacity() == std::distance(begin, end)`
  +
- _Ensures:_ `size() == std::distance(begin, end)`
+ _Ensures:_ `size() == 0`
 | `template <typename ContiguousIterator>
  +
  constexpr span(ContiguousIterator begin, ContiguousIterator end, ContiguousIterator first, size_type length) noexcept` | Creates a span from iterators and initializes the span with the pre-existing `length` elements starting at `first`.

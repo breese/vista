@@ -1,0 +1,47 @@
+:doctype: book
+:toc: left
+:toclevels: 2
+:source-highlighter: pygments
+:source-language: C++
+:prewrap!:
+:pygments-style: vs
+:icons: font
+:stem: latexmath
+
+= Span Rationale
+
+== Extent
+
+The extent is an optional template argument that specifies the capacity of the
+span at compile-time. The capacity is part of the span type and therefore does
+not have to be stored as a member variable.
+
+If the `Extent` template argument is omitted, or specified as `dynamic_extent`,
+the capacity is determined when the span is constructed. The capacity does not
+change after construction, unless the span is recreated by assignment. For this
+case, the capacity is stored as a member variable.
+
+The extent has been introduced for alignment with `std::span<T, Extent>`.
+
+== Life-time
+
+The span does not own the underlying storage it is operating on, not does it
+have access to the storage allocator. The storage owner must keep the storage
+alive until the span is destroyed. The storage owner is responsible for
+destroying all elements in the underlying storage when the storage is released.
+
+The span does not create elements. Only fully constructed elements can be
+inserted into the span. The span cannot create elements in-place, but most
+span classes provides functions to assist the storage owner in creating
+emplace functionality.
+
+The span does not destroy elements when the elements are removed. Removed
+elements are moved to the a position after the end of the span, but still
+within the underlying storage. This is similar to how the `std::remove` and
+`std::remove_if` algorithms work.
+
+The span does not destroy elements when the the span is cleared, replaced, or
+destroyed.
+
+When new elements are inserted, elements or removed elements may be overwritten
+and thus destroyed.
