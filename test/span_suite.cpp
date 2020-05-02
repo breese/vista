@@ -518,50 +518,6 @@ void fixed_subspan_count()
     BOOST_TEST_EQ(subspan.front(), 33);
 }
 
-void fixed_remove_front()
-{
-    int array[4] = { 11, 22, 33, 44 };
-    vista::span<int, 4> span(array);
-    BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.front(), 11);
-    span.remove_front();
-    BOOST_TEST_EQ(span.size(), 3);
-    BOOST_TEST_EQ(span.front(), 22);
-}
-
-void fixed_remove_front_n()
-{
-    int array[4] = { 11, 22, 33, 44 };
-    vista::span<int, 4> span(array);
-    BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.front(), 11);
-    span.remove_front(2);
-    BOOST_TEST_EQ(span.size(), 2);
-    BOOST_TEST_EQ(span.front(), 33);
-}
-
-void fixed_remove_back()
-{
-    int array[4] = { 11, 22, 33, 44 };
-    vista::span<int, 4> span(array);
-    BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.back(), 44);
-    span.remove_back();
-    BOOST_TEST_EQ(span.size(), 3);
-    BOOST_TEST_EQ(span.back(), 33);
-}
-
-void fixed_remove_back_n()
-{
-    int array[4] = { 11, 22, 33, 44 };
-    vista::span<int, 4> span(array);
-    BOOST_TEST_EQ(span.size(), 4);
-    BOOST_TEST_EQ(span.back(), 44);
-    span.remove_back(2);
-    BOOST_TEST_EQ(span.size(), 2);
-    BOOST_TEST_EQ(span.back(), 22);
-}
-
 void fixed_begin()
 {
     int array[4] = { 11, 22, 33, 44 };
@@ -627,10 +583,6 @@ void run()
     fixed_operator_index_const();
     fixed_subspan();
     fixed_subspan_count();
-    fixed_remove_front();
-    fixed_remove_front_n();
-    fixed_remove_back();
-    fixed_remove_back_n();
     fixed_begin();
     fixed_begin_const();
     fixed_cbegin();

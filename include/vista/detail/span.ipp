@@ -126,6 +126,8 @@ constexpr auto span<T, E>::subspan() const noexcept -> span<element_type, Count>
 }
 
 template <typename T, std::size_t E>
+template <bool Constraint,
+          typename std::enable_if<Constraint, int>::type>
 VISTA_CXX14_CONSTEXPR
 void span<T, E>::remove_front(size_type amount) noexcept
 {
@@ -133,6 +135,8 @@ void span<T, E>::remove_front(size_type amount) noexcept
 }
 
 template <typename T, std::size_t E>
+template <bool Constraint,
+          typename std::enable_if<Constraint, int>::type>
 VISTA_CXX14_CONSTEXPR
 void span<T, E>::remove_back(size_type amount) noexcept
 {

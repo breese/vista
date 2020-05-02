@@ -185,6 +185,8 @@ public:
     //!
     //! @pre 0 < count <= size()
 
+    template <bool Constraint = (Extent == dynamic_extent),
+              typename std::enable_if<Constraint, int>::type = 0>
     VISTA_CXX14_CONSTEXPR
     void remove_front(size_type count = 1) noexcept;
 
@@ -197,6 +199,8 @@ public:
     //!
     //! @pre 0 < count <= size()
 
+    template <bool Constraint = (Extent == dynamic_extent),
+              typename std::enable_if<Constraint, int>::type = 0>
     VISTA_CXX14_CONSTEXPR
     void remove_back(size_type count = 1) noexcept;
 
