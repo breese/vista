@@ -118,8 +118,8 @@ template <typename T, std::size_t E>
 template <std::size_t Offset, std::size_t Count>
 constexpr auto span<T, E>::subspan() const noexcept -> span<element_type, Count>
 {
-    VISTA_CXX14(assert(Offset <= capacity()));
-    VISTA_CXX14(assert(Count == dynamic_extent || Count <= capacity() - Offset));
+    VISTA_CXX14(assert(Offset <= size()));
+    VISTA_CXX14(assert(Count == dynamic_extent || Count <= size() - Offset));
 
     return span<element_type, Count>(member.head + Offset,
                                      (Count == dynamic_extent) ? (size() - Offset) : Count);
