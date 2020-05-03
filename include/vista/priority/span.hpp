@@ -39,7 +39,6 @@ public:
     using value_compare = Compare;
     using size_type = std::size_t;
     using pointer = T*;
-    using const_pointer = const T*;
 
     //! @brief Creates empty priority span.
 
@@ -57,7 +56,7 @@ public:
 
     template <std::size_t N,
               typename std::enable_if<(Extent == N || Extent == dynamic_extent), int>::type = 0>
-    explicit constexpr span(value_type (&array)[N]) noexcept;
+    explicit constexpr span(element_type (&array)[N]) noexcept;
 
     //! @brief Creates priority span from pointer and size.
     //!
@@ -91,16 +90,7 @@ public:
 
     //! @brief Returns reference to topmost element in priority span.
     //!
-    //! @pre capacity() > 0
-    //! @pre !empty()
-
-    VISTA_CXX14_CONSTEXPR
-    value_type& top() noexcept;
-
-    //! @brief Returns reference to topmost element in priority span.
-    //!
-    //! @pre capacity() > 0
-    //! @pre !empty()
+    //! @pre size() > 0
 
     constexpr const value_type& top() const noexcept;
 
@@ -109,6 +99,7 @@ public:
     //! @pre capacity() > 0
     //! @pre !full()
 
+    VISTA_CXX14_CONSTEXPR
     void push(value_type input) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Removes the topmost element from the priority span.
@@ -116,6 +107,7 @@ public:
     //! @pre capacity() > 0
     //! @pre !empty()
 
+    VISTA_CXX14_CONSTEXPR
     void pop() noexcept (std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value);
 
 private:

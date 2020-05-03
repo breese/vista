@@ -18,7 +18,7 @@ namespace priority
 template <typename T, std::size_t E, typename C>
 template <std::size_t N,
           typename std::enable_if<(E == N || E == dynamic_extent), int>::type>
-constexpr span<T, E, C>::span(value_type (&array)[N]) noexcept
+constexpr span<T, E, C>::span(element_type (&array)[N]) noexcept
     : member(array, array + N)
 {
 }
@@ -63,21 +63,14 @@ constexpr auto span<T, E, C>::capacity() const noexcept -> size_type
 }
 
 template <typename T, std::size_t E, typename C>
-VISTA_CXX14_CONSTEXPR
-auto span<T, E, C>::top() noexcept -> value_type&
-{
-    assert(!empty());
-    return member.span.front();
-}
-
-template <typename T, std::size_t E, typename C>
 constexpr auto span<T, E, C>::top() const noexcept -> const value_type&
 {
-    VISTA_CXX14(assert(!empty()));
+    VISTA_CXX14(assert(size() > 0));
     return member.span.front();
 }
 
 template <typename T, std::size_t E, typename C>
+VISTA_CXX14_CONSTEXPR
 void span<T, E, C>::push(value_type input) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
 {
     assert(!full());
@@ -87,6 +80,7 @@ void span<T, E, C>::push(value_type input) noexcept(std::is_nothrow_move_constru
 }
 
 template <typename T, std::size_t E, typename C>
+VISTA_CXX14_CONSTEXPR
 void span<T, E, C>::pop() noexcept (std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
 {
     assert(!empty());
