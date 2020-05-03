@@ -1,0 +1,119 @@
+:doctype: book
+:toc: left
+:toclevels: 2
+:source-highlighter: pygments
+:source-language: C++
+:prewrap!:
+:pygments-style: vs
+:icons: font
+:stem: latexmath
+
+= Priority Span
+
+== Introduction
+
+The priority span is an fixed-capacity priority queue operating on borrowed contiguous storage.
+
+== Reference
+
+Defined in header `<vista/priority/span.hpp>`.
+
+Defined in namespace `vista::priority`.
+[source,c++]
+----
+template <
+    typename T,
+    std::size_t Extent = dynamic_extent,
+    typename Compare = std::less<T>
+> class span;
+----
+
+=== Template arguments
+
+[frame="topbot",grid="rows",stripes=none]
+|===
+| `T` | Element type.
+ +
+ +
+ _Constraint:_ `T` must be a complete type.
+| `Extent` | The maximum number of elements in the span.
+| `Compare` | A _BinaryPredicate_ determining the order.
+|===
+
+=== Member types
+
+[%header,frame="topbot",grid="rows",stripes=none]
+|===
+| Member type | Definition
+| `element_type` | `T`
+| `value_type` | `std::remove_cv_t<T>`
+| `size_type` | `std::size_t`
+| `pointer` | `element_type*`
+| `value_compare` | `Compare`
+|===
+
+=== Member functions
+
+[%header,frame="topbot",grid="rows",stripes=none]
+|===
+| Member function | Description
+| `constexpr span() noexcept` | Creates an empty span with zero capacity.
+ +
+ +
+ No elements can be inserted into a zero-capacity span. The span must be recreated before use.
+ +
+ +
+ _Ensures:_ `capacity() == 0`
+ +
+ _Ensures:_ `size() == 0`
+| `constexpr span(span&& other) noexcept` | Creates span by moving.
+ +
+ +
+ _Ensures:_ `capacity() == other.capacity()`
+ +
+ _Ensures:_ `size() == other.size()`
+| `constexpr span(pointer data, size_type size) noexcept` | Creates span from pointer and size.
+ +
+ +
+ _Ensures:_ `capacity() == size`
+ +
+ _Ensures:_ `size() == 0`
+| `template <std::size_t N>
+ +
+ explicit constexpr span(element_type (&array)[N]) noexcept` | Creates span from array.
+ +
+ +
+ _Constraint:_ `Extent == N` or `Extent == dynamic_extent`
+ +
+ +
+ _Ensures:_ `capacity() == N`
+ +
+ _Ensures:_ `size() == 0`
+| `constexpr bool empty() const noexcept` | Checks if span is empty.
+| `constexpr bool full() const noexcept` | Checks if span is full.
+ +
+ +
+ Span is full when `size() == capacity()`.
+| `constexpr size_type capacity() const noexcept` | Returns the maximum possible number of elements in the span.
+| `constexpr size_type size() const noexcept` | Returns the number of elements in the span.
+| `constexpr const value_type& top() const noexcept` | Returns reference to topmost element.
+ +
+ +
+ _Expects:_ `size() > 0`
+| `constexpr{wj}footnote:constexpr11[Not constexpr in pass:[C++11].] void push(value_type) noexcept(_see Remarks_)` | Inserts element into proper position.
+ +
+ +
+ _Expects:_ `capacity() > 0`
+ +
+ _Expects:_ `!full()`
+ +
+ +
+ _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_ and nothrow _MoveAssignable_.
+| `constexpr{wj}footnote:constexpr11[] void pop() noexcept(_see Remarks_)` | Removes the topmost element.
+ +
+ +
+ _Expects:_ `size() > 0`
+ +
+ +
+ _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_ and nothrow _MoveAssignable_.
+|===

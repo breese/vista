@@ -33,12 +33,13 @@ using namespace vista;
 
 Spans operate on borrowed continguous memory. Some <<rationale.adoc#,design decisions>> are common to all spans.
 
-- <<circular/span.adoc#,Circular span>> is a view that makes user-owned contiguous storage appear like a circular queue.
-- <<map/span.adoc#,Map span>> is a view that makes user-owned contiguous storage appear like an associative array.
+- <<circular/span.adoc#,Circular span>> is a circular queue operating on borrowed storage.
+- <<map/span.adoc#,Map span>> is an associative array operating on borrowed storage.
+- <<priority/span.adoc#,Priority span>> is a priority queue operating on borrowed storage.
 
 == Fixed-Capacity Container
 
-- <<circular/array.adoc#,Circular array>> is a fixed-capacity circular queue operating on an embedded `std::array<T, N>`. Unlike `std::array<T, N>` this class also keeps track of how many elements have been inserted.
+- <<circular/array.adoc#,Circular array>> is a circular queue operating on a nested array.
 
 == Algorithm
 
