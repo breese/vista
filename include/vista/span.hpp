@@ -76,12 +76,6 @@ public:
               typename std::enable_if<(Extent == OtherExtent || Extent == dynamic_extent) && std::is_convertible<OtherT (*)[], T (*)[]>::value, int>::type = 0>
     explicit constexpr span(const span<OtherT, OtherExtent>& other) noexcept;
 
-    //! @brief Creates span by moving
-    //!
-    //! State of moved-from span is valid but unspecified.
-
-    constexpr span(span&&) = default;
-
     //! @brief Creates span from pointer and size.
     //!
     //! The span covers the range from @c begin and @c size elements forwards.
