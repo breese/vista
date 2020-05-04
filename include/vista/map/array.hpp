@@ -19,9 +19,6 @@ namespace vista
 namespace map
 {
 
-template <typename T1, typename T2>
-using pair = std::pair<T1, T2>;
-
 //! @brief Fixed-capacity associative array.
 //!
 //! Stores all values in-place in continguous memory embedded into the array.
