@@ -8,7 +8,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <utility> // std::swap
+#include <vista/constexpr/functional.hpp> // constexpr_less
+#include <vista/constexpr/utility.hpp> // constexpr_swap
 
 namespace vista
 {
@@ -19,10 +20,9 @@ template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
 void push(RandomAccessIterator first, RandomAccessIterator last)
 {
-    using type = decltype(*first);
     push(std::move(first),
          std::move(last),
-         [] (const type& lhs, const type& rhs) { return lhs < rhs; });
+         constexpr_less<decltype(*first)>{});
 }
 
 template <typename RandomAccessIterator, typename Compare>
@@ -33,8 +33,7 @@ inline void push(RandomAccessIterator first, RandomAccessIterator last, Compare 
     auto parent = position >> 1;
     while (parent > 0 && comp(first[parent - 1], first[position - 1]))
     {
-        using std::swap;
-        swap(first[parent - 1], first[position - 1]);
+        constexpr_swap(first[parent - 1], first[position - 1]);
         position = parent;
         parent = position >> 1;
     }
@@ -44,10 +43,9 @@ template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
 void pop(RandomAccessIterator first, RandomAccessIterator last)
 {
-    using type = decltype(*first);
     pop(std::move(first),
         std::move(last),
-        [] (const type& lhs, const type& rhs) { return lhs < rhs; });
+        constexpr_less<decltype(*first)>{});
 }
 
 template <typename RandomAccessIterator, typename Compare>
@@ -55,8 +53,7 @@ VISTA_CXX14_CONSTEXPR
 void pop(RandomAccessIterator first, RandomAccessIterator last, Compare comp)
 {
     --last;
-    using std::swap;
-    swap(*first, *last);
+    constexpr_swap(*first, *last);
 
     auto size = last - first;
     auto position = 0;
@@ -68,7 +65,7 @@ void pop(RandomAccessIterator first, RandomAccessIterator last, Compare comp)
         selected = (right < size && comp(first[selected], first[right])) ? right : selected;
         if (selected == position)
             break;
-        swap(first[position], first[selected]);
+        constexpr_swap(first[position], first[selected]);
         position = selected;
     }
 }

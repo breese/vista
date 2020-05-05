@@ -18,6 +18,12 @@ function(vista_add_test name)
   add_test(${name} ${EXECUTABLE_OUTPUT_PATH}/${name})
 endfunction()
 
+function(vista_add_compile_test name)
+  add_library(${name} ${ARGN})
+  target_include_directories(${name} SYSTEM PRIVATE "${Boost_INCLUDE_DIRS}")
+  target_link_libraries(${name} vista)
+endfunction()
+
 vista_add_test(span_suite span_suite.cpp)
 vista_add_test(span_constexpr_suite span_constexpr_suite.cpp)
 
@@ -36,3 +42,10 @@ vista_add_test(priority_span_suite priority/span_suite.cpp)
 
 vista_add_test(map_span_suite map/span_suite.cpp)
 vista_add_test(map_array_suite map/array_suite.cpp)
+
+if ("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+  vista_add_compile_test(heap_algorithm_constexpr_suite heap/algorithm_constexpr_suite.cpp)
+  target_compile_features(heap_algorithm_constexpr_suite PRIVATE cxx_std_14)
+else()
+  message("Skipping C++14 test suites")
+endif()
