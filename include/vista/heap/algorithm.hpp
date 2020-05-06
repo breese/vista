@@ -37,6 +37,12 @@ template <typename RandomAccessIterator,
 VISTA_CXX14_CONSTEXPR
 void push(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
 
+template <bool WithConstexpr,
+          typename RandomAccessIterator,
+          typename Compare>
+VISTA_CXX14_CONSTEXPR
+void push(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
+
 //! @brief Same as std::pop_heap
 //!
 //! @pre is_heap(first, last)
@@ -52,6 +58,12 @@ void pop(RandomAccessIterator first, RandomAccessIterator last);
 //! @pre is_heap(first, last - 1)
 
 template <typename RandomAccessIterator,
+          typename Compare>
+VISTA_CXX14_CONSTEXPR
+void pop(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
+
+template <bool WithConstexpr,
+          typename RandomAccessIterator,
           typename Compare>
 VISTA_CXX14_CONSTEXPR
 void pop(RandomAccessIterator first, RandomAccessIterator last, Compare comp);

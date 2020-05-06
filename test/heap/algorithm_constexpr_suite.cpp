@@ -22,7 +22,7 @@ struct heap_factory
     static constexpr void emplace(Array& array, std::size_t index, Arg&& arg)
     {
         array[index] = arg;
-        heap::push(array.begin(), array.begin() + index + 1, Compare{});
+        heap::push<true>(array.begin(), array.begin() + index + 1, Compare{});
     }
 
     template <typename... Args>
