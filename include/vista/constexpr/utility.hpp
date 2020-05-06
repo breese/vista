@@ -20,7 +20,8 @@ namespace vista
 // Does not handle std::swap specializations
 
 template<typename T>
-constexpr void constexpr_swap(T& lhs, T& rhs) noexcept(vista::detail::is_nothrow_swappable<T>::value)
+VISTA_CXX14_CONSTEXPR
+void constexpr_swap(T& lhs, T& rhs) noexcept(vista::detail::is_nothrow_swappable<T>::value)
 {
     T temp = std::move(lhs);
     lhs = std::move(rhs);

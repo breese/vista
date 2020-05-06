@@ -19,11 +19,7 @@ set(LIBRARY_OUTPUT_PATH ${VISTA_BUILD_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${VISTA_BUILD_DIR}/bin)
 
 # Require at least C++11
-if (${CMAKE_VERSION} VERSION_LESS 3.8)
-  set(VISTA_FEATURES cxx_auto_type)
-else()
-  set(VISTA_FEATURES cxx_std_11)
-endif()
+set(VISTA_FEATURES cxx_constexpr)
 
 ###############################################################################
 # Vista
