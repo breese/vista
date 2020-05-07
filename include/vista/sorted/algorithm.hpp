@@ -81,7 +81,15 @@ RandomAccessIterator push(RandomAccessIterator first,
 //! @posst is_sorted(first, last)
 
 template <typename RandomAccessIterator,
-          typename Compare = std::less<decltype(*std::declval<RandomAccessIterator>())>>
+          typename Compare>
+VISTA_CXX14_CONSTEXPR
+RandomAccessIterator push(RandomAccessIterator first,
+                          RandomAccessIterator last,
+                          Compare compare) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
+
+template <bool WithConstexpr,
+          typename RandomAccessIterator,
+          typename Compare>
 VISTA_CXX14_CONSTEXPR
 RandomAccessIterator push(RandomAccessIterator first,
                           RandomAccessIterator last,
@@ -100,6 +108,12 @@ RandomAccessIterator push(RandomAccessIterator first,
 //! @poss is_sorted(first, last - 1)
 
 template <typename RandomAccessIterator>
+VISTA_CXX14_CONSTEXPR
+RandomAccessIterator pop(RandomAccessIterator first,
+                         RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
+
+template <bool WithConstexpr,
+          typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
 RandomAccessIterator pop(RandomAccessIterator first,
                          RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);

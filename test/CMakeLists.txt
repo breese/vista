@@ -44,8 +44,13 @@ vista_add_test(map_span_suite map/span_suite.cpp)
 vista_add_test(map_array_suite map/array_suite.cpp)
 
 if ("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+
   vista_add_compile_test(heap_algorithm_constexpr_suite heap/algorithm_constexpr_suite.cpp)
   target_compile_features(heap_algorithm_constexpr_suite PRIVATE cxx_std_14)
+
+  vista_add_compile_test(sorted_algorithm_constexpr_suite sorted/algorithm_constexpr_suite.cpp)
+  target_compile_features(sorted_algorithm_constexpr_suite PRIVATE cxx_std_14)
+
 else()
   message("Skipping C++14 test suites")
 endif()

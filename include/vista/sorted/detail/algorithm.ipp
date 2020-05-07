@@ -8,6 +8,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <vista/constexpr/functional.hpp> // constexpr_less
+#include <vista/constexpr/utility.hpp> // swap
+
 namespace vista
 {
 namespace sorted
@@ -22,7 +25,7 @@ RandomAccessIterator lower_bound(RandomAccessIterator first,
     return lower_bound(std::move(first),
                        std::move(last),
                        needle,
-                       [] (const T& lhs, const T& rhs) { return lhs < rhs; });
+                       constexpr_less<T>{});
 }
 
 template <typename RandomAccessIterator, typename T, typename Compare>
@@ -52,13 +55,23 @@ VISTA_CXX14_CONSTEXPR
 RandomAccessIterator push(RandomAccessIterator first,
                           RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
 {
-    using type = decltype(*first);
-    return push(std::move(first),
-                std::move(last),
-                [] (const type& lhs, const type& rhs) { return lhs < rhs; });
+    return push<false>(std::move(first),
+                       std::move(last),
+                       constexpr_less<decltype(*first)>{});
 }
 
 template <typename RandomAccessIterator, typename Compare>
+VISTA_CXX14_CONSTEXPR
+RandomAccessIterator push(RandomAccessIterator first,
+                          RandomAccessIterator last,
+                          Compare compare) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
+{
+    return push<false>(std::move(first),
+                       std::move(last),
+                       std::move(compare));
+}
+
+template <bool WithConstexpr, typename RandomAccessIterator, typename Compare>
 VISTA_CXX14_CONSTEXPR
 RandomAccessIterator push(RandomAccessIterator first,
                           RandomAccessIterator last,
@@ -70,8 +83,7 @@ RandomAccessIterator push(RandomAccessIterator first,
     auto current = last - 1;
     while ((current != first) && compare(current[0], current[-1]))
     {
-        using std::swap;
-        swap(current[0], current[-1]);
+        vista::swap<WithConstexpr>(current[0], current[-1]);
         --current;
     }
     return current;
@@ -82,13 +94,21 @@ VISTA_CXX14_CONSTEXPR
 RandomAccessIterator pop(RandomAccessIterator first,
                          RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
 {
+    return pop<false>(std::move(first), std::move(last));
+}
+
+template <bool WithConstexpr,
+          typename RandomAccessIterator>
+VISTA_CXX14_CONSTEXPR
+RandomAccessIterator pop(RandomAccessIterator first,
+                         RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
+{
     if (first == last)
         return last;
 
     for (auto current = first; current != last - 1; ++current)
     {
-        using std::swap;
-        swap(current[0], current[1]);
+        vista::swap<WithConstexpr>(current[0], current[1]);
     }
     return last - 1;
 }
