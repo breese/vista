@@ -22,10 +22,10 @@ RandomAccessIterator lower_bound(RandomAccessIterator first,
                                  RandomAccessIterator last,
                                  const T& needle) noexcept
 {
-    return lower_bound(std::move(first),
-                       std::move(last),
-                       needle,
-                       constexpr_less<T>{});
+    return sorted::lower_bound(std::move(first),
+                               std::move(last),
+                               needle,
+                               constexpr_less<T>{});
 }
 
 template <typename RandomAccessIterator, typename T, typename Compare>
