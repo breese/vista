@@ -11,7 +11,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <array>
+#include <vista/constexpr/array.hpp>
 #include <vista/map/span.hpp>
 
 namespace vista
@@ -32,8 +32,10 @@ template <typename Key,
           std::size_t N,
           typename Compare = std::less<Key>>
 class array
-    : protected map::span<Key, T, N, Compare>
+    : protected constexpr_array<pair<Key, T>, N>,
+      protected map::span<Key, T, N, Compare>
 {
+    using storage = constexpr_array<pair<Key, T>, N>;
     using span = map::template span<Key, T, N, Compare>;
 
 public:
@@ -209,12 +211,6 @@ public:
 
     using span::key_comp;
     using span::value_comp;
-
-private:
-    struct
-    {
-        value_type storage[N];
-    } member;
 
 private:
     static_assert(std::is_default_constructible<value_type>::value, "value_type must be default constructible");

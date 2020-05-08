@@ -18,11 +18,8 @@ namespace map
 
 template <typename K, typename T, std::size_t N, typename C>
 constexpr array<K, T, N, C>::array() noexcept
-    : span(member.storage, member.storage + N)
+    : span(storage::begin(), storage::end())
 {
-    // The storage is not constructed until after the construction of the
-    // underlying span, but the underlying span only stores its address for
-    // later use.
 }
 
 template <typename K, typename T, std::size_t E, typename C>
