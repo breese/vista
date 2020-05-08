@@ -11,17 +11,14 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <utility> // std::pair
-#include <functional> // std::less
+#include <vista/constexpr/utility.hpp> // pair
+#include <vista/constexpr/functional.hpp> // constexpr_less
 #include <vista/span.hpp>
 
 namespace vista
 {
 namespace map
 {
-
-template <typename T1, typename T2>
-using pair = std::pair<T1, T2>;
 
 //! @brief Fixed-capacity associative span.
 //!
@@ -32,9 +29,9 @@ template <typename Key,
           std::size_t Extent = dynamic_extent,
           typename Compare = std::less<Key>>
 class span
-    : protected vista::span<map::pair<Key, T>, Extent>
+    : protected vista::span<vista::pair<Key, T>, Extent>
 {
-    using super = vista::template span<map::pair<Key, T>, Extent>;
+    using super = vista::template span<vista::pair<Key, T>, Extent>;
 
 public:
     using key_type = Key;

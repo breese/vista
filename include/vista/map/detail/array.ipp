@@ -18,7 +18,7 @@ namespace map
 
 template <typename K, typename T, std::size_t N, typename C>
 constexpr array<K, T, N, C>::array() noexcept
-    : super(member.storage, member.storage + N)
+    : span(member.storage, member.storage + N)
 {
     // The storage is not constructed until after the construction of the
     // underlying span, but the underlying span only stores its address for
@@ -38,7 +38,7 @@ void array<K, T, E, C>::clear() noexcept(std::is_trivially_destructible<value_ty
             current = vista::detail::construct_at(current);
         }
     }
-    super::clear();
+    span::clear();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
@@ -57,14 +57,14 @@ auto array<K, T, E, C>::emplace(Args&&... args) noexcept(std::is_nothrow_move_as
     assert(!full());
 
     // Expand span with available slot
-    auto position = super::expand_back();
+    auto position = span::expand_back();
 
     // Construct value in-place at available slot
     vista::detail::destroy_at(position);
     vista::detail::construct_at(position, std::forward<Args>(args)...);
 
     // Push into sorted position
-    return super::reorder_back();
+    return span::reorder_back();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
@@ -101,7 +101,7 @@ auto array<K, T, E, C>::erase(iterator position) noexcept(std::is_nothrow_move_a
     vista::detail::destroy_at(position);
     position = vista::detail::construct_at(position);
 
-    return super::remove(position);
+    return span::remove(position);
 }
 
 template <typename K, typename T, std::size_t E, typename C>

@@ -34,18 +34,18 @@ template <typename Key,
 class array
     : protected map::span<Key, T, N, Compare>
 {
-    using super = map::template span<Key, T, N, Compare>;
+    using span = map::template span<Key, T, N, Compare>;
 
 public:
-    using key_type = typename super::key_type;
-    using mapped_type = typename super::mapped_type;
-    using value_type = typename super::value_type;
-    using key_compare = typename super::key_compare;
-    using value_compare = typename super::value_compare;
-    using size_type = typename super::size_type;
-    using pointer = typename super::pointer;
-    using iterator = typename super::iterator;
-    using const_iterator = typename super::const_iterator;
+    using key_type = typename span::key_type;
+    using mapped_type = typename span::mapped_type;
+    using value_type = typename span::value_type;
+    using key_compare = typename span::key_compare;
+    using value_compare = typename span::value_compare;
+    using size_type = typename span::size_type;
+    using pointer = typename span::pointer;
+    using iterator = typename span::iterator;
+    using const_iterator = typename span::const_iterator;
 
     //! @brief Creates associative array.
     //!
@@ -58,21 +58,21 @@ public:
     //!
     //! Span is empty when size() == 0
 
-    using super::empty;
+    using span::empty;
 
     //! @brief Checks if span is full.
     //!
     //! Span is full when size() == capacity()
 
-    using super::full;
+    using span::full;
 
     //! @brief Returns the maximum possible number of elements in span.
 
-    using super::capacity;
+    using span::capacity;
 
     //! @brief Returns the number of elements in span.
 
-    using super::size;
+    using span::size;
 
     //! @brief Clears the span.
     //!
@@ -91,7 +91,7 @@ public:
     //!
     //! @returns Iterator to inserted element, or end() if span already is full.
 
-    using super::insert;
+    using span::insert;
 
     //! @brief Inserts element with given key.
     //!
@@ -169,7 +169,7 @@ public:
     //!
     //! Logarithmic time complexity.
 
-    using super::lower_bound;
+    using span::lower_bound;
 
     //! @brief Returns reference to element with given key.
     //!
@@ -199,16 +199,16 @@ public:
 
     //! @brief Returns iterator to the beginning of the span.
 
-    using super::begin;
-    using super::cbegin;
+    using span::begin;
+    using span::cbegin;
 
     //! @brief Returns iterator to the ending of the span.
 
-    using super::end;
-    using super::cend;
+    using span::end;
+    using span::cend;
 
-    using super::key_comp;
-    using super::value_comp;
+    using span::key_comp;
+    using span::value_comp;
 
 private:
     struct

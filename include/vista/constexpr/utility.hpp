@@ -12,10 +12,51 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <utility> // std::move
+#include <vista/detail/config.hpp>
 #include <vista/detail/type_traits.hpp>
 
 namespace vista
 {
+
+//-----------------------------------------------------------------------------
+
+#if __cpp_lib_constexpr_utility >= 201811L
+
+using std::pair;
+
+#else
+
+template <typename T1, typename T2>
+struct pair
+{
+    using first_type = T1;
+    using second_type = T2;
+
+    constexpr pair() noexcept = default;
+
+    template <typename U1,
+              typename U2,
+              typename std::enable_if<std::is_constructible<first_type, U1&&>::value &&
+                                      std::is_constructible<second_type, U2&&>::value, int>::type = 0>
+    constexpr pair(U1&& first, U2&& second)
+        : first(std::forward<U1>(first)),
+          second(std::forward<U2>(second))
+    {}
+
+    first_type first;
+    second_type second;
+};
+
+template <typename T1, typename T2>
+constexpr bool operator==(const pair<T1, T2>& lhs,
+                          const pair<T1, T2>& rhs)
+{
+    return (lhs.first == rhs.first) && (lhs.second == rhs.second);
+}
+
+#endif
+
+//-----------------------------------------------------------------------------
 
 // std::swap is not constexpr before C++20
 
