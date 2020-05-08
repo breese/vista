@@ -33,23 +33,22 @@ struct swap_overloader
     }
 };
 
+#if __cpp_lib_constexpr_utility < 201811L
+
 template <typename T>
 struct swap_overloader<true, T>
 {
     static VISTA_CXX14_CONSTEXPR
     void swap(T& lhs, T& rhs) noexcept(vista::detail::is_nothrow_swappable<T>::value)
     {
-#if __cpp_constexpr_dynamic_alloc >= 201907L
-        using std::swap;
-        swap(lhs, rhs);
-#else
         // Does not handle std::swap specializations
         T temp = std::move(lhs);
         lhs = std::move(rhs);
         rhs = std::move(temp);
-#endif
     }
 };
+
+#endif
 
 } // namespace detail
 
