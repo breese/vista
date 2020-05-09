@@ -8,7 +8,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <vista/sorted/algorithm.hpp>
+#include <vista/algorithm.hpp>
 
 namespace vista
 {
@@ -91,7 +91,7 @@ auto span<K, T, E, C>::remove(iterator position) noexcept(vista::detail::is_noth
     if (position != member.tail)
     {
         // Move entry to end and decrease span size
-        member.tail = sorted::pop(position, member.tail);
+        member.tail = pop_sorted(position, member.tail);
     }
     return position;
 }
@@ -110,33 +110,33 @@ template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
 auto span<K, T, E, C>::reorder_back() noexcept(vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
-    return sorted::push(begin(), end(), value_comp());
+    return push_sorted(begin(), end(), value_comp());
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
 auto span<K, T, E, C>::lower_bound(const key_type& key) noexcept -> iterator
 {
-    return sorted::lower_bound(begin(),
-                               end(),
-                               key,
-                               [this] (const value_type& value, const key_type& key)
-                               {
-                                   return key_comp()(value.first, key);
-                               });
+    return lower_bound_sorted(begin(),
+                              end(),
+                              key,
+                              [this] (const value_type& value, const key_type& key)
+                              {
+                                  return key_comp()(value.first, key);
+                              });
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
 auto span<K, T, E, C>::lower_bound(const key_type& key) const noexcept -> const_iterator
 {
-    return sorted::lower_bound(begin(),
-                               end(),
-                               key,
-                               [this] (const value_type& value, const key_type& key)
-                               {
-                                   return key_comp()(value.first, key);
-                               });
+    return lower_bound_sorted(begin(),
+                              end(),
+                              key,
+                              [this] (const value_type& value, const key_type& key)
+                              {
+                                  return key_comp()(value.first, key);
+                              });
 }
 
 template <typename K, typename T, std::size_t E, typename C>

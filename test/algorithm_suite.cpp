@@ -33,6 +33,8 @@ struct xless
 };
 
 //-----------------------------------------------------------------------------
+// Heap algorithms
+//-----------------------------------------------------------------------------
 
 namespace push_heap_suite
 {
@@ -963,11 +965,466 @@ void run()
 } // namespace pop_heap_suite
 
 //-----------------------------------------------------------------------------
+// Sorted algorithms
+//-----------------------------------------------------------------------------
+
+namespace lower_bound_sorted_suite
+{
+
+void find_even_first()
+{
+    std::array<int, 4> storage = { 11, 22, 33, 44 };
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 10),
+                  storage.begin());
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 11),
+                  storage.begin());
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 12),
+                  std::next(storage.begin(), 1));
+}
+
+void find_even_first_predicate()
+{
+    std::array<int, 4> storage = { 44, 33, 22, 11 };
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 45, std::greater<int>{}),
+                  storage.begin());
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 44, std::greater<int>{}),
+                  storage.begin());
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 43, std::greater<int>{}),
+                  std::next(storage.begin(), 1));
+}
+
+void find_even_last()
+{
+    std::array<int, 4> storage = { 11, 22, 33, 44 };
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 43),
+                  std::next(storage.begin(), 3));
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 44),
+                  std::next(storage.begin(), 3));
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 45),
+                  storage.end());
+}
+
+void find_even_last_predicate()
+{
+    std::array<int, 4> storage = { 44, 33, 22, 11 };
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 12, std::greater<int>{}),
+                  std::next(storage.begin(), 3));
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 11, std::greater<int>{}),
+                  std::next(storage.begin(), 3));
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 10, std::greater<int>{}),
+                  storage.end());
+}
+
+void find_odd_first()
+{
+    std::array<int, 5> storage = { 11, 22, 33, 44, 55 };
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 10),
+                  storage.begin());
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 11),
+                  storage.begin());
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 12),
+                  std::next(storage.begin(), 1));
+}
+
+void find_odd_first_predicate()
+{
+    std::array<int, 5> storage = { 55, 44, 33, 22, 11 };
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 56, std::greater<int>{}),
+                  storage.begin());
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 55, std::greater<int>{}),
+                  storage.begin());
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 54, std::greater<int>{}),
+                  std::next(storage.begin(), 1));
+}
+
+void find_odd_last()
+{
+    std::array<int, 5> storage = { 11, 22, 33, 44, 55 };
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 54),
+                  std::next(storage.begin(), 4));
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 55),
+                  std::next(storage.begin(), 4));
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 56),
+                  storage.end());
+}
+
+void find_odd_last_predicate()
+{
+    std::array<int, 5> storage = { 55, 44, 33, 22, 11 };
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 12, std::greater<int>{}),
+                  std::next(storage.begin(), 4));
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 11, std::greater<int>{}),
+                  std::next(storage.begin(), 4));
+    BOOST_TEST_EQ(lower_bound_sorted(storage.begin(), storage.end(), 10, std::greater<int>{}),
+                  storage.end());
+}
+
+void run()
+{
+    find_even_first();
+    find_even_first_predicate();
+    find_even_last();
+    find_even_last_predicate();
+    find_odd_first();
+    find_odd_first_predicate();
+    find_odd_last();
+    find_odd_last_predicate();
+}
+
+} // namespace lower_bound_sorted_suite
+
+//-----------------------------------------------------------------------------
+
+namespace push_sorted_suite
+{
+
+void push_increasing()
+{
+    std::array<int, 4> storage = { 0, 0, 0, 0 };
+    auto last = storage.begin();
+    *last++ = 11;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 11, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 22;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 11, 22, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 33;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 44;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void push_increasing_predicate()
+{
+    std::array<int, 4> storage = { 0, 0, 0, 0 };
+    auto last = storage.begin();
+    *last++ = 11;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 11, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 22;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 22, 11, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 33;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 33, 22, 11, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 44;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 44, 33, 22, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void push_decreasing()
+{
+    std::array<int, 4> storage = { 0, 0, 0, 0 };
+    auto last = storage.begin();
+    *last++ = 44;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 44, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 33;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 33, 44, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 22;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 22, 33, 44, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 11;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void push_decreasing_predicate()
+{
+    std::array<int, 4> storage = { 0, 0, 0, 0 };
+    auto last = storage.begin();
+    *last++ = 44;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 44, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 33;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 44, 33, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 22;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 44, 33, 22, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 11;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 44, 33, 22, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void push_alternating()
+{
+    std::array<int, 4> storage = { 0, 0, 0, 0 };
+    auto last = storage.begin();
+    *last++ = 11;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 11, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 44;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 11, 44, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 22;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 11, 22, 44, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 33;
+    push_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void push_alternating_predicate()
+{
+    std::array<int, 4> storage = { 0, 0, 0, 0 };
+    auto last = storage.begin();
+    *last++ = 11;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 11, 0, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 44;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 44, 11, 0, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 22;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 44, 22, 11, 0 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    *last++ = 33;
+    push_sorted(storage.begin(), last, std::greater<int>{});
+    {
+        std::array<int, 4> expect = { 44, 33, 22, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void run()
+{
+    push_increasing();
+    push_increasing_predicate();
+    push_decreasing();
+    push_decreasing_predicate();
+    push_alternating();
+    push_alternating_predicate();
+}
+
+} // namespace push_sorted_suite
+
+//-----------------------------------------------------------------------------
+
+namespace pop_sorted_suite
+{
+
+void pop_increasing()
+{
+    std::array<int, 4> storage = { 11, 22, 33, 44 };
+    auto last = storage.end();
+    pop_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 22, 33, 44, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    --last;
+    pop_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 33, 44, 22, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    --last;
+    pop_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 44, 33, 22, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    --last;
+    pop_sorted(storage.begin(), last);
+    {
+        std::array<int, 4> expect = { 44, 33, 22, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void pop_decreasing()
+{
+    std::array<int, 4> storage = { 11, 22, 33, 44 };
+    auto last = storage.end();
+    auto first = last - 1;
+    pop_sorted(first, last);
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    --first;
+    --last;
+    pop_sorted(first, last);
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    --first;
+    --last;
+    pop_sorted(first, last);
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    --first;
+    --last;
+    pop_sorted(first, last);
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void pop_alternating()
+{
+    std::array<int, 4> storage = { 11, 22, 33, 44 };
+    auto last = storage.end();
+    auto first = lower_bound_sorted(storage.begin(), last, 11);
+    pop_sorted(first, last);
+    {
+        std::array<int, 4> expect = { 22, 33, 44, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    --last;
+    first = lower_bound_sorted(storage.begin(), last, 44);
+    pop_sorted(first, last);
+    {
+        std::array<int, 4> expect = { 22, 33, 44, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    --last;
+    first = lower_bound_sorted(storage.begin(), last, 22);
+    pop_sorted(first, last);
+    {
+        std::array<int, 4> expect = { 33, 22, 44, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+    --last;
+    first = lower_bound_sorted(storage.begin(), last, 33);
+    pop_sorted(first, last);
+    {
+        std::array<int, 4> expect = { 33, 22, 44, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void run()
+{
+    pop_increasing();
+    pop_decreasing();
+    pop_alternating();
+}
+
+} // namespace pop_sorted_suite
+
+//-----------------------------------------------------------------------------
 
 int main()
 {
     push_heap_suite::run();
     pop_heap_suite::run();
+
+    lower_bound_sorted_suite::run();
+    push_sorted_suite::run();
+    pop_sorted_suite::run();
 
     return boost::report_errors();
 }
