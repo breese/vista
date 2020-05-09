@@ -14,11 +14,11 @@ Bjørn Reese
 
 == Introduction
 
-Vista is a header-only C++11 library that contains various span classes.
+Vista is a header-only C++11 library that contains various view classes.
 
-The span classes acts like fixed-capacity in-place containers operating on contiguous memory provided by the user.
+The view classes acts like fixed-capacity in-place containers operating on contiguous memory provided by the user.
 
-The span classes do not take ownership of the user-provided memory. User must ensure the life-time of the memory until the span has been destroyed.
+The view classes do not take ownership of the user-provided memory. User must ensure the life-time of the memory until the view has been destroyed.
 
 [NOTE]
 .Precondition
@@ -29,17 +29,12 @@ using namespace vista;
 ----
 ====
 
-== Span
-
-Spans operate on borrowed continguous memory. Some <<rationale.adoc#,design decisions>> are common to all spans.
-
-- <<map/span.adoc#,Map span>> is an associative array operating on borrowed storage.
-
 == View
 
 Views operate on borrowed continguous memory. Some <<rationale.adoc#,design decisions>> are common to all views.
 
 - <<circular_view.adoc#,Circular view>> is a circular queue operating on borrowed storage.
+- <<map_view.adoc#,Map view>> is an associative array operating on borrowed storage.
 - <<priority_view.adoc#,Priority view>> is a priority queue operating on borrowed storage.
 
 == Fixed-Capacity Container

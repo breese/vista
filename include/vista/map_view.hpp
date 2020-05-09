@@ -1,5 +1,5 @@
-#ifndef VISTA_MAP_SPAN_HPP
-#define VISTA_MAP_SPAN_HPP
+#ifndef VISTA_MAP_VIEW_HPP
+#define VISTA_MAP_VIEW_HPP
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -17,10 +17,8 @@
 
 namespace vista
 {
-namespace map
-{
 
-//! @brief Fixed-capacity associative span.
+//! @brief Fixed-capacity associative view.
 //!
 //! Violation of any precondition results in undefined behavior.
 
@@ -28,7 +26,7 @@ template <typename Key,
           typename T,
           std::size_t Extent = dynamic_extent,
           typename Compare = vista::less<Key>>
-class span
+class map_view
     : protected vista::span<vista::pair<Key, T>, Extent>
 {
     using super = vista::template span<vista::pair<Key, T>, Extent>;
@@ -50,9 +48,9 @@ public:
     using iterator = typename super::iterator;
     using const_iterator = typename super::const_iterator;
 
-    //! @brief Creates empty map span.
+    //! @brief Creates empty map view.
     //!
-    //! No elements can be inserted into a zero-capacity span. The span must
+    //! No elements can be inserted into a zero-capacity view. The view must
     //! therefore be recreated before use.
     //!
     //! @pre Extent == 0 or Extent == dynamic_extent
@@ -60,52 +58,52 @@ public:
     //! @post capacity() == 0
     //! @post size() == 0
 
-    constexpr span() noexcept;
+    constexpr map_view() noexcept;
 
-    //! @brief Creates sorted span by moving.
+    //! @brief Creates map view by moving.
 
-    constexpr span(span&&) noexcept = default;
+    constexpr map_view(map_view&&) noexcept = default;
 
-    //! @brief Creates map span from array.
+    //! @brief Creates map view from array.
     //!
     //! @post capacity() == Extent
     //! @post size() == 0
 
     template <std::size_t N,
               typename std::enable_if<(Extent == N || Extent == dynamic_extent), int>::type = 0>
-    explicit constexpr span(value_type (&array)[N]) noexcept;
+    explicit constexpr map_view(value_type (&array)[N]) noexcept;
 
-    //! @brief Creates map span from iterators.
+    //! @brief Creates map view from iterators.
     //!
     //! @pre Extent == std::distance(begin, end) or Extent == dynamic_extent
     //! @post capacity() == std::distance(begin, end)
     //! @post size() == 0
 
     template <typename ContiguousIterator>
-    constexpr span(ContiguousIterator begin,
-                   ContiguousIterator end) noexcept;
+    constexpr map_view(ContiguousIterator begin,
+                       ContiguousIterator end) noexcept;
 
-    //! @brief Checks if span is empty.
+    //! @brief Checks if view is empty.
     //!
-    //! Span is empty when size() == 0
+    //! View is empty when size() == 0
 
     constexpr bool empty() const noexcept;
 
-    //! @brief Checks if span is full.
+    //! @brief Checks if view is full.
     //!
-    //! Span is full when size() == capacity()
+    //! View is full when size() == capacity()
 
     constexpr bool full() const noexcept;
 
-    //! @brief Returns the number of elements in span.
+    //! @brief Returns the number of elements in view.
 
     constexpr size_type size() const noexcept;
 
-    //! @brief Returns the maximum possible number of elements in span.
+    //! @brief Returns the maximum possible number of elements in view.
 
     constexpr size_type capacity() const noexcept;
 
-    //! @brief Clears the span.
+    //! @brief Clears the view.
     //!
     //! The cleared elements in the underlying storage are not destroyed.
     //!
@@ -120,7 +118,7 @@ public:
     //!
     //! Linear time complexity.
     //!
-    //! @returns Iterator to inserted element, or end() if span already is full.
+    //! @returns Iterator to inserted element, or end() if view already is full.
 
     VISTA_CXX14_CONSTEXPR
     iterator insert(value_type) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value);
@@ -134,12 +132,12 @@ public:
     VISTA_CXX14_CONSTEXPR
     iterator remove(iterator position) noexcept(vista::detail::is_nothrow_swappable<value_type>::value);
 
-    //! @brief Inserts unspecified element at the end of the span.
+    //! @brief Inserts unspecified element at the end of the view.
     //!
-    //! The span is extended to include the element in the underlying storage
+    //! The view is extended to include the element in the underlying storage
     //! after the current end.
     //!
-    //! The span may not be exteded beyond capacity.
+    //! The view may not be exteded beyond capacity.
     //!
     //! This function breaks the class invariants which must be restored with
     //! reorder_back(). The purpuse of these two functions is to enable the
@@ -185,12 +183,12 @@ public:
     VISTA_CXX14_CONSTEXPR
     const_iterator lower_bound(const key_type&) const noexcept;
 
-    //! @brief Returns iterator to the beginning of the span.
+    //! @brief Returns iterator to the beginning of the view.
 
     using super::begin;
     using super::cbegin;
 
-    //! @brief Returns iterator to the ending of the span.
+    //! @brief Returns iterator to the ending of the view.
 
     VISTA_CXX14_CONSTEXPR iterator end() noexcept;
     constexpr const_iterator end() const noexcept;
@@ -200,10 +198,10 @@ public:
     constexpr value_compare value_comp() const noexcept;
 
 protected:
-    // Span is non-copyable because more spans operating on the same storage
+    // View is non-copyable because more views operating on the same storage
     // with their own internal state would cause invariants to break.
-    span(const span&) = delete;
-    span& operator=(const span&) = delete;
+    map_view(const map_view&) = delete;
+    map_view& operator=(const map_view&) = delete;
 
 protected:
     struct
@@ -217,9 +215,8 @@ private:
     static_assert(std::is_move_assignable<value_type>::value, "value_type must be move assignable");
 };
 
-} // namespace map
 } // namespace vista
 
-#include <vista/map/detail/span.ipp>
+#include <vista/detail/map_view.ipp>
 
-#endif // VISTA_MAP_SPAN_HPP
+#endif // VISTA_MAP_VIEW_HPP

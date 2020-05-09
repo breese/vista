@@ -12,11 +12,9 @@
 
 namespace vista
 {
-namespace map
-{
 
 template <typename K, typename T, std::size_t E, typename C>
-constexpr span<K, T, E, C>::span() noexcept
+constexpr map_view<K, T, E, C>::map_view() noexcept
     : super(nullptr, nullptr),
       member{ nullptr }
 {
@@ -25,7 +23,7 @@ constexpr span<K, T, E, C>::span() noexcept
 template <typename K, typename T, std::size_t E, typename C>
 template <std::size_t N,
           typename std::enable_if<(E == N || E == dynamic_extent), int>::type>
-constexpr span<K, T, E, C>::span(value_type (&array)[N]) noexcept
+constexpr map_view<K, T, E, C>::map_view(value_type (&array)[N]) noexcept
     : super(array, array + N),
       member{ array }
 {
@@ -33,8 +31,8 @@ constexpr span<K, T, E, C>::span(value_type (&array)[N]) noexcept
 
 template <typename K, typename T, std::size_t E, typename C>
 template <typename ContiguousIterator>
-constexpr span<K, T, E, C>::span(ContiguousIterator begin,
-                                 ContiguousIterator end) noexcept
+constexpr map_view<K, T, E, C>::map_view(ContiguousIterator begin,
+                                         ContiguousIterator end) noexcept
     : super(&*begin, &*end),
       member{ &*begin }
 {
@@ -42,39 +40,39 @@ constexpr span<K, T, E, C>::span(ContiguousIterator begin,
 }
 
 template <typename K, typename T, std::size_t E, typename C>
-constexpr bool span<K, T, E, C>::empty() const noexcept
+constexpr bool map_view<K, T, E, C>::empty() const noexcept
 {
     return size() == 0;
 }
 
 template <typename K, typename T, std::size_t E, typename C>
-constexpr bool span<K, T, E, C>::full() const noexcept
+constexpr bool map_view<K, T, E, C>::full() const noexcept
 {
     return size() == capacity();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
-constexpr auto span<K, T, E, C>::size() const noexcept -> size_type
+constexpr auto map_view<K, T, E, C>::size() const noexcept -> size_type
 {
     return member.tail - begin();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
-constexpr auto span<K, T, E, C>::capacity() const noexcept -> size_type
+constexpr auto map_view<K, T, E, C>::capacity() const noexcept -> size_type
 {
     return super::size();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-void span<K, T, E, C>::clear() noexcept
+void map_view<K, T, E, C>::clear() noexcept
 {
     member.tail = begin();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto span<K, T, E, C>::insert(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
+auto map_view<K, T, E, C>::insert(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
     if (full())
         return end();
@@ -86,11 +84,11 @@ auto span<K, T, E, C>::insert(value_type input) noexcept(std::is_nothrow_move_as
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto span<K, T, E, C>::remove(iterator position) noexcept(vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
+auto map_view<K, T, E, C>::remove(iterator position) noexcept(vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
     if (position != member.tail)
     {
-        // Move entry to end and decrease span size
+        // Move entry to end and decrease view size
         member.tail = pop_sorted(position, member.tail);
     }
     return position;
@@ -98,7 +96,7 @@ auto span<K, T, E, C>::remove(iterator position) noexcept(vista::detail::is_noth
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto span<K, T, E, C>::expand_back() noexcept -> iterator
+auto map_view<K, T, E, C>::expand_back() noexcept -> iterator
 {
     assert(!full());
 
@@ -108,14 +106,14 @@ auto span<K, T, E, C>::expand_back() noexcept -> iterator
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto span<K, T, E, C>::reorder_back() noexcept(vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
+auto map_view<K, T, E, C>::reorder_back() noexcept(vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
     return push_sorted(begin(), end(), value_comp());
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto span<K, T, E, C>::lower_bound(const key_type& key) noexcept -> iterator
+auto map_view<K, T, E, C>::lower_bound(const key_type& key) noexcept -> iterator
 {
     return lower_bound_sorted(begin(),
                               end(),
@@ -128,7 +126,7 @@ auto span<K, T, E, C>::lower_bound(const key_type& key) noexcept -> iterator
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto span<K, T, E, C>::lower_bound(const key_type& key) const noexcept -> const_iterator
+auto map_view<K, T, E, C>::lower_bound(const key_type& key) const noexcept -> const_iterator
 {
     return lower_bound_sorted(begin(),
                               end(),
@@ -141,34 +139,33 @@ auto span<K, T, E, C>::lower_bound(const key_type& key) const noexcept -> const_
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto span<K, T, E, C>::end() noexcept -> iterator
+auto map_view<K, T, E, C>::end() noexcept -> iterator
 {
     return member.tail;
 }
 
 template <typename K, typename T, std::size_t E, typename C>
-constexpr auto span<K, T, E, C>::end() const noexcept -> const_iterator
+constexpr auto map_view<K, T, E, C>::end() const noexcept -> const_iterator
 {
     return member.tail;
 }
 
 template <typename K, typename T, std::size_t E, typename C>
-constexpr auto span<K, T, E, C>::cend() const noexcept -> const_iterator
+constexpr auto map_view<K, T, E, C>::cend() const noexcept -> const_iterator
 {
     return member.tail;
 }
 
 template <typename K, typename T, std::size_t E, typename C>
-constexpr auto span<K, T, E, C>::key_comp() const noexcept -> key_compare
+constexpr auto map_view<K, T, E, C>::key_comp() const noexcept -> key_compare
 {
     return key_compare{};
 }
 
 template <typename K, typename T, std::size_t E, typename C>
-constexpr auto span<K, T, E, C>::value_comp() const noexcept -> value_compare
+constexpr auto map_view<K, T, E, C>::value_comp() const noexcept -> value_compare
 {
     return value_compare{};
 }
 
-} // namespace map
 } // namespace vista

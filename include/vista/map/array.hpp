@@ -12,7 +12,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <vista/array.hpp>
-#include <vista/map/span.hpp>
+#include <vista/map_view.hpp>
 
 namespace vista
 {
@@ -33,10 +33,10 @@ template <typename Key,
           typename Compare = std::less<Key>>
 class array
     : protected vista::array<pair<Key, T>, N>,
-      protected map::span<Key, T, N, Compare>
+      protected map_view<Key, T, N, Compare>
 {
     using storage = vista::array<pair<Key, T>, N>;
-    using span = map::template span<Key, T, N, Compare>;
+    using span = map_view<Key, T, N, Compare>;
 
 public:
     using key_type = typename span::key_type;
