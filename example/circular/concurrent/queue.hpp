@@ -13,7 +13,7 @@
 
 #include <mutex>
 #include <condition_variable>
-#include <vista/circular/array.hpp>
+#include <vista/circular_array.hpp>
 
 namespace vista
 {
@@ -52,7 +52,7 @@ public:
 private:
     std::mutex mutex;
     std::condition_variable notifier;
-    circular::array<T, N> data;
+    circular_array<T, N> data;
 };
 
 } // namespace example

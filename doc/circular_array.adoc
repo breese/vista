@@ -11,7 +11,7 @@
 
 == Introduction
 
-The `circular::array<T, N>` template class is a fixed-size double-ended circular queue.
+The `circular_array<T, N>` template class is a fixed-size double-ended circular queue.
 
 The circular array has a _fixed size_, which means there can be at most `N` elements
 in the circular array, where `N` is determined at compile-time. Like `std::array<T, N>`,
@@ -25,8 +25,8 @@ elements.
 
 === Running Average
 
-In the <<span.adoc#span-tutorial,circular span tutorial>> we ended up with a class
-definition for a running average containing both an array and a span.
+In the <<circular_view.adoc#tutorial,circular view tutorial>> we ended up with a class
+definition for a running average containing both an array and a view.
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
@@ -42,12 +42,12 @@ private:
     value_type sum = {};
     // Storage and window
     value_type storage[N];
-    circular::span<value_type, N> window;
+    circular_view<value_type, N> window;
 };
 ----
-Combining a fixed-size storage with a circular span is exactly the purpose of
-the circular array, so we can replace the storage and span with
-`circular::array<T, N>`.
+Combining a fixed-size storage with a circular view is exactly the purpose of
+the circular array, so we can replace the storage and view with
+`circular_array<T, N>`.
 [source,c++,numbered]
 ----
 template <typename T, std::size_t N>
@@ -62,7 +62,7 @@ private:
     static_assert(N > 0, "N must be greater than zero");
     value_type sum = {};
     // Window contains storage
-    circular::array<value_type, N> window;
+    circular_array<value_type, N> window;
 };
 ----
 
@@ -70,7 +70,7 @@ private:
 
 This section describes the choices behind the design of the circular array.
 
-The <<span.adoc#span-rationale,design rationale>> of `circular::span<T, N>` also applies,
+The <<circular_view.adoc#rationale,design rationale>> of `circular_view<T, N>` also applies,
 except the ability to use `dynamic_extent`.
 
 === std::array
@@ -92,15 +92,15 @@ There are some significant deviations.
 
 == Reference
 
-Defined in header `<vista/circular/array.hpp>`.
+Defined in header `<vista/circular_array.hpp>`.
 
-Defined in namespace `vista::circular`.
+Defined in namespace `vista`.
 [source,c++]
 ----
 template <
     typename T,
     std::size_t N
-> class array;
+> class circular_array;
 ----
 
 The circular array is a fixed-size circular queue.
@@ -131,7 +131,7 @@ are inserted or destroyed when the circular array is destroyed.
  _Constraint:_ `T` must be _DefaultConstructible_.
  +
  _Constraint:_ `T` must be _Erasable_.
-| `N` | The maximum number of elements in the span.
+| `N` | The maximum number of elements in the array.
  +
  +
  _Constraint:_ `N` cannot be `dynamic_extent`.
@@ -160,7 +160,7 @@ are inserted or destroyed when the circular array is destroyed.
 [%header,frame="topbot",grid="rows",stripes=none]
 |===
 | Member function | Description
-| `constexpr array() noexcept` | Creates an empty circular array.
+| `constexpr circular_array() noexcept` | Creates an empty circular array.
  +
  +
  The `N` elements of the underlying storage are default constructed.
@@ -169,7 +169,7 @@ are inserted or destroyed when the circular array is destroyed.
  _Ensures:_ `capacity() == N`
  +
  _Ensures:_ `size() == 0`
-| `constexpr array(const array<T, N>& other) noexcept(_see Remarks_)` | Creates a circular array by copying.
+| `constexpr circular_array(const circular_array<T, N>& other) noexcept(_see Remarks_)` | Creates a circular array by copying.
  +
  +
  _Constraint:_ `T` must be _CopyConstructible_.
@@ -181,7 +181,7 @@ are inserted or destroyed when the circular array is destroyed.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _CopyConstructible_.
-| `constexpr array(array<T, N>&& other) noexcept(_see Remarks_)` | Creates a circular array by moving.
+| `constexpr circular_array(circular_array<T, N>&& other) noexcept(_see Remarks_)` | Creates a circular array by moving.
  +
  +
  _Constraint:_ `T` must be _MoveConstructible_.
@@ -195,7 +195,7 @@ are inserted or destroyed when the circular array is destroyed.
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveConstructible_.
 | `template <typename... Args>
  +
- constexpr array(value_type, Args&&...) noexcept(_see Remarks_)` | Creates a circular array with elements from input.
+ constexpr circular_array(value_type, Args&&...) noexcept(_see Remarks_)` | Creates a circular array with elements from input.
  +
  +
  This constructor emulates aggregate initialization.
@@ -207,7 +207,7 @@ are inserted or destroyed when the circular array is destroyed.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_. 
-| `constexpr{wj}footnote:constexpr11[Not constexpr in pass:[C++11].] array& operator=(const array<T, N>& other) noexcept(_see Remarks_)` | Recreates circular array by copying.
+| `constexpr{wj}footnote:constexpr11[Not constexpr in pass:[C++11].] circular_array& operator=(const circular_array<T, N>& other) noexcept(_see Remarks_)` | Recreates circular array by copying.
  +
  +
  _Constraint:_ `T` must be _CopyAssignable_.
@@ -219,7 +219,7 @@ are inserted or destroyed when the circular array is destroyed.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _CopyAssignable_.
-| `constexpr{wj}footnote:constexpr11[] array& operator=(array&& other) noexcept(_see Remarks_)` | Recreates circular array by moving.
+| `constexpr{wj}footnote:constexpr11[] circular_array& operator=(circular_array&& other) noexcept(_see Remarks_)` | Recreates circular array by moving.
  +
  +
  All elements are inserted, but if `input.size() > N` then only the last `N` input
@@ -232,7 +232,7 @@ are inserted or destroyed when the circular array is destroyed.
  +
  +
  _Remarks:_ `noexcept` if `value_type` is nothrow _MoveAssignable_.
-| `constexpr{wj}footnote:constexpr11[] array& operator=(std::initializer_list<value_type> input) noexcept(_see Remarks_)` | Recreates circular array with elements from initializer list.
+| `constexpr{wj}footnote:constexpr11[] circular_circular_array& operator=(std::initializer_list<value_type> input) noexcept(_see Remarks_)` | Recreates circular array with elements from initializer list.
  +
  +
  All elements are inserted, but if `input.size() > N` then only the last `N` input

@@ -16,8 +16,6 @@
 
 namespace vista
 {
-namespace circular
-{
 
 //! @brief Fixed-sized circular buffer.
 //!
@@ -29,7 +27,7 @@ namespace circular
 //! Violation of any precondition results in undefined behavior.
 
 template <typename T, std::size_t N>
-class array
+class circular_array
     : private std::array<T, N>,
       private circular_view<T, N>
 {
@@ -58,7 +56,7 @@ public:
     //! @post capacity() == N
     //! @post size() == 0
 
-    constexpr array() noexcept;
+    constexpr circular_array() noexcept;
 
     //! @brief Creates circular array by copying.
     //!
@@ -67,7 +65,7 @@ public:
     //! @post capacity() == N
     //! @post size() == other.size()
 
-    constexpr array(const array& other) noexcept(std::is_nothrow_copy_constructible<value_type>::value);
+    constexpr circular_array(const circular_array& other) noexcept(std::is_nothrow_copy_constructible<value_type>::value);
 
     //! @brief Recreates circular array by copying.
     //!
@@ -77,14 +75,14 @@ public:
     //! @post size() == other.size()
 
     VISTA_CXX14_CONSTEXPR
-    array& operator=(const array& other) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
+    circular_array& operator=(const circular_array& other) noexcept(std::is_nothrow_copy_assignable<value_type>::value);
 
     //! @brief Creates circular array by moving.
     //!
     //! @post capacity() == N
     //! @post size() == other.size()
 
-    constexpr array(array&& other) noexcept(std::is_nothrow_move_constructible<value_type>::value) = default;
+    constexpr circular_array(circular_array&& other) noexcept(std::is_nothrow_move_constructible<value_type>::value) = default;
 
     //! @brief Recreates circular array by moving.
     //!
@@ -92,7 +90,7 @@ public:
     //! @post size() == other.size()
 
     VISTA_CXX14_CONSTEXPR
-    array& operator=(array&& other) noexcept(std::is_nothrow_move_assignable<value_type>::value) = default;
+    circular_array& operator=(circular_array&& other) noexcept(std::is_nothrow_move_assignable<value_type>::value) = default;
 
     //! @brief Creates circular array with element from initializer list.
     //!
@@ -103,7 +101,7 @@ public:
     //! @post size() == input.size()
 
     template <typename... Args>
-    constexpr array(value_type, Args&&...) noexcept(std::is_nothrow_move_assignable<value_type>::value);
+    constexpr circular_array(value_type, Args&&...) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Recreates circular array with element from initializer list.
     //!
@@ -114,7 +112,7 @@ public:
     //! @post size() == input.size()
 
     VISTA_CXX14_CONSTEXPR
-    array& operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
+    circular_array& operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Checks if circular array is empty.
     using view::empty;
@@ -207,9 +205,8 @@ public:
     using view::last_unused_segment;
 };
 
-} // namespace circular
 } // namespace vista
 
-#include <vista/circular/detail/array.ipp>
+#include <vista/detail/circular_array.ipp>
 
 #endif // VISTA_CIRCULAR_ARRAY_HPP

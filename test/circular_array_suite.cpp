@@ -11,7 +11,7 @@
 #include <numeric>
 #include <vector>
 #include <boost/detail/lightweight_test.hpp>
-#include <vista/circular/array.hpp>
+#include <vista/circular_array.hpp>
 
 using namespace vista;
 
@@ -22,25 +22,25 @@ namespace api_suite
 
 void api_ctor_default()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     BOOST_TEST_EQ(data.size(), 0);
     BOOST_TEST_EQ(data.capacity(), 4);
 }
 
 void api_ctor_copy()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
-    circular::array<int, 4> copy(data);
+    circular_array<int, 4> copy(data);
     BOOST_TEST_EQ(copy.size(), 1);
     BOOST_TEST_EQ(copy.capacity(), 4);
 }
 
 void api_ctor_copy_assign()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
-    circular::array<int, 4> copy;
+    circular_array<int, 4> copy;
     copy = data;
     BOOST_TEST_EQ(copy.size(), 1);
     BOOST_TEST_EQ(copy.capacity(), 4);
@@ -48,18 +48,18 @@ void api_ctor_copy_assign()
 
 void api_ctor_move()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
-    circular::array<int, 4> copy(std::move(data));
+    circular_array<int, 4> copy(std::move(data));
     BOOST_TEST_EQ(copy.size(), 1);
     BOOST_TEST_EQ(copy.capacity(), 4);
 }
 
 void api_ctor_move_assign()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
-    circular::array<int, 4> copy;
+    circular_array<int, 4> copy;
     copy = std::move(data);
     BOOST_TEST_EQ(copy.size(), 1);
     BOOST_TEST_EQ(copy.capacity(), 4);
@@ -67,28 +67,28 @@ void api_ctor_move_assign()
 
 void api_ctor_initializer_list()
 {
-    circular::array<int, 4> data({11, 22});
+    circular_array<int, 4> data({11, 22});
     BOOST_TEST_EQ(data.size(), 2);
     BOOST_TEST_EQ(data.capacity(), 4);
 }
 
 void api_operator_assign_initializer_list()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data = {11, 22};
     BOOST_TEST_EQ(data.size(), 2);
 }
 
 void api_assign_initializer_list()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.assign({11, 22});
     BOOST_TEST_EQ(data.size(), 2);
 }
 
 void api_assign_iterator()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     std::vector<int> input = {11, 22};
     data.assign(input.begin(), input.end());
     BOOST_TEST_EQ(data.size(), 2);
@@ -96,37 +96,37 @@ void api_assign_iterator()
 
 void api_empty()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     BOOST_TEST(data.empty());
 }
 
 void api_capacity()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     BOOST_TEST_EQ(data.capacity(), 4);
 }
 
 void api_size()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     BOOST_TEST_EQ(data.size(), 0);
 }
 
 void api_max_size()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     BOOST_TEST_EQ(data.max_size(), 4);
 }
 
 void api_full()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     BOOST_TEST(!data.full());
 }
 
 void api_front()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_front(11);
     BOOST_TEST_EQ(data.size(), 1);
     BOOST_TEST_EQ(data.front(), 11);
@@ -134,7 +134,7 @@ void api_front()
 
 void api_back()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
     BOOST_TEST_EQ(data.size(), 1);
     BOOST_TEST_EQ(data.back(), 11);
@@ -142,21 +142,21 @@ void api_back()
 
 void api_first_segment()
 {
-    circular::array<int, 4> data = { 11, 22, 33 };
+    circular_array<int, 4> data = { 11, 22, 33 };
     auto segment = data.first_segment();
     BOOST_TEST_EQ(segment.size(), 3);
 }
 
 void api_last_segment()
 {
-    circular::array<int, 4> data = { 11, 22, 33 };
+    circular_array<int, 4> data = { 11, 22, 33 };
     auto segment = data.last_segment();
     BOOST_TEST_EQ(segment.size(), 0);
 }
 
 void api_operator_index()
 {
-    circular::array<int, 4> data = {11, 22, 33};
+    circular_array<int, 4> data = {11, 22, 33};
     BOOST_TEST_EQ(data[0], 11);
     BOOST_TEST_EQ(data[1], 22);
     BOOST_TEST_EQ(data[2], 33);
@@ -164,7 +164,7 @@ void api_operator_index()
 
 void api_clear()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
     BOOST_TEST_EQ(data.size(), 1);
     data.clear();
@@ -173,14 +173,14 @@ void api_clear()
 
 void api_push_front()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_front(11);
     BOOST_TEST_EQ(data.size(), 1);
 }
 
 void api_push_front_iterator()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     std::vector<int> input = { 11, 22 };
     data.push_front(input.begin(), input.end());
     BOOST_TEST_EQ(data.size(), 2);
@@ -188,14 +188,14 @@ void api_push_front_iterator()
 
 void api_push_back()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
     BOOST_TEST_EQ(data.size(), 1);
 }
 
 void api_push_back_iterator()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     std::vector<int> input = { 11, 22 };
     data.push_back(input.begin(), input.end());
     BOOST_TEST_EQ(data.size(), 2);
@@ -203,7 +203,7 @@ void api_push_back_iterator()
 
 void api_pop_front()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_front(11);
     BOOST_TEST_EQ(data.size(), 1);
     BOOST_TEST_EQ(data.pop_front(), 11);
@@ -212,7 +212,7 @@ void api_pop_front()
 
 void api_pop_back()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
     BOOST_TEST_EQ(data.size(), 1);
     BOOST_TEST_EQ(data.pop_back(), 11);
@@ -221,7 +221,7 @@ void api_pop_back()
 
 void api_expand_front()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_front(11);
     BOOST_TEST_EQ(data.size(), 1);
     data.expand_front();
@@ -230,7 +230,7 @@ void api_expand_front()
 
 void api_expand_front_n()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_front(11);
     data.push_front(11);
     BOOST_TEST_EQ(data.size(), 2);
@@ -240,7 +240,7 @@ void api_expand_front_n()
 
 void api_remove_front()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_front(11);
     BOOST_TEST_EQ(data.size(), 1);
     data.remove_front();
@@ -249,7 +249,7 @@ void api_remove_front()
 
 void api_remove_front_n()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_front(11);
     data.push_front(11);
     BOOST_TEST_EQ(data.size(), 2);
@@ -259,7 +259,7 @@ void api_remove_front_n()
 
 void api_expand_back()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
     BOOST_TEST_EQ(data.size(), 1);
     data.expand_back();
@@ -268,7 +268,7 @@ void api_expand_back()
 
 void api_expand_back_n()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
     data.push_back(11);
     BOOST_TEST_EQ(data.size(), 2);
@@ -278,7 +278,7 @@ void api_expand_back_n()
 
 void api_remove_back()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
     BOOST_TEST_EQ(data.size(), 1);
     data.remove_back();
@@ -287,7 +287,7 @@ void api_remove_back()
 
 void api_remove_back_n()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data.push_back(11);
     data.push_back(11);
     BOOST_TEST_EQ(data.size(), 2);
@@ -297,7 +297,7 @@ void api_remove_back_n()
 
 void api_begin_end()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data = { 11, 22, 33 };
     {
         std::vector<int> expect = { 11, 22, 33 };
@@ -308,7 +308,7 @@ void api_begin_end()
 
 void api_cbegin_cend()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data = { 11, 22, 33 };
     {
         std::vector<int> expect = { 11, 22, 33 };
@@ -319,7 +319,7 @@ void api_cbegin_cend()
 
 void api_rbegin_rend()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data = { 11, 22, 33 };
     {
         std::vector<int> expect = { 33, 22, 11 };
@@ -330,7 +330,7 @@ void api_rbegin_rend()
 
 void api_crbegin_crend()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     data = { 11, 22, 33 };
     {
         std::vector<int> expect = { 33, 22, 11 };

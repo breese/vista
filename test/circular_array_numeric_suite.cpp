@@ -11,7 +11,7 @@
 #include <vector>
 #include <numeric>
 #include <boost/detail/lightweight_test.hpp>
-#include <vista/circular/array.hpp>
+#include <vista/circular_array.hpp>
 
 using namespace vista;
 
@@ -24,7 +24,7 @@ namespace numeric_suite
 
 void test_accumulate()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     BOOST_TEST_EQ(std::accumulate(data.begin(), data.end(), 0), 0);
     data = {11, 22, 33};
     BOOST_TEST_EQ(std::accumulate(data.begin(), data.end(), 0), 11 + 22 + 33);
@@ -36,7 +36,7 @@ void test_accumulate()
 
 void test_adjacent_difference()
 {
-    circular::array<int, 4> data = {11, 22, 33};
+    circular_array<int, 4> data = {11, 22, 33};
     std::vector<int> result(4);
     auto last = std::adjacent_difference(data.begin(), data.end(), result.begin());
     std::vector<int> expect = {11, 22 - 11, 33 - 22}; // First expected value is first input value
@@ -46,7 +46,7 @@ void test_adjacent_difference()
 void test_adjacent_difference_back_inserter()
 {
     std::vector<int> data = {11, 22, 33, 44, 55};
-    circular::array<int, 4> result;
+    circular_array<int, 4> result;
     std::adjacent_difference(data.begin(), data.end(), std::back_inserter(result));
     std::vector<int> expect = {22 - 11, 33 - 22, 44 - 33, 55 - 44};
     BOOST_TEST_ALL_EQ(result.begin(), result.end(), expect.begin(), expect.end());
@@ -54,7 +54,7 @@ void test_adjacent_difference_back_inserter()
 
 void test_inner_product()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     BOOST_TEST_EQ(std::inner_product(data.begin(), data.end(), data.begin(), 0),
                   0);
     data = {11, 22, 33};
@@ -70,7 +70,7 @@ void test_inner_product()
 
 void test_partial_sum()
 {
-    circular::array<int, 4> data;
+    circular_array<int, 4> data;
     std::vector<int> result(4);
     {
         auto last = std::partial_sum(data.begin(), data.end(), result.begin());

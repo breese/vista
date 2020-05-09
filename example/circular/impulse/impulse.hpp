@@ -14,7 +14,7 @@
 #include <type_traits>
 #include <numeric>
 #include <array>
-#include <vista/circular/array.hpp>
+#include <vista/circular_array.hpp>
 
 namespace vista
 {
@@ -59,7 +59,7 @@ public:
     }
 
 private:
-    circular::array<value_type, N> window;
+    circular_array<value_type, N> window;
     std::array<value_type, N> coefficients;
 };
 

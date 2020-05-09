@@ -12,7 +12,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <type_traits>
-#include <vista/circular/array.hpp>
+#include <vista/circular_array.hpp>
 
 namespace vista
 {
@@ -23,11 +23,11 @@ namespace example
 
 template <typename T, std::size_t N>
 class average
-    : protected circular::array<T, N>
+    : protected circular_array<T, N>
 {
     static_assert(N > 0, "N must be greater than zero");
 
-    using window = circular::array<T, N>;
+    using window = circular_array<T, N>;
 
 public:
     using value_type = typename window::value_type;

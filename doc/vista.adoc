@@ -44,7 +44,7 @@ Views operate on borrowed continguous memory. Some <<rationale.adoc#,design deci
 
 == Fixed-Capacity Container
 
-- <<circular/array.adoc#,Circular array>> is a circular queue operating on a nested array.
+- <<circular_array.adoc#,Circular array>> is a circular queue operating on a nested array.
 
 == Algorithm
 

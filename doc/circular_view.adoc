@@ -30,6 +30,7 @@ into a double-ended circular queue.
    the view.
 |===
 
+[#tutorial]
 == Tutorial
 
 === Running Average
@@ -258,6 +259,7 @@ auto impulse::value() const -> value_type
 Other variations are possible. For instance, we could have pushed the input
 values at the end of the view, and then used reverse iterators in the algorithm.
 
+[#rationale]
 == Design Rationale
 
 This section describes the choices behind the design of the circular view.
