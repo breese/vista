@@ -41,7 +41,7 @@ vista_add_test(circular_array_numeric_suite circular_array_numeric_suite.cpp)
 vista_add_test(priority_view_suite priority_view_suite.cpp)
 
 vista_add_test(map_view_suite map_view_suite.cpp)
-vista_add_test(map_array_suite map/array_suite.cpp)
+vista_add_test(map_array_suite map_array_suite.cpp)
 
 if ("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
 

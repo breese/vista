@@ -13,18 +13,16 @@
 
 namespace vista
 {
-namespace map
-{
 
 template <typename K, typename T, std::size_t N, typename C>
-constexpr array<K, T, N, C>::array() noexcept
+constexpr map_array<K, T, N, C>::map_array() noexcept
     : span(storage::begin(), storage::end())
 {
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-void array<K, T, E, C>::clear() noexcept(std::is_trivially_destructible<value_type>::value || std::is_nothrow_default_constructible<value_type>::value)
+void map_array<K, T, E, C>::clear() noexcept(std::is_trivially_destructible<value_type>::value || std::is_nothrow_default_constructible<value_type>::value)
 {
     if (!std::is_trivially_destructible<value_type>::value)
     {
@@ -40,7 +38,7 @@ void array<K, T, E, C>::clear() noexcept(std::is_trivially_destructible<value_ty
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::insert(iterator, value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
+auto map_array<K, T, E, C>::insert(iterator, value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
     // Ignore hint
     return insert(std::move(input));
@@ -49,7 +47,7 @@ auto array<K, T, E, C>::insert(iterator, value_type input) noexcept(std::is_noth
 template <typename K, typename T, std::size_t E, typename C>
 template <typename... Args>
 VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::emplace(Args&&... args) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
+auto map_array<K, T, E, C>::emplace(Args&&... args) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
     assert(!full());
 
@@ -67,7 +65,7 @@ auto array<K, T, E, C>::emplace(Args&&... args) noexcept(std::is_nothrow_move_as
 template <typename K, typename T, std::size_t E, typename C>
 template <typename... Args>
 VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::emplace_hint(iterator, Args&&... args) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
+auto map_array<K, T, E, C>::emplace_hint(iterator, Args&&... args) noexcept(std::is_nothrow_move_assignable<value_type>::value && vista::detail::is_nothrow_swappable<value_type>::value) -> iterator
 {
     // Ignores hint
     return emplace(std::forward<Args>(args)...);
@@ -75,7 +73,7 @@ auto array<K, T, E, C>::emplace_hint(iterator, Args&&... args) noexcept(std::is_
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::erase(const key_type& key) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> size_type
+auto map_array<K, T, E, C>::erase(const key_type& key) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> size_type
 {
     size_type count = 0;
     auto where = lower_bound(key);
@@ -89,7 +87,7 @@ auto array<K, T, E, C>::erase(const key_type& key) noexcept(std::is_nothrow_move
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::erase(iterator position) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> iterator
+auto map_array<K, T, E, C>::erase(iterator position) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> iterator
 {
     if (position == end())
         return position;
@@ -103,14 +101,14 @@ auto array<K, T, E, C>::erase(iterator position) noexcept(std::is_nothrow_move_a
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-bool array<K, T, E, C>::contains(const key_type& key) const noexcept
+bool map_array<K, T, E, C>::contains(const key_type& key) const noexcept
 {
     return find(key) != end();
 }
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::find(const key_type& key) noexcept -> iterator
+auto map_array<K, T, E, C>::find(const key_type& key) noexcept -> iterator
 {
     auto where = lower_bound(key);
     if (where == end() || key_comp()(key, where->first))
@@ -120,7 +118,7 @@ auto array<K, T, E, C>::find(const key_type& key) noexcept -> iterator
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::find(const key_type& key) const noexcept -> const_iterator
+auto map_array<K, T, E, C>::find(const key_type& key) const noexcept -> const_iterator
 {
     auto where = lower_bound(key);
     if (where == end() || key_comp()(key, where->first))
@@ -130,7 +128,7 @@ auto array<K, T, E, C>::find(const key_type& key) const noexcept -> const_iterat
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::operator[](const key_type& key) noexcept -> mapped_type&
+auto map_array<K, T, E, C>::operator[](const key_type& key) noexcept -> mapped_type&
 {
     auto where = lower_bound(key);
     if (where == end() || key_comp()(key, where->first))
@@ -142,7 +140,7 @@ auto array<K, T, E, C>::operator[](const key_type& key) noexcept -> mapped_type&
 
 template <typename K, typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-auto array<K, T, E, C>::operator[](key_type&& key) noexcept -> mapped_type&
+auto map_array<K, T, E, C>::operator[](key_type&& key) noexcept -> mapped_type&
 {
     auto where = lower_bound(key);
     if (where == end() || key_comp()(key, where->first))
@@ -152,5 +150,4 @@ auto array<K, T, E, C>::operator[](key_type&& key) noexcept -> mapped_type&
     return where->second;
 }
 
-} // namespace map
 } // namespace vista

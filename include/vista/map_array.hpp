@@ -16,8 +16,6 @@
 
 namespace vista
 {
-namespace map
-{
 
 //! @brief Fixed-capacity associative array.
 //!
@@ -31,7 +29,7 @@ template <typename Key,
           typename T,
           std::size_t N,
           typename Compare = std::less<Key>>
-class array
+class map_array
     : protected vista::array<pair<Key, T>, N>,
       protected map_view<Key, T, N, Compare>
 {
@@ -54,7 +52,7 @@ public:
     //! @post capacity() == N
     //! @post size() == 0
 
-    constexpr array() noexcept;
+    constexpr map_array() noexcept;
 
     //! @brief Checks if span is empty.
     //!
@@ -216,9 +214,8 @@ private:
     static_assert(std::is_default_constructible<value_type>::value, "value_type must be default constructible");
 };
 
-} // namespace map
 } // namespace vista
 
-#include <vista/map/detail/array.ipp>
+#include <vista/detail/map_array.ipp>
 
 #endif // VISTA_MAP_ARRAY_HPP
