@@ -10,7 +10,7 @@
 
 #include <algorithm>
 #include <vista/functional.hpp> // less
-#include <vista/constexpr/utility.hpp> // swap
+#include <vista/utility.hpp> // swap
 
 namespace vista
 {

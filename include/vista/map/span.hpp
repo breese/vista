@@ -11,7 +11,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <vista/constexpr/utility.hpp> // pair
+#include <vista/utility.hpp> // pair
 #include <vista/functional.hpp> // less
 #include <vista/span.hpp>
 

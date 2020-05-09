@@ -1,5 +1,5 @@
-#ifndef VISTA_CONSTEXPR_UTILITY_HPP
-#define VISTA_CONSTEXPR_UTILITY_HPP
+#ifndef VISTA_UTILITY_HPP
+#define VISTA_UTILITY_HPP
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -18,6 +18,8 @@
 namespace vista
 {
 
+//-----------------------------------------------------------------------------
+// pair
 //-----------------------------------------------------------------------------
 
 #if __cpp_lib_constexpr_utility >= 201811L
@@ -56,6 +58,8 @@ constexpr bool operator==(const pair<T1, T2>& lhs,
 
 #endif
 
+//-----------------------------------------------------------------------------
+// swap
 //-----------------------------------------------------------------------------
 
 // std::swap is not constexpr before C++20
@@ -102,4 +106,4 @@ void swap(T& lhs, T& rhs) noexcept(vista::detail::is_nothrow_swappable<T>::value
 
 } // namespace vista
 
-#endif // VISTA_CONSTEXPR_UTILITY_HPP
+#endif // VISTA_UTILITY_HPP
