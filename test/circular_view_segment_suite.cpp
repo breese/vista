@@ -11,7 +11,7 @@
 #include <array>
 #include <vector>
 #include <boost/detail/lightweight_test.hpp>
-#include <vista/circular/span.hpp>
+#include <vista/circular_view.hpp>
 
 using namespace vista;
 
@@ -23,7 +23,7 @@ namespace api_suite
 void api_data()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     {
         auto first = span.first_segment();
         BOOST_TEST(first.data() == nullptr);
@@ -63,9 +63,9 @@ void api_data()
 void api_data_const()
 {
     int array[4] = {};
-    circular::span<int> original(array);
+    circular_view<int> original(array);
     {
-        const circular::span<int> span(original);
+        const circular_view<int> span(original);
         auto first = span.first_segment();
         BOOST_TEST(first.data() == nullptr);
         const auto cfirst = span.first_segment();
@@ -77,7 +77,7 @@ void api_data_const()
     }
     original = { 11 };
     {
-        const circular::span<int> span(original);
+        const circular_view<int> span(original);
         auto first = span.first_segment();
         BOOST_TEST(first.data() == &*span.begin());
         const auto cfirst = span.first_segment();
@@ -91,7 +91,7 @@ void api_data_const()
     // -> <-------
     original = { 11, 22, 33, 44, 55 };
     {
-        const circular::span<int> span(original);
+        const circular_view<int> span(original);
         auto first = span.first_segment();
         BOOST_TEST(first.data() == &*span.begin());
         const auto cfirst = span.first_segment();
@@ -106,7 +106,7 @@ void api_data_const()
 void api_size()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     {
         auto first = span.first_segment();
         BOOST_TEST_EQ(first.size(), 0);
@@ -134,7 +134,7 @@ void api_size()
 void api_begin()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     {
         auto first = span.first_segment();
         BOOST_TEST(first.begin() == nullptr);
@@ -150,7 +150,7 @@ void api_begin()
 void api_end()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     {
         auto first = span.first_segment();
         BOOST_TEST(first.end() == nullptr);
@@ -182,7 +182,7 @@ namespace data_suite
 void segment_empty()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     {
         auto segment = span.first_segment();
 
@@ -216,7 +216,7 @@ void segment_empty()
 void segment_partial()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 11 X X X
     span = { 11 };
     {
@@ -342,7 +342,7 @@ void segment_partial()
 void segment_overfull()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 55 22 33 44
     span = { 11, 22, 33, 44, 55 };
     {
@@ -498,7 +498,7 @@ void segment_overfull()
 void segment_overfull_1()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 55 X 33 44
     span = { 11, 22, 33, 44, 55 };
     span.remove_front();
@@ -659,7 +659,7 @@ void segment_overfull_1()
 void segment_overfull_2()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 55 X X 44
     span = { 11, 22, 33, 44, 55 };
     span.remove_front(2);
@@ -820,7 +820,7 @@ void segment_overfull_2()
 void segment_overfull_3()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 55 X X X
     span = { 11, 22, 33, 44, 55 };
     span.remove_front(3);
@@ -981,7 +981,7 @@ void segment_overfull_3()
 void segment_overfull_4()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // Z X X X
     span = { 11, 22, 33, 44, 55 };
     span.remove_front(4);
@@ -1160,7 +1160,7 @@ namespace iterator_suite
 void segment_empty()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     {
         auto segment = span.first_segment();
 
@@ -1194,7 +1194,7 @@ void segment_empty()
 void segment_partial()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 11 X X X
     span = { 11 };
     {
@@ -1320,7 +1320,7 @@ void segment_partial()
 void segment_overfull()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 55 22 33 44
     span = { 11, 22, 33, 44, 55 };
     {
@@ -1476,7 +1476,7 @@ void segment_overfull()
 void segment_overfull_1()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 55 X 33 44
     span = { 11, 22, 33, 44, 55 };
     span.remove_front();
@@ -1637,7 +1637,7 @@ void segment_overfull_1()
 void segment_overfull_2()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 55 X X 44
     span = { 11, 22, 33, 44, 55 };
     span.remove_front(2);
@@ -1798,7 +1798,7 @@ void segment_overfull_2()
 void segment_overfull_3()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 55 X X X
     span = { 11, 22, 33, 44, 55 };
     span.remove_front(3);
@@ -1959,7 +1959,7 @@ void segment_overfull_3()
 void segment_overfull_4()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // Z X X X
     span = { 11, 22, 33, 44, 55 };
     span.remove_front(4);

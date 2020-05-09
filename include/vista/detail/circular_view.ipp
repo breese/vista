@@ -12,15 +12,13 @@
 
 namespace vista
 {
-namespace circular
-{
 
 //-----------------------------------------------------------------------------
-// span<T>
+// circular_view<T>
 //-----------------------------------------------------------------------------
 
 template <typename T, std::size_t E>
-constexpr span<T, E>::span() noexcept
+constexpr circular_view<T, E>::circular_view() noexcept
 {
 }
 
@@ -28,25 +26,25 @@ template <typename T, std::size_t E>
 template <typename OtherT,
           std::size_t OtherExtent,
           typename std::enable_if<(E == OtherExtent || E == dynamic_extent) && std::is_convertible<OtherT (*)[], T (*)[]>::value, int>::type>
-constexpr span<T, E>::span(const span<OtherT, OtherExtent>& other) noexcept
+constexpr circular_view<T, E>::circular_view(const circular_view<OtherT, OtherExtent>& other) noexcept
     : member(other)
 {
 }
 
 template <typename T, std::size_t E>
 template <typename ContiguousIterator>
-constexpr span<T, E>::span(ContiguousIterator begin,
-                           ContiguousIterator end) noexcept
+constexpr circular_view<T, E>::circular_view(ContiguousIterator begin,
+                                             ContiguousIterator end) noexcept
     : member(std::move(begin), std::move(end))
 {
 }
 
 template <typename T, std::size_t E>
 template <typename ContiguousIterator>
-constexpr span<T, E>::span(ContiguousIterator begin,
-                           ContiguousIterator end,
-                           ContiguousIterator first,
-                           size_type length) noexcept
+constexpr circular_view<T, E>::circular_view(ContiguousIterator begin,
+                                             ContiguousIterator end,
+                                             ContiguousIterator first,
+                                             size_type length) noexcept
     : member(std::move(begin), std::move(end), std::move(first), length)
 {
 }
@@ -54,27 +52,27 @@ constexpr span<T, E>::span(ContiguousIterator begin,
 template <typename T, std::size_t E>
 template <std::size_t N,
           typename std::enable_if<(E == N || E == dynamic_extent), int>::type>
-constexpr span<T, E>::span(value_type (&array)[N]) noexcept
+constexpr circular_view<T, E>::circular_view(value_type (&array)[N]) noexcept
     : member(array)
 {
 }
 
 template <typename T, std::size_t E>
-constexpr span<T, E>::span(const span& other, pointer data) noexcept
+constexpr circular_view<T, E>::circular_view(const circular_view& other, pointer data) noexcept
     : member(other.member, data)
 {
 }
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::assign(const span& other, pointer data) noexcept
+void circular_view<T, E>::assign(const circular_view& other, pointer data) noexcept
 {
     member.assign(other.member, data);
 }
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> span&
+auto circular_view<T, E>::operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value) -> circular_view&
 {
     static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
 
@@ -83,32 +81,32 @@ auto span<T, E>::operator=(std::initializer_list<value_type> input) noexcept(std
 }
 
 template <typename T, std::size_t E>
-constexpr bool span<T, E>::empty() const noexcept
+constexpr bool circular_view<T, E>::empty() const noexcept
 {
     return size() == 0;
 }
 
 template <typename T, std::size_t E>
-constexpr bool span<T, E>::full() const noexcept
+constexpr bool circular_view<T, E>::full() const noexcept
 {
     return size() == capacity();
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::capacity() const noexcept -> size_type
+constexpr auto circular_view<T, E>::capacity() const noexcept -> size_type
 {
     return member.capacity();
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::size() const noexcept -> size_type
+constexpr auto circular_view<T, E>::size() const noexcept -> size_type
 {
     return member.size;
 }
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::front() noexcept -> reference
+auto circular_view<T, E>::front() noexcept -> reference
 {
     assert(!empty());
 
@@ -116,7 +114,7 @@ auto span<T, E>::front() noexcept -> reference
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::front() const noexcept -> const_reference
+constexpr auto circular_view<T, E>::front() const noexcept -> const_reference
 {
     VISTA_CXX14(assert(!empty()));
 
@@ -125,7 +123,7 @@ constexpr auto span<T, E>::front() const noexcept -> const_reference
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::back() noexcept -> reference
+auto circular_view<T, E>::back() noexcept -> reference
 {
     assert(!empty());
 
@@ -133,7 +131,7 @@ auto span<T, E>::back() noexcept -> reference
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::back() const noexcept -> const_reference
+constexpr auto circular_view<T, E>::back() const noexcept -> const_reference
 {
     VISTA_CXX14(assert(!empty()));
 
@@ -142,20 +140,20 @@ constexpr auto span<T, E>::back() const noexcept -> const_reference
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::operator[](size_type position) noexcept -> reference
+auto circular_view<T, E>::operator[](size_type position) noexcept -> reference
 {
     return at(front_index() + position);
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::operator[](size_type position) const noexcept -> const_reference
+constexpr auto circular_view<T, E>::operator[](size_type position) const noexcept -> const_reference
 {
     return at(front_index() + position);
 }
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::clear() noexcept
+void circular_view<T, E>::clear() noexcept
 {
     member.size = 0;
     member.next = member.capacity();
@@ -164,7 +162,7 @@ void span<T, E>::clear() noexcept
 template <typename T, std::size_t E>
 template <typename InputIterator>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::assign(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
+void circular_view<T, E>::assign(InputIterator first, InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
 {
     clear();
     push_back(std::move(first), std::move(last));
@@ -172,7 +170,7 @@ void span<T, E>::assign(InputIterator first, InputIterator last) noexcept(std::i
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::assign(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
+void circular_view<T, E>::assign(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
     static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
 
@@ -185,7 +183,7 @@ void span<T, E>::assign(std::initializer_list<value_type> input) noexcept(std::i
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::push_front(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
+void circular_view<T, E>::push_front(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
     static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
 
@@ -196,8 +194,8 @@ void span<T, E>::push_front(value_type input) noexcept(std::is_nothrow_move_assi
 template <typename T, std::size_t E>
 template <typename InputIterator>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::push_front(InputIterator first,
-                            InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
+void circular_view<T, E>::push_front(InputIterator first,
+                                     InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
 {
     static_assert(std::is_copy_assignable<T>::value, "T must be CopyAssignable");
 
@@ -210,7 +208,7 @@ void span<T, E>::push_front(InputIterator first,
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
+void circular_view<T, E>::push_back(value_type input) noexcept(std::is_nothrow_move_assignable<value_type>::value)
 {
     static_assert(std::is_move_assignable<T>::value, "T must be MoveAssignable");
 
@@ -221,8 +219,8 @@ void span<T, E>::push_back(value_type input) noexcept(std::is_nothrow_move_assig
 template <typename T, std::size_t E>
 template <typename InputIterator>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::push_back(InputIterator first,
-                           InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
+void circular_view<T, E>::push_back(InputIterator first,
+                                    InputIterator last) noexcept(std::is_nothrow_copy_assignable<value_type>::value)
 {
     static_assert(std::is_copy_assignable<T>::value, "T must be CopyAssignable");
 
@@ -235,7 +233,7 @@ void span<T, E>::push_back(InputIterator first,
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::pop_front() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
+auto circular_view<T, E>::pop_front() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
 {
     static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
 
@@ -246,7 +244,7 @@ auto span<T, E>::pop_front() noexcept(std::is_nothrow_move_constructible<value_t
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::pop_back() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
+auto circular_view<T, E>::pop_back() noexcept(std::is_nothrow_move_constructible<value_type>::value) -> value_type
 {
     static_assert(std::is_move_constructible<T>::value, "T must be MoveConstructible");
 
@@ -257,7 +255,7 @@ auto span<T, E>::pop_back() noexcept(std::is_nothrow_move_constructible<value_ty
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::expand_front(size_type count) noexcept
+void circular_view<T, E>::expand_front(size_type count) noexcept
 {
     assert(count <= capacity());
 
@@ -275,7 +273,7 @@ void span<T, E>::expand_front(size_type count) noexcept
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::expand_back(size_type count) noexcept
+void circular_view<T, E>::expand_back(size_type count) noexcept
 {
     assert(count <= capacity());
 
@@ -292,7 +290,7 @@ void span<T, E>::expand_back(size_type count) noexcept
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::remove_front(size_type count) noexcept
+void circular_view<T, E>::remove_front(size_type count) noexcept
 {
     assert(size() > 0);
     assert(count <= size());
@@ -302,7 +300,7 @@ void span<T, E>::remove_front(size_type count) noexcept
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::remove_back(size_type count) noexcept
+void circular_view<T, E>::remove_back(size_type count) noexcept
 {
     assert(size() > 0);
     assert(count <= size());
@@ -313,7 +311,7 @@ void span<T, E>::remove_back(size_type count) noexcept
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::rotate_front() noexcept(vista::detail::is_nothrow_swappable<value_type>::value)
+void circular_view<T, E>::rotate_front() noexcept(vista::detail::is_nothrow_swappable<value_type>::value)
 {
     if (empty())
         return;
@@ -329,83 +327,83 @@ void span<T, E>::rotate_front() noexcept(vista::detail::is_nothrow_swappable<val
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::begin() noexcept -> iterator
+auto circular_view<T, E>::begin() noexcept -> iterator
 {
     return iterator(this, vindex(front_index()));
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::begin() const noexcept -> const_iterator
+constexpr auto circular_view<T, E>::begin() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(front_index()));
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::cbegin() const noexcept -> const_iterator
+constexpr auto circular_view<T, E>::cbegin() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(front_index()));
 }
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::end() noexcept -> iterator
+auto circular_view<T, E>::end() noexcept -> iterator
 {
     return iterator(this, vindex(member.next));
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::end() const noexcept -> const_iterator
+constexpr auto circular_view<T, E>::end() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(member.next));
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::cend() const noexcept -> const_iterator
+constexpr auto circular_view<T, E>::cend() const noexcept -> const_iterator
 {
     return const_iterator(this, vindex(member.next));
 }
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::rbegin() noexcept -> reverse_iterator
+auto circular_view<T, E>::rbegin() noexcept -> reverse_iterator
 {
     return reverse_iterator(std::move(end()));
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::rbegin() const noexcept -> const_reverse_iterator
+constexpr auto circular_view<T, E>::rbegin() const noexcept -> const_reverse_iterator
 {
     return const_reverse_iterator(std::move(end()));
 }
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::rend() noexcept -> reverse_iterator
+auto circular_view<T, E>::rend() noexcept -> reverse_iterator
 {
     return reverse_iterator(std::move(begin()));
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::rend() const noexcept -> const_reverse_iterator
+constexpr auto circular_view<T, E>::rend() const noexcept -> const_reverse_iterator
 {
     return const_reverse_iterator(std::move(begin()));
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::crbegin() const noexcept -> const_reverse_iterator
+constexpr auto circular_view<T, E>::crbegin() const noexcept -> const_reverse_iterator
 {
     return const_reverse_iterator(std::move(end()));
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::crend() const noexcept -> const_reverse_iterator
+constexpr auto circular_view<T, E>::crend() const noexcept -> const_reverse_iterator
 {
     return const_reverse_iterator(std::move(begin()));
 }
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::first_segment() noexcept -> segment
+auto circular_view<T, E>::first_segment() noexcept -> segment
 {
     return (empty())
         ? segment()
@@ -417,7 +415,7 @@ auto span<T, E>::first_segment() noexcept -> segment
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::first_segment() const noexcept -> const_segment
+constexpr auto circular_view<T, E>::first_segment() const noexcept -> const_segment
 {
     return (empty())
         ? const_segment()
@@ -430,7 +428,7 @@ constexpr auto span<T, E>::first_segment() const noexcept -> const_segment
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::last_segment() noexcept -> segment
+auto circular_view<T, E>::last_segment() noexcept -> segment
 {
     return wraparound() && (index(member.next) < size())
         ? segment(member.data,
@@ -439,7 +437,7 @@ auto span<T, E>::last_segment() noexcept -> segment
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::last_segment() const noexcept -> const_segment
+constexpr auto circular_view<T, E>::last_segment() const noexcept -> const_segment
 {
     return wraparound() && (index(member.next) < size())
         ? const_segment(member.data,
@@ -449,7 +447,7 @@ constexpr auto span<T, E>::last_segment() const noexcept -> const_segment
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::first_unused_segment() noexcept -> segment
+auto circular_view<T, E>::first_unused_segment() noexcept -> segment
 {
     return (full())
         ? segment()
@@ -458,7 +456,7 @@ auto span<T, E>::first_unused_segment() noexcept -> segment
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::first_unused_segment() const noexcept -> const_segment
+constexpr auto circular_view<T, E>::first_unused_segment() const noexcept -> const_segment
 {
     return (full())
         ? const_segment()
@@ -471,7 +469,7 @@ constexpr auto span<T, E>::first_unused_segment() const noexcept -> const_segmen
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::last_unused_segment() noexcept -> segment
+auto circular_view<T, E>::last_unused_segment() noexcept -> segment
 {
     return (full() || !unused_wraparound())
         ? segment()
@@ -480,7 +478,7 @@ auto span<T, E>::last_unused_segment() noexcept -> segment
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::last_unused_segment() const noexcept -> const_segment
+constexpr auto circular_view<T, E>::last_unused_segment() const noexcept -> const_segment
 {
     return (full() || !unused_wraparound())
         ? const_segment()
@@ -491,58 +489,58 @@ constexpr auto span<T, E>::last_unused_segment() const noexcept -> const_segment
 //-----------------------------------------------------------------------------
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::index(size_type position) const noexcept -> size_type
+constexpr auto circular_view<T, E>::index(size_type position) const noexcept -> size_type
 {
     return member.modulo(position, member.capacity());
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::vindex(size_type position) const noexcept -> size_type
+constexpr auto circular_view<T, E>::vindex(size_type position) const noexcept -> size_type
 {
     return member.modulo(position, 2 * member.capacity());
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::front_index() const noexcept -> size_type
+constexpr auto circular_view<T, E>::front_index() const noexcept -> size_type
 {
     return member.next - member.size;
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::back_index() const noexcept -> size_type
+constexpr auto circular_view<T, E>::back_index() const noexcept -> size_type
 {
     return member.next - 1;
 }
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::at(size_type position) noexcept -> reference
+auto circular_view<T, E>::at(size_type position) noexcept -> reference
 {
     return member.data[index(position)];
 }
 
 template <typename T, std::size_t E>
-constexpr auto span<T, E>::at(size_type position) const noexcept -> const_reference
+constexpr auto circular_view<T, E>::at(size_type position) const noexcept -> const_reference
 {
     return member.data[index(position)];
 }
 
 template <typename T, std::size_t E>
-constexpr bool span<T, E>::wraparound() const noexcept
+constexpr bool circular_view<T, E>::wraparound() const noexcept
 {
     return index(front_index()) > index(back_index());
 }
 
 template <typename T, std::size_t E>
-constexpr bool span<T, E>::unused_wraparound() const noexcept
+constexpr bool circular_view<T, E>::unused_wraparound() const noexcept
 {
     return front_index() > capacity();
 }
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::rotate_range(size_type lower_length,
-                              size_type upper_length) noexcept(vista::detail::is_nothrow_swappable<value_type>::value)
+void circular_view<T, E>::rotate_range(size_type lower_length,
+                                       size_type upper_length) noexcept(vista::detail::is_nothrow_swappable<value_type>::value)
 {
     // Based on Gries-Mills block swapping rotate
     if (lower_length == 0 || upper_length == 0)
@@ -566,9 +564,9 @@ void span<T, E>::rotate_range(size_type lower_length,
 
 template <typename T, std::size_t E>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::swap_range(size_type lhs,
-                            size_type rhs,
-                            size_type length) noexcept(vista::detail::is_nothrow_swappable<value_type>::value)
+void circular_view<T, E>::swap_range(size_type lhs,
+                                     size_type rhs,
+                                     size_type length) noexcept(vista::detail::is_nothrow_swappable<value_type>::value)
 {
     for (size_type k = 0; k < length; ++k)
     {
@@ -578,7 +576,7 @@ void span<T, E>::swap_range(size_type lhs,
  }
 
 //-----------------------------------------------------------------------------
-// span<T>::member_storage fixed extent
+// circular_view<T>::member_storage fixed extent
 //-----------------------------------------------------------------------------
 
 // std::addressof(x) and std::distance(a, b) are not constexpr before C++17, so
@@ -586,7 +584,7 @@ void span<T, E>::swap_range(size_type lhs,
 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
-constexpr span<T, E>::member_storage<T1, E1>::member_storage() noexcept
+constexpr circular_view<T, E>::member_storage<T1, E1>::member_storage() noexcept
     : data(nullptr),
       size(0),
       next(0)
@@ -595,9 +593,9 @@ constexpr span<T, E>::member_storage<T1, E1>::member_storage() noexcept
 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
-constexpr span<T, E>::member_storage<T1, E1>::member_storage(pointer data,
-                                                             size_type size,
-                                                             size_type next) noexcept
+constexpr circular_view<T, E>::member_storage<T1, E1>::member_storage(pointer data,
+                                                                      size_type size,
+                                                                      size_type next) noexcept
     : data(data),
       size(size),
       next(next)
@@ -606,8 +604,8 @@ constexpr span<T, E>::member_storage<T1, E1>::member_storage(pointer data,
 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
-constexpr span<T, E>::member_storage<T1, E1>::member_storage(const member_storage& other,
-                                                             pointer data) noexcept
+constexpr circular_view<T, E>::member_storage<T1, E1>::member_storage(const member_storage& other,
+                                                                      pointer data) noexcept
     : data(data),
       size(other.size),
       next(other.next)
@@ -617,8 +615,7 @@ constexpr span<T, E>::member_storage<T1, E1>::member_storage(const member_storag
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
 template <typename OtherT, std::size_t OtherExtent>
-constexpr span<T, E>::member_storage<T1, E1>::member_storage(const span<OtherT,
-                                                             OtherExtent>& other) noexcept
+constexpr circular_view<T, E>::member_storage<T1, E1>::member_storage(const circular_view<OtherT, OtherExtent>& other) noexcept
     : data(other.member.data),
       size(other.member.size),
       next(other.member.next)
@@ -629,8 +626,8 @@ template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
 template <typename ContiguousIterator>
 VISTA_CXX14_CONSTEXPR
-span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin,
-                                                   ContiguousIterator end) noexcept
+circular_view<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin,
+                                                            ContiguousIterator end) noexcept
     : data(begin == end ? nullptr : &*begin),
       size(0),
       next(size_type(end - begin))
@@ -642,10 +639,10 @@ template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
 template <typename ContiguousIterator>
 VISTA_CXX14_CONSTEXPR
-span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin,
-                                                   ContiguousIterator end,
-                                                   ContiguousIterator first,
-                                                   size_type length) noexcept
+circular_view<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin,
+                                                            ContiguousIterator end,
+                                                            ContiguousIterator first,
+                                                            size_type length) noexcept
     : data(begin == end ? nullptr : &*begin),
       size(length),
       next(size_type(first - begin) + length)
@@ -656,7 +653,7 @@ span<T, E>::member_storage<T1, E1>::member_storage(ContiguousIterator begin,
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
 template <std::size_t N>
-constexpr span<T, E>::member_storage<T1, E1>::member_storage(value_type (&array)[N]) noexcept
+constexpr circular_view<T, E>::member_storage<T1, E1>::member_storage(value_type (&array)[N]) noexcept
     : member_storage(array, array + N)
 {
     static_assert(N >= E1, "N cannot be smaller than capacity");
@@ -664,7 +661,7 @@ constexpr span<T, E>::member_storage<T1, E1>::member_storage(value_type (&array)
 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
-constexpr auto span<T, E>::member_storage<T1, E1>::capacity() const noexcept -> size_type
+constexpr auto circular_view<T, E>::member_storage<T1, E1>::capacity() const noexcept -> size_type
 {
     return E1;
 }
@@ -672,15 +669,15 @@ constexpr auto span<T, E>::member_storage<T1, E1>::capacity() const noexcept -> 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::member_storage<T1, E1>::capacity(size_type) noexcept
+void circular_view<T, E>::member_storage<T1, E1>::capacity(size_type) noexcept
 {
 }
 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::member_storage<T1, E1>::assign(const member_storage& other,
-                                                pointer data) noexcept
+void circular_view<T, E>::member_storage<T1, E1>::assign(const member_storage& other,
+                                                         pointer data) noexcept
 {
     this->data = data;
     this->size = other.size;
@@ -689,8 +686,8 @@ void span<T, E>::member_storage<T1, E1>::assign(const member_storage& other,
 
 template <typename T, std::size_t E>
 template <typename T1, std::size_t E1>
-constexpr auto span<T, E>::member_storage<T1, E1>::modulo(size_type value,
-                                                          size_type n) const noexcept -> size_type
+constexpr auto circular_view<T, E>::member_storage<T1, E1>::modulo(size_type value,
+                                                                   size_type n) const noexcept -> size_type
 {
     return ((n & (n - 1)) == 0)
         ? value & (n - 1) // Power of two
@@ -698,12 +695,12 @@ constexpr auto span<T, E>::member_storage<T1, E1>::modulo(size_type value,
 }
 
 //-----------------------------------------------------------------------------
-// span<T>::member_storage dynamic extent
+// circular_view<T>::member_storage dynamic extent
 //-----------------------------------------------------------------------------
 
 template <typename T, std::size_t E>
 template <typename T1>
-constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage() noexcept
+constexpr circular_view<T, E>::member_storage<T1, dynamic_extent>::member_storage() noexcept
     : data(nullptr),
       cap(0),
       size(0),
@@ -713,10 +710,10 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage() noexc
 
 template <typename T, std::size_t E>
 template <typename T1>
-constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(pointer data,
-                                                                         size_type capacity,
-                                                                         size_type size,
-                                                                         size_type next) noexcept
+constexpr circular_view<T, E>::member_storage<T1, dynamic_extent>::member_storage(pointer data,
+                                                                                  size_type capacity,
+                                                                                  size_type size,
+                                                                                  size_type next) noexcept
     : data(data),
       cap(capacity),
       size(size),
@@ -726,8 +723,8 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(pointer
 
 template <typename T, std::size_t E>
 template <typename T1>
-constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(const member_storage& other,
-                                                                         pointer data) noexcept
+constexpr circular_view<T, E>::member_storage<T1, dynamic_extent>::member_storage(const member_storage& other,
+                                                                                  pointer data) noexcept
     : data(data),
       cap(other.cap),
       size(other.size),
@@ -738,7 +735,7 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(const m
 template <typename T, std::size_t E>
 template <typename T1>
 template <typename OtherT, std::size_t OtherExtent>
-constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(const span<OtherT, OtherExtent>& other) noexcept
+constexpr circular_view<T, E>::member_storage<T1, dynamic_extent>::member_storage(const circular_view<OtherT, OtherExtent>& other) noexcept
     : data(other.member.data),
       cap(other.member.capacity()),
       size(other.member.size),
@@ -749,8 +746,8 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(const s
 template <typename T, std::size_t E>
 template <typename T1>
 template <typename ContiguousIterator>
-constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(ContiguousIterator begin,
-                                                                         ContiguousIterator end) noexcept
+constexpr circular_view<T, E>::member_storage<T1, dynamic_extent>::member_storage(ContiguousIterator begin,
+                                                                                  ContiguousIterator end) noexcept
     : data(begin == end ? nullptr : &*begin),
       cap(size_type(end - begin)),
       size(0),
@@ -761,10 +758,10 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(Contigu
 template <typename T, std::size_t E>
 template <typename T1>
 template <typename ContiguousIterator>
-constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(ContiguousIterator begin,
-                                                                         ContiguousIterator end,
-                                                                         ContiguousIterator first,
-                                                                         size_type length) noexcept
+constexpr circular_view<T, E>::member_storage<T1, dynamic_extent>::member_storage(ContiguousIterator begin,
+                                                                                  ContiguousIterator end,
+                                                                                  ContiguousIterator first,
+                                                                                  size_type length) noexcept
     : data(begin == end ? nullptr : &*begin),
       cap(size_type(end - begin)),
       size(length),
@@ -775,14 +772,14 @@ constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(Contigu
 template <typename T, std::size_t E>
 template <typename T1>
 template <std::size_t N>
-constexpr span<T, E>::member_storage<T1, dynamic_extent>::member_storage(value_type (&array)[N]) noexcept
+constexpr circular_view<T, E>::member_storage<T1, dynamic_extent>::member_storage(value_type (&array)[N]) noexcept
     : member_storage(array, array + N)
 {
 }
 
 template <typename T, std::size_t E>
 template <typename T1>
-constexpr auto span<T, E>::member_storage<T1, dynamic_extent>::capacity() const noexcept -> size_type
+constexpr auto circular_view<T, E>::member_storage<T1, dynamic_extent>::capacity() const noexcept -> size_type
 {
     return cap;
 }
@@ -790,7 +787,7 @@ constexpr auto span<T, E>::member_storage<T1, dynamic_extent>::capacity() const 
 template <typename T, std::size_t E>
 template <typename T1>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::member_storage<T1, dynamic_extent>::capacity(size_type value) noexcept
+void circular_view<T, E>::member_storage<T1, dynamic_extent>::capacity(size_type value) noexcept
 {
     cap = value;
 }
@@ -798,8 +795,8 @@ void span<T, E>::member_storage<T1, dynamic_extent>::capacity(size_type value) n
 template <typename T, std::size_t E>
 template <typename T1>
 VISTA_CXX14_CONSTEXPR
-void span<T, E>::member_storage<T1, dynamic_extent>::assign(const member_storage& other,
-                                                            pointer data) noexcept
+void circular_view<T, E>::member_storage<T1, dynamic_extent>::assign(const member_storage& other,
+                                                                     pointer data) noexcept
 {
     this->data = data;
     capacity(other.capacity());
@@ -809,8 +806,8 @@ void span<T, E>::member_storage<T1, dynamic_extent>::assign(const member_storage
 
 template <typename T, std::size_t E>
 template <typename T1>
-constexpr auto span<T, E>::member_storage<T1, dynamic_extent>::modulo(size_type value,
-                                                                      size_type n) const noexcept -> size_type
+constexpr auto circular_view<T, E>::member_storage<T1, dynamic_extent>::modulo(size_type value,
+                                                                               size_type n) const noexcept -> size_type
 {
     return ((n & (n - 1)) == 0)
         ? value & (n - 1) // Power of two
@@ -818,13 +815,13 @@ constexpr auto span<T, E>::member_storage<T1, dynamic_extent>::modulo(size_type 
 }
 
 //-----------------------------------------------------------------------------
-// span<T>::basic_iterator
+// circular_view<T>::basic_iterator
 //-----------------------------------------------------------------------------
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr span<T, E>::basic_iterator<U>::basic_iterator(span_pointer parent,
-                                                        size_type position) noexcept
+constexpr circular_view<T, E>::basic_iterator<U>::basic_iterator(view_pointer parent,
+                                                                 size_type position) noexcept
     : parent(parent),
       current(position)
 {
@@ -833,7 +830,7 @@ constexpr span<T, E>::basic_iterator<U>::basic_iterator(span_pointer parent,
 template <typename T, std::size_t E>
 template <typename U>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::basic_iterator<U>::operator++() noexcept -> iterator_type&
+auto circular_view<T, E>::basic_iterator<U>::operator++() noexcept -> iterator_type&
 {
     assert(parent);
 
@@ -844,7 +841,7 @@ auto span<T, E>::basic_iterator<U>::operator++() noexcept -> iterator_type&
 template <typename T, std::size_t E>
 template <typename U>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::basic_iterator<U>::operator++(int) noexcept -> iterator_type
+auto circular_view<T, E>::basic_iterator<U>::operator++(int) noexcept -> iterator_type
 {
     assert(parent);
 
@@ -856,7 +853,7 @@ auto span<T, E>::basic_iterator<U>::operator++(int) noexcept -> iterator_type
 template <typename T, std::size_t E>
 template <typename U>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::basic_iterator<U>::operator--() noexcept -> iterator_type&
+auto circular_view<T, E>::basic_iterator<U>::operator--() noexcept -> iterator_type&
 {
     assert(parent);
 
@@ -867,7 +864,7 @@ auto span<T, E>::basic_iterator<U>::operator--() noexcept -> iterator_type&
 template <typename T, std::size_t E>
 template <typename U>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::basic_iterator<U>::operator--(int) noexcept -> iterator_type
+auto circular_view<T, E>::basic_iterator<U>::operator--(int) noexcept -> iterator_type
 {
     assert(parent);
 
@@ -879,7 +876,7 @@ auto span<T, E>::basic_iterator<U>::operator--(int) noexcept -> iterator_type
 template <typename T, std::size_t E>
 template <typename U>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::basic_iterator<U>::operator+=(difference_type amount) noexcept -> iterator_type&
+auto circular_view<T, E>::basic_iterator<U>::operator+=(difference_type amount) noexcept -> iterator_type&
 {
     assert(parent);
 
@@ -889,7 +886,7 @@ auto span<T, E>::basic_iterator<U>::operator+=(difference_type amount) noexcept 
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr auto span<T, E>::basic_iterator<U>::operator+(difference_type amount) const noexcept -> iterator_type
+constexpr auto circular_view<T, E>::basic_iterator<U>::operator+(difference_type amount) const noexcept -> iterator_type
 {
     VISTA_CXX14(assert(parent));
 
@@ -899,7 +896,7 @@ constexpr auto span<T, E>::basic_iterator<U>::operator+(difference_type amount) 
 template <typename T, std::size_t E>
 template <typename U>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::basic_iterator<U>::operator-=(difference_type amount) noexcept -> iterator_type&
+auto circular_view<T, E>::basic_iterator<U>::operator-=(difference_type amount) noexcept -> iterator_type&
 {
     assert(parent);
 
@@ -909,7 +906,7 @@ auto span<T, E>::basic_iterator<U>::operator-=(difference_type amount) noexcept 
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr auto span<T, E>::basic_iterator<U>::operator-(difference_type amount) const noexcept -> iterator_type
+constexpr auto circular_view<T, E>::basic_iterator<U>::operator-(difference_type amount) const noexcept -> iterator_type
 {
     VISTA_CXX14(assert(parent));
 
@@ -918,7 +915,7 @@ constexpr auto span<T, E>::basic_iterator<U>::operator-(difference_type amount) 
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr auto span<T, E>::basic_iterator<U>::operator-(const iterator_type& other) const noexcept -> difference_type
+constexpr auto circular_view<T, E>::basic_iterator<U>::operator-(const iterator_type& other) const noexcept -> difference_type
 {
     VISTA_CXX14(assert(parent));
 
@@ -928,7 +925,7 @@ constexpr auto span<T, E>::basic_iterator<U>::operator-(const iterator_type& oth
 template <typename T, std::size_t E>
 template <typename U>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::basic_iterator<U>::operator[](difference_type amount) noexcept -> reference
+auto circular_view<T, E>::basic_iterator<U>::operator[](difference_type amount) noexcept -> reference
 {
     assert(parent);
 
@@ -938,7 +935,7 @@ auto span<T, E>::basic_iterator<U>::operator[](difference_type amount) noexcept 
 template <typename T, std::size_t E>
 template <typename U>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::basic_iterator<U>::operator-> () noexcept -> pointer
+auto circular_view<T, E>::basic_iterator<U>::operator-> () noexcept -> pointer
 {
     assert(parent);
 
@@ -948,7 +945,7 @@ auto span<T, E>::basic_iterator<U>::operator-> () noexcept -> pointer
 template <typename T, std::size_t E>
 template <typename U>
 VISTA_CXX14_CONSTEXPR
-auto span<T, E>::basic_iterator<U>::operator*() noexcept -> reference
+auto circular_view<T, E>::basic_iterator<U>::operator*() noexcept -> reference
 {
     assert(parent);
 
@@ -957,7 +954,7 @@ auto span<T, E>::basic_iterator<U>::operator*() noexcept -> reference
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr auto span<T, E>::basic_iterator<U>::operator*() const noexcept -> const_reference
+constexpr auto circular_view<T, E>::basic_iterator<U>::operator*() const noexcept -> const_reference
 {
     VISTA_CXX14(assert(parent));
 
@@ -966,7 +963,7 @@ constexpr auto span<T, E>::basic_iterator<U>::operator*() const noexcept -> cons
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr bool span<T, E>::basic_iterator<U>::operator==(const iterator_type& other) const noexcept
+constexpr bool circular_view<T, E>::basic_iterator<U>::operator==(const iterator_type& other) const noexcept
 {
     VISTA_CXX14(assert(parent));
     VISTA_CXX14(assert(parent == other.parent));
@@ -976,14 +973,14 @@ constexpr bool span<T, E>::basic_iterator<U>::operator==(const iterator_type& ot
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr bool span<T, E>::basic_iterator<U>::operator!=(const iterator_type& other) const noexcept
+constexpr bool circular_view<T, E>::basic_iterator<U>::operator!=(const iterator_type& other) const noexcept
 {
     return !operator==(other);
 }
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr bool span<T, E>::basic_iterator<U>::operator<(const iterator_type& other) const noexcept
+constexpr bool circular_view<T, E>::basic_iterator<U>::operator<(const iterator_type& other) const noexcept
 {
     VISTA_CXX14(assert(parent));
     VISTA_CXX14(assert(parent == other.parent));
@@ -993,7 +990,7 @@ constexpr bool span<T, E>::basic_iterator<U>::operator<(const iterator_type& oth
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr bool span<T, E>::basic_iterator<U>::operator<=(const iterator_type& other) const noexcept
+constexpr bool circular_view<T, E>::basic_iterator<U>::operator<=(const iterator_type& other) const noexcept
 {
     VISTA_CXX14(assert(parent));
     VISTA_CXX14(assert(parent == other.parent));
@@ -1003,7 +1000,7 @@ constexpr bool span<T, E>::basic_iterator<U>::operator<=(const iterator_type& ot
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr bool span<T, E>::basic_iterator<U>::operator>(const iterator_type& other) const noexcept
+constexpr bool circular_view<T, E>::basic_iterator<U>::operator>(const iterator_type& other) const noexcept
 {
     VISTA_CXX14(assert(parent));
     VISTA_CXX14(assert(parent == other.parent));
@@ -1013,7 +1010,7 @@ constexpr bool span<T, E>::basic_iterator<U>::operator>(const iterator_type& oth
 
 template <typename T, std::size_t E>
 template <typename U>
-constexpr bool span<T, E>::basic_iterator<U>::operator>=(const iterator_type& other) const noexcept
+constexpr bool circular_view<T, E>::basic_iterator<U>::operator>=(const iterator_type& other) const noexcept
 {
     VISTA_CXX14(assert(parent));
     VISTA_CXX14(assert(parent == other.parent));
@@ -1021,5 +1018,4 @@ constexpr bool span<T, E>::basic_iterator<U>::operator>=(const iterator_type& ot
     return current >= other.current;
 }
 
-} // namespace circular
 } // namespace vista

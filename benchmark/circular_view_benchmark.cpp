@@ -9,12 +9,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <benchmark/benchmark.h>
-#include <vista/circular/span.hpp>
+#include <vista/circular_view.hpp>
 
 void dynamic_empty(benchmark::State& state)
 {
     int storage[8];
-    vista::circular::span<int> window(storage);
+    vista::circular_view<int> window(storage);
     window.assign({ 1, 2, 3, 4, 5, 6, 7, 8 });
 
     for (auto _ : state)
@@ -28,7 +28,7 @@ BENCHMARK(dynamic_empty);
 void fixed_empty(benchmark::State& state)
 {
     int storage[8];
-    vista::circular::span<int, 8> window(storage);
+    vista::circular_view<int, 8> window(storage);
     window.assign({ 1, 2, 3, 4, 5, 6, 7, 8 });
 
     for (auto _ : state)
@@ -42,7 +42,7 @@ BENCHMARK(fixed_empty);
 void dynamic_full(benchmark::State& state)
 {
     int storage[8];
-    vista::circular::span<int> window(storage);
+    vista::circular_view<int> window(storage);
     window.assign({ 1, 2, 3, 4, 5, 6, 7, 8 });
 
     for (auto _ : state)
@@ -56,7 +56,7 @@ BENCHMARK(dynamic_full);
 void fixed_full(benchmark::State& state)
 {
     int storage[8];
-    vista::circular::span<int, 8> window(storage);
+    vista::circular_view<int, 8> window(storage);
     window.assign({ 1, 2, 3, 4, 5, 6, 7, 8 });
 
     for (auto _ : state)
@@ -70,7 +70,7 @@ BENCHMARK(fixed_full);
 void dynamic_push_back(benchmark::State& state)
 {
     int storage[256];
-    vista::circular::span<int> window(storage);
+    vista::circular_view<int> window(storage);
 
     for (auto _ : state)
     {
@@ -83,7 +83,7 @@ BENCHMARK(dynamic_push_back);
 void fixed_push_back(benchmark::State& state)
 {
     int storage[256];
-    vista::circular::span<int, 256> window(storage);
+    vista::circular_view<int, 256> window(storage);
 
     for (auto _ : state)
     {
@@ -96,7 +96,7 @@ BENCHMARK(fixed_push_back);
 void dynamic_push_front(benchmark::State& state)
 {
     int storage[256];
-    vista::circular::span<int> window(storage);
+    vista::circular_view<int> window(storage);
 
     for (auto _ : state)
     {
@@ -109,7 +109,7 @@ BENCHMARK(dynamic_push_front);
 void fixed_push_front(benchmark::State& state)
 {
     int storage[256];
-    vista::circular::span<int, 256> window(storage);
+    vista::circular_view<int, 256> window(storage);
 
     for (auto _ : state)
     {
@@ -122,7 +122,7 @@ BENCHMARK(fixed_push_front);
 void dynamic_push_back_pop_front(benchmark::State& state)
 {
     int storage[256];
-    vista::circular::span<int> window(storage);
+    vista::circular_view<int> window(storage);
     window.assign({1, 2, 3, 4, 5});
 
     for (auto _ : state)
@@ -137,7 +137,7 @@ BENCHMARK(dynamic_push_back_pop_front);
 void fixed_push_back_pop_front(benchmark::State& state)
 {
     int storage[256];
-    vista::circular::span<int, 256> window(storage);
+    vista::circular_view<int, 256> window(storage);
     window.assign({1, 2, 3, 4, 5});
 
     for (auto _ : state)
@@ -152,7 +152,7 @@ BENCHMARK(fixed_push_back_pop_front);
 void dynamic_push_front_pop_back(benchmark::State& state)
 {
     int storage[256];
-    vista::circular::span<int> window(storage);
+    vista::circular_view<int> window(storage);
     window.assign({1, 2, 3, 4, 5});
 
     for (auto _ : state)
@@ -167,7 +167,7 @@ BENCHMARK(dynamic_push_front_pop_back);
 void fixed_push_front_pop_back(benchmark::State& state)
 {
     int storage[256];
-    vista::circular::span<int, 256> window(storage);
+    vista::circular_view<int, 256> window(storage);
     window.assign({1, 2, 3, 4, 5});
 
     for (auto _ : state)

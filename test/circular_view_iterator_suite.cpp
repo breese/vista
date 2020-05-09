@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <iterator>
 #include <boost/detail/lightweight_test.hpp>
-#include <vista/circular/span.hpp>
+#include <vista/circular_view.hpp>
 
 using namespace vista;
 
@@ -24,30 +24,30 @@ namespace concept_suite
 
 void iterator_move_constructible()
 {
-    static_assert(std::is_move_constructible<circular::span<int>::iterator>::value, "is_move_constructible");
+    static_assert(std::is_move_constructible<circular_view<int>::iterator>::value, "is_move_constructible");
 }
 
 void iterator_copy_constructible()
 {
-    static_assert(std::is_copy_constructible<circular::span<int>::iterator>::value, "is_copy_constructible");
+    static_assert(std::is_copy_constructible<circular_view<int>::iterator>::value, "is_copy_constructible");
 }
 
 void iterator_copy_assignable()
 {
-    static_assert(std::is_copy_assignable<circular::span<int>::iterator>::value, "is_copy_assignable");
+    static_assert(std::is_copy_assignable<circular_view<int>::iterator>::value, "is_copy_assignable");
 }
 
 void iterator_destructible()
 {
-    static_assert(std::is_destructible<circular::span<int>::iterator>::value, "is_destructible");
+    static_assert(std::is_destructible<circular_view<int>::iterator>::value, "is_destructible");
 }
 
 void iterator_swappable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin();
-    circular::span<int>::iterator b = span.end();
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin();
+    circular_view<int>::iterator b = span.end();
     using std::swap;
     swap(a, b);
     BOOST_TEST(a == span.end());
@@ -56,18 +56,18 @@ void iterator_swappable()
 
 void iterator_traits()
 {
-    static_assert(std::is_same<std::iterator_traits<circular::span<int>::iterator>::value_type, circular::span<int>::iterator::value_type>::value, "value_type");
-    static_assert(std::is_same<std::iterator_traits<circular::span<int>::iterator>::difference_type, circular::span<int>::iterator::difference_type>::value, "difference_type");
-    static_assert(std::is_same<std::iterator_traits<circular::span<int>::iterator>::reference, circular::span<int>::iterator::reference>::value, "reference");
-    static_assert(std::is_same<std::iterator_traits<circular::span<int>::iterator>::pointer, circular::span<int>::iterator::pointer>::value, "pointer");
-    static_assert(std::is_same<std::iterator_traits<circular::span<int>::iterator>::iterator_category, circular::span<int>::iterator::iterator_category>::value, "iterator_category");
+    static_assert(std::is_same<std::iterator_traits<circular_view<int>::iterator>::value_type, circular_view<int>::iterator::value_type>::value, "value_type");
+    static_assert(std::is_same<std::iterator_traits<circular_view<int>::iterator>::difference_type, circular_view<int>::iterator::difference_type>::value, "difference_type");
+    static_assert(std::is_same<std::iterator_traits<circular_view<int>::iterator>::reference, circular_view<int>::iterator::reference>::value, "reference");
+    static_assert(std::is_same<std::iterator_traits<circular_view<int>::iterator>::pointer, circular_view<int>::iterator::pointer>::value, "pointer");
+    static_assert(std::is_same<std::iterator_traits<circular_view<int>::iterator>::iterator_category, circular_view<int>::iterator::iterator_category>::value, "iterator_category");
 }
 
 void iterator_dereferenceable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin();
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin();
     int result = *a;
     BOOST_TEST_EQ(result, 11);
 }
@@ -75,9 +75,9 @@ void iterator_dereferenceable()
 void iterator_incrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin();
-    circular::span<int>::iterator& b = ++a;
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin();
+    circular_view<int>::iterator& b = ++a;
     BOOST_TEST(b == a);
     BOOST_TEST(b != span.begin());
 }
@@ -85,34 +85,34 @@ void iterator_incrementable()
 void input_iterator_equality_comparable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin();
-    circular::span<int>::iterator b = span.begin();
-    circular::span<int>::iterator c = span.begin();
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin();
+    circular_view<int>::iterator b = span.begin();
+    circular_view<int>::iterator c = span.begin();
     BOOST_TEST(a == a);
     BOOST_TEST(a == b);
     BOOST_TEST(b == a);
     BOOST_TEST(b == c);
     BOOST_TEST(a == c);
 
-    circular::span<int>::iterator d = span.end();
+    circular_view<int>::iterator d = span.end();
     BOOST_TEST(a != d);
 }
 
 void input_iterator_dereferenceable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin();
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin();
     BOOST_TEST_EQ(*a, 11);
 }
 
 void input_iterator_post_incrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin();
-    circular::span<int>::iterator b = a++;
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin();
+    circular_view<int>::iterator b = a++;
     BOOST_TEST(a != span.begin());
     BOOST_TEST(b == span.begin());
 }
@@ -122,12 +122,12 @@ void forward_iterator_default_constructible()
     // Only valid operations on default constructed iterator are assignment and
     // destruction (see [iterator.requirements.general] / 7)
 
-    static_assert(std::is_default_constructible<circular::span<int>::iterator>::value, "default constructible");
+    static_assert(std::is_default_constructible<circular_view<int>::iterator>::value, "default constructible");
 
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin();
-    circular::span<int>::iterator b; // Singular value not associated with span
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin();
+    circular_view<int>::iterator b; // Singular value not associated with span
     b = span.begin();
     BOOST_TEST(a == b);
     BOOST_TEST(b == a);
@@ -136,9 +136,9 @@ void forward_iterator_default_constructible()
 void forward_iterator_multipass()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin();
-    circular::span<int>::iterator b = a;
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin();
+    circular_view<int>::iterator b = a;
     BOOST_TEST(a == b);
     ++a;
     ++b;
@@ -149,10 +149,10 @@ void forward_iterator_multipass()
 void bidirectional_iterator_decrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin();
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin();
     ++a;
-    circular::span<int>::iterator& b = --a;
+    circular_view<int>::iterator& b = --a;
     BOOST_TEST(b == a);
     BOOST_TEST(b == span.begin());
 }
@@ -160,10 +160,10 @@ void bidirectional_iterator_decrementable()
 void bidirectional_iterator_post_decrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin();
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin();
     ++a;
-    circular::span<int>::iterator b = a--;
+    circular_view<int>::iterator b = a--;
     BOOST_TEST(a == span.begin());
     BOOST_TEST(b != span.begin());
 }
@@ -172,8 +172,8 @@ void random_access_iterator_addition_assignment()
 {
     // r += n
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin();
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin();
     a += 2;
     BOOST_TEST_EQ(std::distance(span.begin(), a), 2);
 }
@@ -182,11 +182,11 @@ void random_access_iterator_addition()
 {
     // a + n
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.begin() + 2;
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.begin() + 2;
     BOOST_TEST_EQ(std::distance(span.begin(), a), 2);
     // n + a
-    circular::span<int>::iterator b = 2 + span.begin();
+    circular_view<int>::iterator b = 2 + span.begin();
     BOOST_TEST_EQ(std::distance(span.begin(), b), 2);
 }
 
@@ -194,8 +194,8 @@ void random_access_iterator_subtraction_assignment()
 {
     // r -= n
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.end();
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.end();
     a -= 2;
     BOOST_TEST_EQ(std::distance(span.begin(), a), 2);
 }
@@ -204,8 +204,8 @@ void random_access_iterator_subtraction()
 {
     // a - n
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::iterator a = span.end() - 2;
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::iterator a = span.end() - 2;
     BOOST_TEST_EQ(std::distance(span.begin(), a), 2);
 }
 
@@ -213,8 +213,8 @@ void random_access_iterator_difference()
 {
     // b - a
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> alpha(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int> bravo(data.begin(), data.end(), std::next(data.begin()), data.size() - 1);
+    circular_view<int> alpha(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int> bravo(data.begin(), data.end(), std::next(data.begin()), data.size() - 1);
     BOOST_TEST_EQ(alpha.begin() - bravo.begin(), -1);
     BOOST_TEST_EQ(bravo.begin() - alpha.begin(), 1);
 }
@@ -223,7 +223,7 @@ void random_access_iterator_index()
 {
     // a[n]
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
     BOOST_TEST_EQ(span.begin()[2], 33);
     BOOST_TEST_EQ(span.cbegin()[2], 33);
 }
@@ -232,7 +232,7 @@ void random_access_iterator_less()
 {
     // a < b
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
     BOOST_TEST(!(span.begin() < span.begin()));
     BOOST_TEST(span.begin() < span.end());
     BOOST_TEST(!(span.end() < span.begin()));
@@ -243,7 +243,7 @@ void random_access_iterator_less_equal()
 {
     // a <= b
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
     BOOST_TEST(span.begin() <= span.begin());
     BOOST_TEST(span.begin() <= span.end());
     BOOST_TEST(!(span.end() <= span.begin()));
@@ -254,7 +254,7 @@ void random_access_iterator_greater()
 {
     // a > b
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
     BOOST_TEST(!(span.begin() > span.begin()));
     BOOST_TEST(!(span.begin() > span.end()));
     BOOST_TEST(span.end() > span.begin());
@@ -265,7 +265,7 @@ void random_access_iterator_greater_equal()
 {
     // a >= b
     std::vector<int> data = { 11, 22, 33, 44 };
-    circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
     BOOST_TEST(span.begin() >= span.begin());
     BOOST_TEST(!(span.begin() >= span.end()));
     BOOST_TEST(span.end() >= span.begin());
@@ -319,30 +319,30 @@ namespace concept_const_suite
 
 void iterator_move_constructible()
 {
-    static_assert(std::is_move_constructible<circular::span<int>::const_iterator>::value, "is_move_constructible");
+    static_assert(std::is_move_constructible<circular_view<int>::const_iterator>::value, "is_move_constructible");
 }
 
 void iterator_copy_constructible()
 {
-    static_assert(std::is_copy_constructible<circular::span<int>::const_iterator>::value, "is_copy_constructible");
+    static_assert(std::is_copy_constructible<circular_view<int>::const_iterator>::value, "is_copy_constructible");
 }
 
 void iterator_copy_assignable()
 {
-    static_assert(std::is_copy_assignable<circular::span<int>::const_iterator>::value, "is_copy_assignable");
+    static_assert(std::is_copy_assignable<circular_view<int>::const_iterator>::value, "is_copy_assignable");
 }
 
 void iterator_destructible()
 {
-    static_assert(std::is_destructible<circular::span<int>::const_iterator>::value, "is_destructible");
+    static_assert(std::is_destructible<circular_view<int>::const_iterator>::value, "is_destructible");
 }
 
 void iterator_swappable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin();
-    circular::span<int>::const_iterator b = span.end();
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin();
+    circular_view<int>::const_iterator b = span.end();
     using std::swap;
     swap(a, b);
     BOOST_TEST(a == span.end());
@@ -351,18 +351,18 @@ void iterator_swappable()
 
 void iterator_traits()
 {
-    static_assert(std::is_same<std::iterator_traits<circular::span<int>::const_iterator>::value_type, circular::span<int>::const_iterator::value_type>::value, "value_type");
-    static_assert(std::is_same<std::iterator_traits<circular::span<int>::const_iterator>::difference_type, circular::span<int>::const_iterator::difference_type>::value, "difference_type");
-    static_assert(std::is_same<std::iterator_traits<circular::span<int>::const_iterator>::reference, circular::span<int>::const_iterator::reference>::value, "reference");
-    static_assert(std::is_same<std::iterator_traits<circular::span<int>::const_iterator>::pointer, circular::span<int>::const_iterator::pointer>::value, "pointer");
-    static_assert(std::is_same<std::iterator_traits<circular::span<int>::const_iterator>::iterator_category, circular::span<int>::const_iterator::iterator_category>::value, "iterator_category");
+    static_assert(std::is_same<std::iterator_traits<circular_view<int>::const_iterator>::value_type, circular_view<int>::const_iterator::value_type>::value, "value_type");
+    static_assert(std::is_same<std::iterator_traits<circular_view<int>::const_iterator>::difference_type, circular_view<int>::const_iterator::difference_type>::value, "difference_type");
+    static_assert(std::is_same<std::iterator_traits<circular_view<int>::const_iterator>::reference, circular_view<int>::const_iterator::reference>::value, "reference");
+    static_assert(std::is_same<std::iterator_traits<circular_view<int>::const_iterator>::pointer, circular_view<int>::const_iterator::pointer>::value, "pointer");
+    static_assert(std::is_same<std::iterator_traits<circular_view<int>::const_iterator>::iterator_category, circular_view<int>::const_iterator::iterator_category>::value, "iterator_category");
 }
 
 void iterator_dereferenceable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin();
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin();
     int result = *a;
     BOOST_TEST_EQ(result, 11);
 }
@@ -370,9 +370,9 @@ void iterator_dereferenceable()
 void iterator_incrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin();
-    circular::span<int>::const_iterator& b = ++a;
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin();
+    circular_view<int>::const_iterator& b = ++a;
     BOOST_TEST(b == a);
     BOOST_TEST(b != span.begin());
 }
@@ -380,34 +380,34 @@ void iterator_incrementable()
 void input_iterator_equality_comparable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin();
-    circular::span<int>::const_iterator b = span.begin();
-    circular::span<int>::const_iterator c = span.begin();
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin();
+    circular_view<int>::const_iterator b = span.begin();
+    circular_view<int>::const_iterator c = span.begin();
     BOOST_TEST(a == a);
     BOOST_TEST(a == b);
     BOOST_TEST(b == a);
     BOOST_TEST(b == c);
     BOOST_TEST(a == c);
 
-    circular::span<int>::const_iterator d = span.end();
+    circular_view<int>::const_iterator d = span.end();
     BOOST_TEST(a != d);
 }
 
 void input_iterator_dereferenceable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin();
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin();
     BOOST_TEST_EQ(*a, 11);
 }
 
 void input_iterator_post_incrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin();
-    circular::span<int>::const_iterator b = a++;
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin();
+    circular_view<int>::const_iterator b = a++;
     BOOST_TEST(a != span.begin());
     BOOST_TEST(b == span.begin());
 }
@@ -417,12 +417,12 @@ void forward_iterator_default_constructible()
     // Only valid operations on default constructed iterator are assignment and
     // destruction (see [iterator.requirements.general] / 7)
 
-    static_assert(std::is_default_constructible<circular::span<int>::const_iterator>::value, "default constructible");
+    static_assert(std::is_default_constructible<circular_view<int>::const_iterator>::value, "default constructible");
 
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin();
-    circular::span<int>::const_iterator b; // Singular value not associated with span
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin();
+    circular_view<int>::const_iterator b; // Singular value not associated with span
     b = span.begin();
     BOOST_TEST(a == b);
     BOOST_TEST(b == a);
@@ -431,9 +431,9 @@ void forward_iterator_default_constructible()
 void forward_iterator_multipass()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin();
-    circular::span<int>::const_iterator b = a;
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin();
+    circular_view<int>::const_iterator b = a;
     BOOST_TEST(a == b);
     ++a;
     ++b;
@@ -444,10 +444,10 @@ void forward_iterator_multipass()
 void bidirectional_iterator_decrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin();
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin();
     ++a;
-    circular::span<int>::const_iterator& b = --a;
+    circular_view<int>::const_iterator& b = --a;
     BOOST_TEST(b == a);
     BOOST_TEST(b == span.begin());
 }
@@ -455,10 +455,10 @@ void bidirectional_iterator_decrementable()
 void bidirectional_iterator_post_decrementable()
 {
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin();
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin();
     ++a;
-    circular::span<int>::const_iterator b = a--;
+    circular_view<int>::const_iterator b = a--;
     BOOST_TEST(a == span.begin());
     BOOST_TEST(b != span.begin());
 }
@@ -467,8 +467,8 @@ void random_access_iterator_addition_assignment()
 {
     // r += n
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin();
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin();
     a += 2;
     BOOST_TEST_EQ(std::distance(span.begin(), a), 2);
 }
@@ -477,11 +477,11 @@ void random_access_iterator_addition()
 {
     // a + n
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.begin() + 2;
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.begin() + 2;
     BOOST_TEST_EQ(std::distance(span.begin(), a), 2);
     // n + a
-    circular::span<int>::const_iterator b = 2 + span.begin();
+    circular_view<int>::const_iterator b = 2 + span.begin();
     BOOST_TEST_EQ(std::distance(span.begin(), b), 2);
 }
 
@@ -489,8 +489,8 @@ void random_access_iterator_subtraction_assignment()
 {
     // r -= n
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.end();
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.end();
     a -= 2;
     BOOST_TEST_EQ(std::distance(span.begin(), a), 2);
 }
@@ -499,8 +499,8 @@ void random_access_iterator_subtraction()
 {
     // a - n
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
-    circular::span<int>::const_iterator a = span.end() - 2;
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
+    circular_view<int>::const_iterator a = span.end() - 2;
     BOOST_TEST_EQ(std::distance(span.begin(), a), 2);
 }
 
@@ -508,8 +508,8 @@ void random_access_iterator_difference()
 {
     // b - a
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> alpha(data.begin(), data.end(), data.begin(), data.size());
-    const circular::span<int> bravo(data.begin(), data.end(), std::next(data.begin()), data.size() - 1);
+    const circular_view<int> alpha(data.begin(), data.end(), data.begin(), data.size());
+    const circular_view<int> bravo(data.begin(), data.end(), std::next(data.begin()), data.size() - 1);
     BOOST_TEST_EQ(alpha.begin() - bravo.begin(), -1);
     BOOST_TEST_EQ(bravo.begin() - alpha.begin(), 1);
 }
@@ -518,7 +518,7 @@ void random_access_iterator_index()
 {
     // a[n]
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
     BOOST_TEST_EQ(span.begin()[2], 33);
     BOOST_TEST_EQ(span.cbegin()[2], 33);
 }
@@ -527,7 +527,7 @@ void random_access_iterator_less()
 {
     // a < b
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
     BOOST_TEST(!(span.begin() < span.begin()));
     BOOST_TEST(span.begin() < span.end());
     BOOST_TEST(!(span.end() < span.begin()));
@@ -538,7 +538,7 @@ void random_access_iterator_less_equal()
 {
     // a <= b
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
     BOOST_TEST(span.begin() <= span.begin());
     BOOST_TEST(span.begin() <= span.end());
     BOOST_TEST(!(span.end() <= span.begin()));
@@ -549,7 +549,7 @@ void random_access_iterator_greater()
 {
     // a > b
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
     BOOST_TEST(!(span.begin() > span.begin()));
     BOOST_TEST(!(span.begin() > span.end()));
     BOOST_TEST(span.end() > span.begin());
@@ -560,7 +560,7 @@ void random_access_iterator_greater_equal()
 {
     // a >= b
     std::vector<int> data = { 11, 22, 33, 44 };
-    const circular::span<int> span(data.begin(), data.end(), data.begin(), data.size());
+    const circular_view<int> span(data.begin(), data.end(), data.begin(), data.size());
     BOOST_TEST(span.begin() >= span.begin());
     BOOST_TEST(!(span.begin() >= span.end()));
     BOOST_TEST(span.end() >= span.begin());
@@ -615,14 +615,14 @@ namespace iterator_suite
 void test_empty()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     BOOST_TEST(span.begin() == span.end());
 }
 
 void test_iterator()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(11);
     BOOST_TEST(span.begin() != span.end());
     {
@@ -635,7 +635,7 @@ void test_iterator()
 void test_iterator_constructible()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(11);
     decltype(span)::iterator alpha; // DefaultConstructible
     alpha = span.begin();
@@ -647,7 +647,7 @@ void test_iterator_constructible()
 void test_const_iterator()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(11);
     BOOST_TEST(span.cbegin() != span.cend());
     {
@@ -661,7 +661,7 @@ void test_const_iterator_constructible()
 {
     // Also checks implicit conversion from iterator to const_iterator
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(11);
     decltype(span)::const_iterator alpha; // DefaultConstructible
     alpha = span.begin();
@@ -673,7 +673,7 @@ void test_const_iterator_constructible()
 void test_push_back()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(11);
     BOOST_TEST(span.begin() != span.end());
     {
@@ -716,7 +716,7 @@ void test_push_back()
 void test_push_front()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_front(11);
     {
         std::vector<int> expect = { 11 };
@@ -758,7 +758,7 @@ void test_push_front()
 void test_push_alternating()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(11);
     {
         std::vector<int> expect = { 11 };
@@ -819,7 +819,7 @@ namespace operator_suite
 void addition_assignment()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     {
         auto where = span.begin();
@@ -900,7 +900,7 @@ void addition_assignment()
 void addition()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     {
         auto where = span.begin();
@@ -961,7 +961,7 @@ void addition()
 void subtraction_assignment()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     {
         auto where = span.end();
@@ -1042,7 +1042,7 @@ void subtraction_assignment()
 void subtraction()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     {
         auto where = span.end();
@@ -1103,7 +1103,7 @@ void subtraction()
 void difference_partial()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // X X X X
     BOOST_TEST_EQ(span.end() - span.begin(), 0);
     // 11 X X X
@@ -1133,7 +1133,7 @@ void difference_partial()
 void difference_0()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     // 55 22 33 44
     span.push_back(55);
@@ -1168,7 +1168,7 @@ void difference_0()
 void difference_1()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // X 22 33 44
     span = { 11, 22, 33, 44 };
     span.remove_front();
@@ -1209,7 +1209,7 @@ void difference_1()
 void difference_2()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // X X 33 44
     span = { 11, 22, 33, 44 };
     span.remove_front(2);
@@ -1245,7 +1245,7 @@ void difference_2()
 void difference_3()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // X X X 44
     span = { 11, 22, 33, 44 };
     span.remove_front(3);
@@ -1276,7 +1276,7 @@ void difference_3()
 void index()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     BOOST_TEST_EQ(span.begin()[0], 11);
     BOOST_TEST_EQ(span.begin()[1], 22);
@@ -1311,7 +1311,7 @@ void index()
 void less()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     BOOST_TEST(!(span.begin() < span.begin()));
     BOOST_TEST(span.begin() < std::next(span.begin(), 1));
@@ -1381,7 +1381,7 @@ void less()
 void less_equal()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     BOOST_TEST(span.begin() <= span.begin());
     BOOST_TEST(span.begin() <= std::next(span.begin(), 1));
@@ -1451,7 +1451,7 @@ void less_equal()
 void greater()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     BOOST_TEST(!(span.begin() > span.begin()));
     BOOST_TEST(!(span.begin() > std::next(span.begin(), 1)));
@@ -1521,7 +1521,7 @@ void greater()
 void greater_equal()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     BOOST_TEST(span.begin() >= span.begin());
     BOOST_TEST(!(span.begin() >= std::next(span.begin(), 1)));
@@ -1616,14 +1616,14 @@ namespace reverse_suite
 void test_empty()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     BOOST_TEST(span.rbegin() == span.rend());
 }
 
 void test_reverse()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span = { 11, 22, 33 };
     {
         std::vector<int> expect = { 11, 22, 33 };
@@ -1662,7 +1662,7 @@ void test_reverse()
 void test_const_reverse()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span = { 11, 22, 33 };
     {
         std::vector<int> expect = { 11, 22, 33 };
@@ -1715,7 +1715,7 @@ namespace inserter_suite
 void test_back_inserter()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span = { 11 };
     std::fill_n(std::back_inserter(span), 3, 22);
     {
@@ -1736,7 +1736,7 @@ void test_back_inserter()
 void test_front_inserter()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span = { 11 };
     std::fill_n(std::front_inserter(span), 3, 22);
     {
@@ -1770,7 +1770,7 @@ namespace range_for_suite
 void empty()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     int sum = 0;
     for (auto&& element : span)
     {
@@ -1782,7 +1782,7 @@ void empty()
 void full()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     int sum = 0;
     for (auto&& element : span)
@@ -1795,7 +1795,7 @@ void full()
 void overfull()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int sum = 0;
     for (auto&& element : span)
@@ -1808,7 +1808,7 @@ void overfull()
 void segment_empty()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     int sum = 0;
     for (auto&& element : span.first_segment())
     {
@@ -1825,7 +1825,7 @@ void segment_empty()
 void segment_full()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     int sum = 0;
     for (auto&& element : span.first_segment())
@@ -1843,7 +1843,7 @@ void segment_full()
 void segment_overfull()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 55 22 33 44
     // -> <-------
     span = { 11, 22, 33, 44, 55 };

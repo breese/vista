@@ -11,7 +11,7 @@
 #include <array>
 #include <numeric>
 #include <boost/detail/lightweight_test.hpp>
-#include <vista/circular/span.hpp>
+#include <vista/circular_view.hpp>
 
 using namespace vista;
 
@@ -24,7 +24,7 @@ namespace accumulate_suite
 void test_overfull()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span = { 11, 22, 33, 44 };
     BOOST_TEST_EQ(std::accumulate(span.begin(), span.end(), 0), 11 + 22 + 33 + 44);
     span.push_back(55);
@@ -46,7 +46,7 @@ namespace inner_product_suite
 void test_overfull()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span = { 11, 22, 33, 44 };
     BOOST_TEST_EQ(std::inner_product(span.begin(), span.end(), array.begin(), 0),
                   11 * 11 + 22 * 22 + 33 * 33 + 44 * 44);

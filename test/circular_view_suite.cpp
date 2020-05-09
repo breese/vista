@@ -11,7 +11,7 @@
 #include <array>
 #include <vector>
 #include <boost/detail/lightweight_test.hpp>
-#include <vista/circular/span.hpp>
+#include <vista/circular_view.hpp>
 
 using namespace vista;
 
@@ -22,7 +22,7 @@ namespace api_dynamic_suite
 
 void dynamic_ctor_default()
 {
-    circular::span<int> span;
+    circular_view<int> span;
     BOOST_TEST(span.empty());
     BOOST_TEST(span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -32,12 +32,12 @@ void dynamic_ctor_default()
 void dynamic_ctor_copy()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
-    circular::span<int> clone(span);
+    circular_view<int> clone(span);
     BOOST_TEST(clone.empty());
     BOOST_TEST(!clone.full());
     BOOST_TEST_EQ(clone.size(), 0);
@@ -47,12 +47,12 @@ void dynamic_ctor_copy()
 void dynamic_ctor_copy_convertible()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
-    circular::span<const int> clone(span);
+    circular_view<const int> clone(span);
     BOOST_TEST(clone.empty());
     BOOST_TEST(!clone.full());
     BOOST_TEST_EQ(clone.size(), 0);
@@ -62,12 +62,12 @@ void dynamic_ctor_copy_convertible()
 void dynamic_ctor_copy_assign()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
-    circular::span<int> clone;
+    circular_view<int> clone;
     BOOST_TEST(clone.empty());
     BOOST_TEST(clone.full());
     BOOST_TEST_EQ(clone.size(), 0);
@@ -82,12 +82,12 @@ void dynamic_ctor_copy_assign()
 void dynamic_ctor_move()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
-    circular::span<int> clone(std::move(span));
+    circular_view<int> clone(std::move(span));
     BOOST_TEST(clone.empty());
     BOOST_TEST(!clone.full());
     BOOST_TEST_EQ(clone.size(), 0);
@@ -97,12 +97,12 @@ void dynamic_ctor_move()
 void dynamic_ctor_move_assign()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
-    circular::span<int> clone;
+    circular_view<int> clone;
     BOOST_TEST(clone.empty());
     BOOST_TEST(clone.full());
     BOOST_TEST_EQ(clone.size(), 0);
@@ -117,7 +117,7 @@ void dynamic_ctor_move_assign()
 void dynamic_ctor_array()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -127,7 +127,7 @@ void dynamic_ctor_array()
 void dynamic_ctor_const_array()
 {
     int array[4] = {};
-    circular::span<const int> span(array);
+    circular_view<const int> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -137,7 +137,7 @@ void dynamic_ctor_const_array()
 void dynamic_ctor_iterator()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -147,7 +147,7 @@ void dynamic_ctor_iterator()
 void dynamic_ctor_iterator_init()
 {
     std::array<int, 4> array = { 1, 2, 3, 4 };
-    circular::span<int> span(array.begin(), array.end(), array.begin(), array.size());
+    circular_view<int> span(array.begin(), array.end(), array.begin(), array.size());
     BOOST_TEST(!span.empty());
     BOOST_TEST(span.full());
     BOOST_TEST_EQ(span.size(), 4);
@@ -157,7 +157,7 @@ void dynamic_ctor_iterator_init()
 void dynamic_ctor_assign_initializer_list()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     {
         std::vector<int> expect = { 22, 33, 44, 55 };
@@ -169,7 +169,7 @@ void dynamic_ctor_assign_initializer_list()
 void dynamic_empty()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST(span.empty());
     span.push_back(11);
     BOOST_TEST(!span.empty());
@@ -178,7 +178,7 @@ void dynamic_empty()
 void dynamic_full()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST(!span.full());
     span = {11, 22, 33, 44};
     BOOST_TEST(span.full());
@@ -187,14 +187,14 @@ void dynamic_full()
 void dynamic_capacity()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void dynamic_size()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST_EQ(span.size(), 0);
     span = {11, 22, 33, 44};
     BOOST_TEST_EQ(span.size(), 4);
@@ -205,7 +205,7 @@ void dynamic_size()
 void dynamic_front()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = {11, 22, 33};
     BOOST_TEST_EQ(span.front(), 11);
     span.push_back(44);
@@ -217,14 +217,14 @@ void dynamic_front()
 void dynamic_front_const()
 {
     std::array<int, 4> array = {11, 22, 33, 44};
-    const circular::span<int> span(array.begin(), array.end(), array.begin(), array.size());
+    const circular_view<int> span(array.begin(), array.end(), array.begin(), array.size());
     BOOST_TEST_EQ(span.front(), 11);
 }
 
 void dynamic_back()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = {11, 22, 33};
     BOOST_TEST_EQ(span.back(), 33);
     span.push_front(44);
@@ -236,14 +236,14 @@ void dynamic_back()
 void dynamic_back_const()
 {
     std::array<int, 4> array = {11, 22, 33, 44};
-    const circular::span<int> span(array.begin(), array.end(), array.begin(), array.size());
+    const circular_view<int> span(array.begin(), array.end(), array.begin(), array.size());
     BOOST_TEST_EQ(span.back(), 44);
 }
 
 void dynamic_operator_index()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = {11, 22, 33, 44};
     BOOST_TEST_EQ(span[0], 11);
     BOOST_TEST_EQ(span[1], 22);
@@ -259,7 +259,7 @@ void dynamic_operator_index()
 void dynamic_operator_index_const()
 {
     std::array<int, 4> array = {11, 22, 33, 44};
-    const circular::span<int> span(array.begin(), array.end(), array.begin(), array.size());
+    const circular_view<int> span(array.begin(), array.end(), array.begin(), array.size());
     BOOST_TEST_EQ(span[0], 11);
     BOOST_TEST_EQ(span[1], 22);
     BOOST_TEST_EQ(span[2], 33);
@@ -269,7 +269,7 @@ void dynamic_operator_index_const()
 void dynamic_clear()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = {11, 22, 33, 44};
     BOOST_TEST_EQ(span.size(), 4);
     span.clear();
@@ -279,7 +279,7 @@ void dynamic_clear()
 void dynamic_assign_iterator()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     std::vector<int> input = {11, 22, 33, 44};
     span.assign(input.begin(), input.end());
     {
@@ -292,7 +292,7 @@ void dynamic_assign_iterator()
 void dynamic_assign_initializer_list()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.assign({ 11, 22, 33, 44, 55 });
     {
         std::vector<int> expect = { 22, 33, 44, 55 };
@@ -304,7 +304,7 @@ void dynamic_assign_initializer_list()
 void dynamic_push_front()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = {11, 22, 33};
     span.push_front(44);
     {
@@ -317,7 +317,7 @@ void dynamic_push_front()
 void dynamic_push_front_iterator()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     std::vector<int> input = { 11, 22, 33, 44 };
     span.push_front(input.begin(), input.end());
     {
@@ -330,7 +330,7 @@ void dynamic_push_front_iterator()
 void dynamic_push_back()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = {11, 22, 33};
     span.push_back(44);
     {
@@ -343,7 +343,7 @@ void dynamic_push_back()
 void dynamic_push_back_iterator()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     std::vector<int> input = { 11, 22, 33, 44 };
     span.push_back(input.begin(), input.end());
     {
@@ -356,7 +356,7 @@ void dynamic_push_back_iterator()
 void dynamic_pop_front()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = {11, 22, 33};
     BOOST_TEST_EQ(span.pop_front(), 11);
     {
@@ -369,7 +369,7 @@ void dynamic_pop_front()
 void dynamic_pop_back()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = {11, 22, 33};
     BOOST_TEST_EQ(span.pop_back(), 33);
     {
@@ -382,7 +382,7 @@ void dynamic_pop_back()
 void dynamic_expand_front()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33 };
     span.expand_front();
     {
@@ -395,7 +395,7 @@ void dynamic_expand_front()
 void dynamic_expand_front_n()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33 };
     span.expand_front(2);
     {
@@ -408,7 +408,7 @@ void dynamic_expand_front_n()
 void dynamic_remove_front()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33 };
     span.remove_front();
     {
@@ -421,7 +421,7 @@ void dynamic_remove_front()
 void dynamic_remove_front_n()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33 };
     span.remove_front(2);
     {
@@ -434,7 +434,7 @@ void dynamic_remove_front_n()
 void dynamic_expand_back()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33 };
     span.expand_back();
     {
@@ -447,7 +447,7 @@ void dynamic_expand_back()
 void dynamic_expand_back_n()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33 };
     span.expand_back(2);
     {
@@ -460,7 +460,7 @@ void dynamic_expand_back_n()
 void dynamic_remove_back()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33 };
     span.remove_back();
     {
@@ -473,7 +473,7 @@ void dynamic_remove_back()
 void dynamic_remove_back_n()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33 };
     span.remove_back(2);
     {
@@ -486,7 +486,7 @@ void dynamic_remove_back_n()
 void dynamic_rotate_front()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span = { 11, 22, 33, 44, 55 };
     span.rotate_front();
     {
@@ -501,7 +501,7 @@ void dynamic_rotate_front()
 void dynamic_first_segment()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22 };
     auto segment = span.first_segment();
     {
@@ -514,7 +514,7 @@ void dynamic_first_segment()
 void dynamic_first_segment_const()
 {
     std::array<int, 4> array = { 11, 22 };
-    const circular::span<int> span(array.begin(), array.end(), array.begin(), 2);
+    const circular_view<int> span(array.begin(), array.end(), array.begin(), 2);
     auto segment = span.first_segment();
     {
         std::vector<int> expect = { 11, 22 };
@@ -526,7 +526,7 @@ void dynamic_first_segment_const()
 void dynamic_last_segment()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22 };
     auto segment = span.last_segment();
     {
@@ -539,7 +539,7 @@ void dynamic_last_segment()
 void dynamic_last_segment_const()
 {
     std::array<int, 4> array = { 11, 22 };
-    const circular::span<int> span(array.begin(), array.end(), array.begin(), 2);
+    const circular_view<int> span(array.begin(), array.end(), array.begin(), 2);
     auto segment = span.last_segment();
     {
         std::vector<int> expect = { };
@@ -551,7 +551,7 @@ void dynamic_last_segment_const()
 void dynamic_first_unused_segment()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22 };
     auto segment = span.first_unused_segment();
     {
@@ -564,7 +564,7 @@ void dynamic_first_unused_segment()
 void dynamic_first_unused_segment_const()
 {
     std::array<int, 4> array = { 11, 22 };
-    const circular::span<int> span(array.begin(), array.end(), array.begin(), 2);
+    const circular_view<int> span(array.begin(), array.end(), array.begin(), 2);
     auto segment = span.first_unused_segment();
     {
         std::vector<int> expect = { 0, 0 };
@@ -576,7 +576,7 @@ void dynamic_first_unused_segment_const()
 void dynamic_last_unused_segment()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22 };
     auto segment = span.last_unused_segment();
     {
@@ -589,7 +589,7 @@ void dynamic_last_unused_segment()
 void dynamic_last_unused_segment_const()
 {
     std::array<int, 4> array = { 11, 22 };
-    const circular::span<int> span(array.begin(), array.end(), array.begin(), 2);
+    const circular_view<int> span(array.begin(), array.end(), array.begin(), 2);
     auto segment = span.last_unused_segment();
     {
         std::vector<int> expect = { };
@@ -658,7 +658,7 @@ namespace api_fixed_suite
 
 void fixed_ctor_default()
 {
-    circular::span<int, 4> span;
+    circular_view<int, 4> span;
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -668,12 +668,12 @@ void fixed_ctor_default()
 void fixed_ctor_copy()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
-    circular::span<int, 4> clone(span);
+    circular_view<int, 4> clone(span);
     BOOST_TEST(clone.empty());
     BOOST_TEST(!clone.full());
     BOOST_TEST_EQ(clone.size(), 0);
@@ -683,12 +683,12 @@ void fixed_ctor_copy()
 void fixed_ctor_copy_convertible()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
-    circular::span<const int, 4> clone(span);
+    circular_view<const int, 4> clone(span);
     BOOST_TEST(clone.empty());
     BOOST_TEST(!clone.full());
     BOOST_TEST_EQ(clone.size(), 0);
@@ -698,12 +698,12 @@ void fixed_ctor_copy_convertible()
 void fixed_ctor_copy_dynamic_extent()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
-    circular::span<const int> clone(span);
+    circular_view<const int> clone(span);
     BOOST_TEST(clone.empty());
     BOOST_TEST(!clone.full());
     BOOST_TEST_EQ(clone.size(), 0);
@@ -713,12 +713,12 @@ void fixed_ctor_copy_dynamic_extent()
 void fixed_ctor_copy_assign()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
-    circular::span<int, 4> clone;
+    circular_view<int, 4> clone;
     BOOST_TEST(clone.empty());
     BOOST_TEST(!clone.full());
     BOOST_TEST_EQ(clone.size(), 0);
@@ -733,12 +733,12 @@ void fixed_ctor_copy_assign()
 void fixed_ctor_move()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
-    circular::span<int, 4> clone(std::move(span));
+    circular_view<int, 4> clone(std::move(span));
     BOOST_TEST(clone.empty());
     BOOST_TEST(!clone.full());
     BOOST_TEST_EQ(clone.size(), 0);
@@ -748,12 +748,12 @@ void fixed_ctor_move()
 void fixed_ctor_move_assign()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
-    circular::span<int, 4> clone;
+    circular_view<int, 4> clone;
     BOOST_TEST(clone.empty());
     BOOST_TEST(!clone.full());
     BOOST_TEST_EQ(clone.size(), 0);
@@ -768,7 +768,7 @@ void fixed_ctor_move_assign()
 void fixed_ctor_array()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -778,7 +778,7 @@ void fixed_ctor_array()
 void fixed_ctor_const_array()
 {
     int array[4] = {};
-    circular::span<const int, 4> span(array);
+    circular_view<const int, 4> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -788,7 +788,7 @@ void fixed_ctor_const_array()
 void fixed_ctor_iterator()
 {
     std::array<int, 4> array = {};
-    circular::span<int, 4> span(array.begin(), array.end());
+    circular_view<int, 4> span(array.begin(), array.end());
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -798,7 +798,7 @@ void fixed_ctor_iterator()
 void fixed_ctor_iterator_init()
 {
     std::array<int, 4> array = { 1, 2, 3, 4 };
-    circular::span<int, 4> span(array.begin(), array.end(), array.begin(), array.size());
+    circular_view<int, 4> span(array.begin(), array.end(), array.begin(), array.size());
     BOOST_TEST(!span.empty());
     BOOST_TEST(span.full());
     BOOST_TEST_EQ(span.size(), 4);
@@ -808,7 +808,7 @@ void fixed_ctor_iterator_init()
 void fixed_ctor_assign_initializer_list()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22, 33, 44, 55 };
     {
         std::vector<int> expect = { 22, 33, 44, 55 };
@@ -820,7 +820,7 @@ void fixed_ctor_assign_initializer_list()
 void fixed_empty()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     BOOST_TEST(span.empty());
     span.push_back(11);
     BOOST_TEST(!span.empty());
@@ -829,7 +829,7 @@ void fixed_empty()
 void fixed_full()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     BOOST_TEST(!span.full());
     span = {11, 22, 33, 44};
     BOOST_TEST(span.full());
@@ -838,14 +838,14 @@ void fixed_full()
 void fixed_capacity()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void fixed_size()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 0);
     span = {11, 22, 33, 44};
     BOOST_TEST_EQ(span.size(), 4);
@@ -856,7 +856,7 @@ void fixed_size()
 void fixed_front()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = {11, 22, 33};
     BOOST_TEST_EQ(span.front(), 11);
     span.push_back(44);
@@ -868,14 +868,14 @@ void fixed_front()
 void fixed_front_const()
 {
     std::array<int, 4> array = {11, 22, 33, 44};
-    const circular::span<int, 4> span(array.begin(), array.end(), array.begin(), array.size());
+    const circular_view<int, 4> span(array.begin(), array.end(), array.begin(), array.size());
     BOOST_TEST_EQ(span.front(), 11);
 }
 
 void fixed_back()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = {11, 22, 33};
     BOOST_TEST_EQ(span.back(), 33);
     span.push_front(44);
@@ -887,14 +887,14 @@ void fixed_back()
 void fixed_back_const()
 {
     std::array<int, 4> array = {11, 22, 33, 44};
-    const circular::span<int, 4> span(array.begin(), array.end(), array.begin(), array.size());
+    const circular_view<int, 4> span(array.begin(), array.end(), array.begin(), array.size());
     BOOST_TEST_EQ(span.back(), 44);
 }
 
 void fixed_operator_index()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = {11, 22, 33, 44};
     BOOST_TEST_EQ(span[0], 11);
     BOOST_TEST_EQ(span[1], 22);
@@ -910,7 +910,7 @@ void fixed_operator_index()
 void fixed_operator_index_const()
 {
     std::array<int, 4> array = {11, 22, 33, 44};
-    const circular::span<int, 4> span(array.begin(), array.end(), array.begin(), array.size());
+    const circular_view<int, 4> span(array.begin(), array.end(), array.begin(), array.size());
     BOOST_TEST_EQ(span[0], 11);
     BOOST_TEST_EQ(span[1], 22);
     BOOST_TEST_EQ(span[2], 33);
@@ -920,7 +920,7 @@ void fixed_operator_index_const()
 void fixed_clear()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = {11, 22, 33, 44};
     BOOST_TEST_EQ(span.size(), 4);
     span.clear();
@@ -930,7 +930,7 @@ void fixed_clear()
 void fixed_assign_iterator()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     std::vector<int> input = {11, 22, 33, 44};
     span.assign(input.begin(), input.end());
     {
@@ -943,7 +943,7 @@ void fixed_assign_iterator()
 void fixed_assign_initializer_list()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span.assign({ 11, 22, 33, 44, 55 });
     {
         std::vector<int> expect = { 22, 33, 44, 55 };
@@ -955,7 +955,7 @@ void fixed_assign_initializer_list()
 void fixed_push_front()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = {11, 22, 33};
     span.push_front(44);
     {
@@ -968,7 +968,7 @@ void fixed_push_front()
 void fixed_push_front_iterator()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     std::vector<int> input = { 11, 22, 33, 44 };
     span.push_front(input.begin(), input.end());
     {
@@ -981,7 +981,7 @@ void fixed_push_front_iterator()
 void fixed_push_back()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = {11, 22, 33};
     span.push_back(44);
     {
@@ -994,7 +994,7 @@ void fixed_push_back()
 void fixed_push_back_iterator()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     std::vector<int> input = { 11, 22, 33, 44 };
     span.push_back(input.begin(), input.end());
     {
@@ -1007,7 +1007,7 @@ void fixed_push_back_iterator()
 void fixed_pop_front()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = {11, 22, 33};
     BOOST_TEST_EQ(span.pop_front(), 11);
     {
@@ -1020,7 +1020,7 @@ void fixed_pop_front()
 void fixed_pop_back()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = {11, 22, 33};
     BOOST_TEST_EQ(span.pop_back(), 33);
     {
@@ -1033,7 +1033,7 @@ void fixed_pop_back()
 void fixed_expand_front()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22, 33 };
     span.expand_front();
     {
@@ -1046,7 +1046,7 @@ void fixed_expand_front()
 void fixed_expand_front_n()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22, 33 };
     span.expand_front(2);
     {
@@ -1059,7 +1059,7 @@ void fixed_expand_front_n()
 void fixed_remove_front()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22, 33 };
     span.remove_front();
     {
@@ -1072,7 +1072,7 @@ void fixed_remove_front()
 void fixed_remove_front_n()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22, 33 };
     span.remove_front(2);
     {
@@ -1085,7 +1085,7 @@ void fixed_remove_front_n()
 void fixed_expand_back()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22, 33 };
     span.expand_back();
     {
@@ -1098,7 +1098,7 @@ void fixed_expand_back()
 void fixed_expand_back_n()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22, 33 };
     span.expand_back(2);
     {
@@ -1111,7 +1111,7 @@ void fixed_expand_back_n()
 void fixed_remove_back()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22, 33 };
     span.remove_back();
     {
@@ -1124,7 +1124,7 @@ void fixed_remove_back()
 void fixed_remove_back_n()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22, 33 };
     span.remove_back(2);
     {
@@ -1137,7 +1137,7 @@ void fixed_remove_back_n()
 void fixed_rotate_front()
 {
     std::array<int, 4> array = {};
-    circular::span<int, 4> span(array.begin(), array.end());
+    circular_view<int, 4> span(array.begin(), array.end());
     span = { 11, 22, 33, 44, 55 };
     span.rotate_front();
     {
@@ -1152,7 +1152,7 @@ void fixed_rotate_front()
 void fixed_first_segment()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22 };
     auto segment = span.first_segment();
     {
@@ -1165,7 +1165,7 @@ void fixed_first_segment()
 void fixed_first_segment_const()
 {
     std::array<int, 4> array = { 11, 22 };
-    const circular::span<int, 4> span(array.begin(), array.end(), array.begin(), 2);
+    const circular_view<int, 4> span(array.begin(), array.end(), array.begin(), 2);
     auto segment = span.first_segment();
     {
         std::vector<int> expect = { 11, 22 };
@@ -1177,7 +1177,7 @@ void fixed_first_segment_const()
 void fixed_last_segment()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22 };
     auto segment = span.last_segment();
     {
@@ -1190,7 +1190,7 @@ void fixed_last_segment()
 void fixed_last_segment_const()
 {
     std::array<int, 4> array = { 11, 22 };
-    const circular::span<int, 4> span(array.begin(), array.end(), array.begin(), 2);
+    const circular_view<int, 4> span(array.begin(), array.end(), array.begin(), 2);
     auto segment = span.last_segment();
     {
         std::vector<int> expect = { };
@@ -1202,7 +1202,7 @@ void fixed_last_segment_const()
 void fixed_first_unused_segment()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22 };
     auto segment = span.first_unused_segment();
     {
@@ -1215,7 +1215,7 @@ void fixed_first_unused_segment()
 void fixed_first_unused_segment_const()
 {
     std::array<int, 4> array = { 11, 22 };
-    const circular::span<int, 4> span(array.begin(), array.end(), array.begin(), 2);
+    const circular_view<int, 4> span(array.begin(), array.end(), array.begin(), 2);
     auto segment = span.first_unused_segment();
     {
         std::vector<int> expect = { 0, 0 };
@@ -1227,7 +1227,7 @@ void fixed_first_unused_segment_const()
 void fixed_last_unused_segment()
 {
     int array[4] = {};
-    circular::span<int, 4> span(array);
+    circular_view<int, 4> span(array);
     span = { 11, 22 };
     auto segment = span.last_unused_segment();
     {
@@ -1240,7 +1240,7 @@ void fixed_last_unused_segment()
 void fixed_last_unused_segment_const()
 {
     std::array<int, 4> array = { 11, 22 };
-    const circular::span<int, 4> span(array.begin(), array.end(), array.begin(), 2);
+    const circular_view<int, 4> span(array.begin(), array.end(), array.begin(), 2);
     auto segment = span.last_unused_segment();
     {
         std::vector<int> expect = { };
@@ -1311,7 +1311,7 @@ namespace plain_array_suite
 void ctor()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -1321,7 +1321,7 @@ void ctor()
 void push_front()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_front(11);
     {
         std::vector<int> expect = { 11 };
@@ -1382,7 +1382,7 @@ void push_front()
 void push_back()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(11);
     {
         std::vector<int> expect = { 11 };
@@ -1443,7 +1443,7 @@ void push_back()
 void push_alternating()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(11);
     {
         std::vector<int> expect = { 11 };
@@ -1485,7 +1485,7 @@ void push_alternating()
 void pop_front()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(11);
     {
         std::vector<int> expect = { 11 };
@@ -1530,7 +1530,7 @@ void pop_front()
 void pop_back()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(11);
     {
         std::vector<int> expect = { 11 };
@@ -1575,7 +1575,7 @@ void pop_back()
 void expand_front()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(11);
     {
         std::vector<int> expect = { 11 };
@@ -1620,7 +1620,7 @@ void expand_front()
 void remove_front()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(11);
     {
         std::vector<int> expect = { 11 };
@@ -1665,7 +1665,7 @@ void remove_front()
 void remove_front_n()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     span.remove_front(1);
     {
@@ -1726,7 +1726,7 @@ void remove_front_n()
 void remove_back()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(11);
     {
         std::vector<int> expect = { 11 };
@@ -1771,7 +1771,7 @@ void remove_back()
 void remove_back_n()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     span.remove_back(1);
     {
@@ -1832,7 +1832,7 @@ void remove_back_n()
 void assign_operator()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11 };
     {
         std::vector<int> expect = { 11 };
@@ -1868,7 +1868,7 @@ void assign_operator()
 void assign_iterator()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     {
         std::vector<int> input = { 11 };
         span.assign(input.begin(), input.end());
@@ -1919,7 +1919,7 @@ void assign_iterator()
 void assign_initializer_list()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.assign({ 11 });
     {
         std::vector<int> expect = { 11 };
@@ -1980,7 +1980,7 @@ namespace const_array_suite
 void ctor()
 {
     int array[4] = {};
-    circular::span<const int> span(array);
+    circular_view<const int> span(array);
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -1990,7 +1990,7 @@ void ctor()
 void clear()
 {
     int array[4] = { 11, 22, 33 };
-    circular::span<const int> span(&array[0], &array[3],
+    circular_view<const int> span(&array[0], &array[3],
                                    &array[0], 3);
     BOOST_TEST_EQ(span.size(), 3);
     BOOST_TEST_EQ(span.front(), 11);
@@ -2002,7 +2002,7 @@ void clear()
 void expand_front()
 {
     int array[4] = { 11, 22, 33 };
-    circular::span<const int> span(&array[0], &array[3],
+    circular_view<const int> span(&array[0], &array[3],
                                    &array[0], 3);
     BOOST_TEST_EQ(span.capacity(), 3);
     {
@@ -2021,7 +2021,7 @@ void expand_front()
 void remove_front()
 {
     int array[4] = { 11, 22, 33 };
-    circular::span<const int> span(&array[0], &array[3],
+    circular_view<const int> span(&array[0], &array[3],
                                    &array[0], 3);
     BOOST_TEST_EQ(span.capacity(), 3);
     {
@@ -2040,7 +2040,7 @@ void remove_front()
 void pop_front()
 {
     int array[4] = { 11, 22, 33 };
-    circular::span<const int> span(&array[0], &array[3],
+    circular_view<const int> span(&array[0], &array[3],
                                    &array[0], 3);
     BOOST_TEST_EQ(span.capacity(), 3);
     {
@@ -2076,7 +2076,7 @@ namespace std_array_suite
 void ctor()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -2086,7 +2086,7 @@ void ctor()
 void ctor_init()
 {
     std::array<int, 4> array = { 1, 2, 3, 4 };
-    circular::span<int> span(array.begin(), array.end(), array.begin(), array.size());
+    circular_view<int> span(array.begin(), array.end(), array.begin(), array.size());
     BOOST_TEST(!span.empty());
     BOOST_TEST(span.full());
     BOOST_TEST_EQ(span.size(), 4);
@@ -2096,7 +2096,7 @@ void ctor_init()
 void push_front()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_front(11);
     {
         std::vector<int> expect = { 11 };
@@ -2138,7 +2138,7 @@ void push_front()
 void push_back()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(11);
     {
         std::vector<int> expect = { 11 };
@@ -2196,28 +2196,28 @@ void test_ctor_empty()
 {
     std::vector<int> array;
     {
-        circular::span<int> span(array.begin(), array.end());
+        circular_view<int> span(array.begin(), array.end());
         BOOST_TEST(span.empty());
         BOOST_TEST(span.full());
         BOOST_TEST_EQ(span.size(), 0);
         BOOST_TEST_EQ(span.capacity(), 0);
     }
     {
-        circular::span<int> span(array.begin(), array.end(), array.begin(), 0);
+        circular_view<int> span(array.begin(), array.end(), array.begin(), 0);
         BOOST_TEST(span.empty());
         BOOST_TEST(span.full());
         BOOST_TEST_EQ(span.size(), 0);
         BOOST_TEST_EQ(span.capacity(), 0);
     }
     {
-        circular::span<int, 0> span(array.begin(), array.end());
+        circular_view<int, 0> span(array.begin(), array.end());
         BOOST_TEST(span.empty());
         BOOST_TEST(span.full());
         BOOST_TEST_EQ(span.size(), 0);
         BOOST_TEST_EQ(span.capacity(), 0);
     }
     {
-        circular::span<int, 0> span(array.begin(), array.end(), array.begin(), 0);
+        circular_view<int, 0> span(array.begin(), array.end(), array.begin(), 0);
         BOOST_TEST(span.empty());
         BOOST_TEST(span.full());
         BOOST_TEST_EQ(span.size(), 0);
@@ -2228,7 +2228,7 @@ void test_ctor_empty()
 void test_ctor()
 {
     std::vector<int> array(4);
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     BOOST_TEST(span.empty());
     BOOST_TEST(!span.full());
     BOOST_TEST_EQ(span.size(), 0);
@@ -2238,7 +2238,7 @@ void test_ctor()
 void test_push_back()
 {
     std::vector<int> array(4);
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(11);
     {
         std::vector<int> expect = { 11 };
@@ -2295,28 +2295,28 @@ void init_zero()
 {
     std::array<int, 4> array = { 11, 22, 33, 44 };
     {
-        circular::span<int> span(array.begin(), array.end(), array.begin(), 0);
+        circular_view<int> span(array.begin(), array.end(), array.begin(), 0);
 
         std::vector<int> expect = {};
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     {
-        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 0);
+        circular_view<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 0);
 
         std::vector<int> expect = {};
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     {
-        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 2), 0);
+        circular_view<int> span(array.begin(), array.end(), std::next(array.begin(), 2), 0);
 
         std::vector<int> expect = {};
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     {
-        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 3), 0);
+        circular_view<int> span(array.begin(), array.end(), std::next(array.begin(), 3), 0);
 
         std::vector<int> expect = {};
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2328,28 +2328,28 @@ void init_one()
 {
     std::array<int, 4> array = { 11, 22, 33, 44 };
     {
-        circular::span<int> span(array.begin(), array.end(), array.begin(), 1);
+        circular_view<int> span(array.begin(), array.end(), array.begin(), 1);
 
         std::vector<int> expect = { 11 };
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     {
-        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 1);
+        circular_view<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 1);
 
         std::vector<int> expect = { 22 };
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     {
-        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 2), 1);
+        circular_view<int> span(array.begin(), array.end(), std::next(array.begin(), 2), 1);
 
         std::vector<int> expect = { 33 };
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     {
-        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 3), 1);
+        circular_view<int> span(array.begin(), array.end(), std::next(array.begin(), 3), 1);
 
         std::vector<int> expect = { 44 };
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2361,21 +2361,21 @@ void init_two()
 {
     std::array<int, 4> array = { 11, 22, 33, 44 };
     {
-        circular::span<int> span(array.begin(), array.end(), array.begin(), 2);
+        circular_view<int> span(array.begin(), array.end(), array.begin(), 2);
 
         std::vector<int> expect = { 11, 22 };
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     {
-        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 2);
+        circular_view<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 2);
 
         std::vector<int> expect = { 22, 33 };
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     {
-        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 2), 2);
+        circular_view<int> span(array.begin(), array.end(), std::next(array.begin(), 2), 2);
 
         std::vector<int> expect = { 33, 44 };
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2387,14 +2387,14 @@ void init_three()
 {
     std::array<int, 4> array = { 11, 22, 33, 44 };
     {
-        circular::span<int> span(array.begin(), array.end(), array.begin(), 3);
+        circular_view<int> span(array.begin(), array.end(), array.begin(), 3);
 
         std::vector<int> expect = { 11, 22, 33 };
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
                           expect.begin(), expect.end());
     }
     {
-        circular::span<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 3);
+        circular_view<int> span(array.begin(), array.end(), std::next(array.begin(), 1), 3);
 
         std::vector<int> expect = { 22, 33, 44 };
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2406,7 +2406,7 @@ void init_four()
 {
     std::array<int, 4> array = { 11, 22, 33, 44 };
     {
-        circular::span<int> span(array.begin(), array.end(), array.begin(), array.size());
+        circular_view<int> span(array.begin(), array.end(), array.begin(), array.size());
 
         std::vector<int> expect = { 11, 22, 33, 44 };
         BOOST_TEST_ALL_EQ(span.begin(), span.end(),
@@ -2433,7 +2433,7 @@ namespace clear_suite
 void clear_empty()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST_EQ(span.capacity(), 4);
     BOOST_TEST_EQ(span.size(), 0);
     span.clear();
@@ -2444,7 +2444,7 @@ void clear_empty()
 void clear_partial()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(1);
     span.push_back(2);
     span.push_back(3);
@@ -2458,7 +2458,7 @@ void clear_partial()
 void clear_full()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(1);
     span.push_back(2);
     span.push_back(3);
@@ -2473,7 +2473,7 @@ void clear_full()
 void clear_overfull()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(1);
     span.push_back(2);
     span.push_back(3);
@@ -2504,7 +2504,7 @@ namespace window_size_suite
 void window_1()
 {
     std::array<int, 1> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(1);
     {
         BOOST_TEST_EQ(span.front(), 1);
@@ -2558,7 +2558,7 @@ void window_1()
 void window_2()
 {
     std::array<int, 2> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(1);
     {
         BOOST_TEST_EQ(span.front(), 1);
@@ -2612,7 +2612,7 @@ void window_2()
 void window_3()
 {
     std::array<int, 3> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(1);
     {
         BOOST_TEST_EQ(span.front(), 1);
@@ -2674,7 +2674,7 @@ void window_3()
 void window_4()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     span.push_back(1);
     {
         BOOST_TEST_EQ(span.front(), 1);
@@ -2767,7 +2767,7 @@ namespace expand_suite
 void expand_empty()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     BOOST_TEST_EQ(span.size(), 0);
     span.expand_back(1);
     BOOST_TEST_EQ(span.size(), 1);
@@ -2779,7 +2779,7 @@ void expand_0()
 {
     // Expand 0 is a no-operation
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(11);
     {
         std::vector<int> expect = { 11 };
@@ -2816,7 +2816,7 @@ void expand_0()
 void expand_back_front_1()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 11 XX XX XX
     // <>
     span.push_back(11);
@@ -2918,7 +2918,7 @@ void expand_back_front_1()
 void expand_back_back_1()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // 11 XX XX XX
     // <>
     span.push_back(11);
@@ -3020,7 +3020,7 @@ void expand_back_back_1()
 void expand_front_front_1()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // XX XX XX 11
     //          <>
     span.push_front(11);
@@ -3122,7 +3122,7 @@ void expand_front_front_1()
 void expand_front_back_1()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     // XX XX XX 11
     //          <>
     span.push_front(11);
@@ -3224,7 +3224,7 @@ void expand_front_back_1()
 void expand_back_n()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     span.expand_back(1);
     {
@@ -3261,7 +3261,7 @@ void expand_back_n()
 void expand_front_n()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     span.expand_front(1);
     {
@@ -3298,7 +3298,7 @@ void expand_front_n()
 void expand_alternating_n()
 {
     int array[8] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44, 55, 66, 77, 88 };
     {
         std::vector<int> expect = { 11, 22, 33, 44, 55, 66, 77, 88 };
@@ -3432,7 +3432,7 @@ namespace normalize_suite
 void normalize_even()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     {
         // 55 22 33 44 => 22 33 44 55
         span = { 11, 22, 33, 44, 55 };
@@ -3451,7 +3451,7 @@ void normalize_even()
 void normalize_odd()
 {
     std::array<int, 5> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     {
         // 66 22 33 44 55 => 22 33 44 55 66
         span = { 11, 22, 33, 44, 55, 66 };
@@ -3470,7 +3470,7 @@ void normalize_odd()
 void normalize_increasing()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     {
         // 11 X X X => 11 X X X
         span = { 11 };
@@ -3580,7 +3580,7 @@ void normalize_increasing()
 void normalize_decreasing()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     {
         // X 22 33 44 => 22 33 44 X
         span = { 11, 22, 33, 44 };
@@ -3628,7 +3628,7 @@ void normalize_decreasing()
 void normalize_one()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     {
         // X 22 33 44 => 22 33 44 X
         span = { 11, 22, 33, 44 };
@@ -3704,7 +3704,7 @@ void normalize_one()
 void normalize_two()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     {
         // X X 33 44 => 33 44 X X
         span = { 11, 22, 33, 44 };
@@ -3780,7 +3780,7 @@ void normalize_two()
 void normalize_three()
 {
     std::array<int, 4> array = {};
-    circular::span<int> span(array.begin(), array.end());
+    circular_view<int> span(array.begin(), array.end());
     {
         // X X X 44 => 44 X X X
         span = { 11, 22, 33, 44 };

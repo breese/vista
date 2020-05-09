@@ -19,7 +19,7 @@ function(vista_add_benchmark name)
   add_dependencies(benchmark ${name})
 endfunction()
 
-vista_add_benchmark(circular_span_benchmark circular/span_benchmark.cpp)
+vista_add_benchmark(circular_view_benchmark circular_view_benchmark.cpp)
 
 vista_add_benchmark(algorithm_benchmark algorithm_benchmark.cpp)
 vista_add_benchmark(std_algorithm_benchmark std_algorithm_benchmark.cpp)

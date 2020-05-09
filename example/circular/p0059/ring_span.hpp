@@ -11,7 +11,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <vista/circular/span.hpp>
+#include <vista/circular_view.hpp>
 
 namespace vista
 {
@@ -62,9 +62,9 @@ struct copy_popper
 
 template <typename T, typename Popper = default_popper<T>>
 class ring_span
-    : private circular::span<T>
+    : protected circular_view<T>
 {
-    using super = typename circular::span<T>;
+    using super = circular_view<T>;
 
 public:
     using type = ring_span<T, Popper>;

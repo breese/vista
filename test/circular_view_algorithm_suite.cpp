@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <utility>
 #include <boost/detail/lightweight_test.hpp>
-#include <vista/circular/span.hpp>
+#include <vista/circular_view.hpp>
 
 using namespace vista;
 
@@ -27,7 +27,7 @@ namespace copy_suite
 void expand_copy()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     std::vector<int> input = { 11, 22, 33, 44 };
     span.expand_back(span.capacity());
     {
@@ -46,7 +46,7 @@ void expand_copy()
 void expand_copy_if()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     std::vector<int> input = { 11, 22, 33, 44 };
     span.expand_back(span.capacity());
     {
@@ -65,7 +65,7 @@ void expand_copy_if()
 void expand_copy_n()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     std::vector<int> input = { 11, 22, 33, 44, 55 };
     span.expand_back(span.capacity());
     {
@@ -84,7 +84,7 @@ void expand_copy_n()
 void back_inserter_copy()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     std::vector<int> input = { 111, 222, 333, 444, 555 };
     std::copy(input.begin(), input.end(), std::back_inserter(span));
     {
@@ -97,7 +97,7 @@ void back_inserter_copy()
 void back_inserter_copy_if()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     std::vector<int> input = { 111, 222, 333, 444, 555 };
     std::copy_if(input.begin(), input.end(), std::back_inserter(span), [](int value) { return value > 222; });
     {
@@ -110,7 +110,7 @@ void back_inserter_copy_if()
 void back_inserter_copy_n()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     std::vector<int> input = { 111, 222, 333, 444, 555 };
     std::copy_n(input.begin(), input.size(), std::back_inserter(span));
     {
@@ -123,12 +123,12 @@ void back_inserter_copy_n()
 void partition_copy()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int yes_copy_array[4];
-    circular::span<int> yes_copy(yes_copy_array);
+    circular_view<int> yes_copy(yes_copy_array);
     int no_copy_array[4];
-    circular::span<int> no_copy(no_copy_array);
+    circular_view<int> no_copy(no_copy_array);
     std::partition_copy(span.begin(), span.end(), std::back_inserter(yes_copy), std::back_inserter(no_copy), [](int value) { return value % 2 == 0; });
     {
         std::vector<int> expect = { 22, 44 };
@@ -145,10 +145,10 @@ void partition_copy()
 void remove_copy()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int copy_array[4];
-    circular::span<int> copy(copy_array);
+    circular_view<int> copy(copy_array);
     std::remove_copy(span.begin(), span.end(), std::back_inserter(copy), 33);
     {
         std::vector<int> expect = { 22, 44, 55 };
@@ -160,10 +160,10 @@ void remove_copy()
 void reverse_copy()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int copy_array[4];
-    circular::span<int> copy(copy_array);
+    circular_view<int> copy(copy_array);
     std::reverse_copy(span.begin(), span.end(), std::back_inserter(copy));
     {
         std::vector<int> expect = { 55, 44, 33, 22 };
@@ -175,10 +175,10 @@ void reverse_copy()
 void rotate_copy()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     int copy_array[4];
-    circular::span<int> copy(copy_array);
+    circular_view<int> copy(copy_array);
     std::rotate_copy(span.begin(), ++span.begin(), span.end(), std::back_inserter(copy));
     {
         std::vector<int> expect = { 33, 44, 55, 22 };
@@ -190,10 +190,10 @@ void rotate_copy()
 void unique_copy()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44, 55, 55 };
     int copy_array[4];
-    circular::span<int> copy(copy_array);
+    circular_view<int> copy(copy_array);
     std::unique_copy(span.begin(), span.end(), std::back_inserter(copy));
     {
         std::vector<int> expect = { 33, 44, 55 };
@@ -227,7 +227,7 @@ namespace count_suite
 void count_full()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     BOOST_TEST_EQ(std::count(span.begin(), span.end(), 11), 0);
     BOOST_TEST_EQ(std::count(span.begin(), span.end(), 22), 1);
@@ -236,7 +236,7 @@ void count_full()
 void count_if_full()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44, 55 };
     BOOST_TEST_EQ(std::count_if(span.begin(), span.end(), [](int value) { return value % 2 == 0; }), 2);
 }
@@ -257,7 +257,7 @@ namespace fill_suite
 void expand_fill_n_full()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.expand_back(span.capacity());
     std::fill_n(span.begin(), span.capacity(), 55);
     {
@@ -270,7 +270,7 @@ void expand_fill_n_full()
 void back_inserter_fill_n_full()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     std::fill_n(std::back_inserter(span), 2 * span.capacity(), 55);
     BOOST_TEST_EQ(span.size(), span.capacity());
     {
@@ -296,7 +296,7 @@ namespace find_suite
 void find()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     auto where = std::find(span.begin(), span.end(), 33);
     {
@@ -309,7 +309,7 @@ void find()
 void find_if()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     auto where = std::find_if(span.begin(), span.end(), [](int value){ return value > 22; });
     {
@@ -322,7 +322,7 @@ void find_if()
 void adjacent_find()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 33, 44 };
     auto where = std::adjacent_find(span.begin(), span.end());
     {
@@ -340,7 +340,7 @@ void adjacent_find()
 void adjacent_find_if()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 44, 33, 33, 22, 11 };
     auto where = std::adjacent_find(span.begin(), span.end(), std::greater<int>());
     {
@@ -358,7 +358,7 @@ void adjacent_find_if()
 void lower_bound()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     auto lower = std::lower_bound(span.begin(), span.end(), 33);
     {
@@ -371,7 +371,7 @@ void lower_bound()
 void upper_bound()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     auto upper = std::upper_bound(span.begin(), span.end(), 33);
     {
@@ -384,7 +384,7 @@ void upper_bound()
 void minmax_element()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     auto where = std::minmax_element(span.begin(), span.end());
     BOOST_TEST_EQ(*where.first, 11);
@@ -412,7 +412,7 @@ namespace predicate_suite
 void test_all_of()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span.push_back(11);
     BOOST_TEST(std::all_of(span.begin(), span.end(), [] (int current) { return current == 11; }));
     span.push_back(11);
@@ -428,7 +428,7 @@ void test_all_of()
 void test_any_of()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     BOOST_TEST(std::any_of(span.begin(), span.end(), [] (int current) { return current == 11; }));
     span.push_back(55);
@@ -438,7 +438,7 @@ void test_any_of()
 void test_none_of()
 {
     int array[4] = {};
-    circular::span<int> span(array);
+    circular_view<int> span(array);
     span = { 11, 22, 33, 44 };
     BOOST_TEST(!std::none_of(span.begin(), span.end(), [] (int current) { return current == 11; }));
     span.push_back(55);

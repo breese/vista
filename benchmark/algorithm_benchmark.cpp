@@ -11,7 +11,7 @@
 #include <random>
 #include <string>
 #include <benchmark/benchmark.h>
-#include <vista/circular/span.hpp>
+#include <vista/circular_view.hpp>
 #include <vista/algorithm.hpp>
 
 template <typename T, int Amount>
@@ -27,7 +27,7 @@ void vista_push_heap(benchmark::State& state)
      }
 
     T storage[Amount];
-    vista::circular::span<T, Amount> heap(storage);
+    vista::circular_view<T, Amount> heap(storage);
 
     auto k = 0U;
     for (auto _ : state)
@@ -62,7 +62,7 @@ void vista_push_heap_string(benchmark::State& state)
      }
 
     std::string storage[Amount];
-    vista::circular::span<std::string, Amount> heap(storage);
+    vista::circular_view<std::string, Amount> heap(storage);
 
     auto k = 0U;
     for (auto _ : state)
@@ -90,7 +90,7 @@ void vista_push_pop_heap(benchmark::State& state)
      }
 
     T storage[Amount];
-    vista::circular::span<T, Amount> heap(storage);
+    vista::circular_view<T, Amount> heap(storage);
 
     auto k = 0U;
     for (auto _ : state)
@@ -126,7 +126,7 @@ void vista_push_pop_heap_string(benchmark::State& state)
      }
 
     std::string storage[Amount];
-    vista::circular::span<std::string, Amount> heap(storage);
+    vista::circular_view<std::string, Amount> heap(storage);
 
     auto k = 0U;
     for (auto _ : state)

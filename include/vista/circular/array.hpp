@@ -12,7 +12,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <array>
-#include <vista/circular/span.hpp>
+#include <vista/circular_view.hpp>
 
 namespace vista
 {
@@ -31,27 +31,27 @@ namespace circular
 template <typename T, std::size_t N>
 class array
     : private std::array<T, N>,
-      private circular::span<T, N>
+      private circular_view<T, N>
 {
     using storage = std::array<T, N>;
-    using span = circular::template span<T, N>;
+    using view = circular_view<T, N>;
 
     static_assert(std::is_destructible<T>::value, "T must be Erasable");
     static_assert(std::is_default_constructible<T>::value, "T must be DefaultConstructible");
     static_assert(N != dynamic_extent, "N cannot be dynamic_extent");
 
 public:
-    using element_type = typename span::element_type;
-    using value_type = typename span::value_type;
-    using size_type = typename span::size_type;
-    using reference = typename span::reference;
-    using const_reference = typename span::const_reference;
-    using iterator = typename span::iterator;
-    using const_iterator = typename span::const_iterator;
-    using reverse_iterator = typename span::reverse_iterator;
-    using const_reverse_iterator = typename span::const_reverse_iterator;
-    using segment = typename span::segment;
-    using const_segment = typename span::const_segment;
+    using element_type = typename view::element_type;
+    using value_type = typename view::value_type;
+    using size_type = typename view::size_type;
+    using reference = typename view::reference;
+    using const_reference = typename view::const_reference;
+    using iterator = typename view::iterator;
+    using const_iterator = typename view::const_iterator;
+    using reverse_iterator = typename view::reverse_iterator;
+    using const_reverse_iterator = typename view::const_reverse_iterator;
+    using segment = typename view::segment;
+    using const_segment = typename view::const_segment;
 
     //! @brief Creates empty circular array.
     //!
@@ -117,94 +117,94 @@ public:
     array& operator=(std::initializer_list<value_type> input) noexcept(std::is_nothrow_move_assignable<value_type>::value);
 
     //! @brief Checks if circular array is empty.
-    using span::empty;
+    using view::empty;
 
     //! @brief Checks if circular array is full.
-    using span::full;
+    using view::full;
 
     //! @brief Returns the maximum possible number of elements in circular array.
-    using span::capacity;
+    using view::capacity;
 
     //! @brief Returns the number of elements in circular array.
-    using span::size;
+    using view::size;
 
     //! @brief Returns the maximum number of possible elements in circular array.
     constexpr size_type max_size() const noexcept;
 
     //! @brief Returns reference to first element in circular array.
-    using span::front;
+    using view::front;
 
-    //! @brief Returns reference to last element in span.
-    using span::back;
+    //! @brief Returns reference to last element in view.
+    using view::back;
 
     //! @brief Returns reference to element at position.
-    using span::operator[];
+    using view::operator[];
 
     //! @brief Clears the circular array.
-    using span::clear;
+    using view::clear;
 
     //! @brief Clears circular array and inserts element at end of circular array.
-    using span::assign;
+    using view::assign;
 
     //! @brief Inserts element at beginning of circular array.
-    using span::push_front;
+    using view::push_front;
 
     //! @brief Removes and returns element at end of circular array.
-    using span::push_back;
+    using view::push_back;
 
     //! @brief Removes and returns element from beginning of circular array.
-    using span::pop_front;
+    using view::pop_front;
 
     //! @brief Moves element from end of circular array.
-    using span::pop_back;
+    using view::pop_back;
 
     //! @brief Inserts unspecified elements at beginning of circular array.
-    using span::expand_front;
+    using view::expand_front;
 
     //! @brief Inserts unspecified elements at end of circular array.
-    using span::expand_back;
+    using view::expand_back;
 
     //! @brief Removes elements from beginning of circular array.
-    using span::remove_front;
+    using view::remove_front;
 
     //! @brief Removes elements from end of circular array.
-    using span::remove_back;
+    using view::remove_back;
 
     //! @brief Returns iterator to beginning of circular array.
-    using span::begin;
+    using view::begin;
 
     //! @brief Returns iterator to ending of circular array.
-    using span::end;
+    using view::end;
 
     //! @brief Returns const iterator to beginning of circular array.
-    using span::cbegin;
+    using view::cbegin;
 
     //! @brief Returns const iterator to ending of circular array.
-    using span::cend;
+    using view::cend;
 
     //! @brief Returns reverse iterator to beginning of circular array.
-    using span::rbegin;
+    using view::rbegin;
 
     //! @brief Returns reverse iterator to ending of circular array.
-    using span::rend;
+    using view::rend;
 
     //! @brief Returns const reverse iterator to beginning of circular array.
-    using span::crbegin;
+    using view::crbegin;
 
     //! @brief Returns const reverse iterator to ending of circular array.
-    using span::crend;
+    using view::crend;
 
     //! @brief Returns first contiguous segment of circular array.
-    using span::first_segment;
+    using view::first_segment;
 
     //! @brief Returns last contiguous segment of circular array.
-    using span::last_segment;
+    using view::last_segment;
 
     //! @brief Returns first contiguous unused segment of circular array.
-    using span::first_unused_segment;
+    using view::first_unused_segment;
 
     //! @brief Returns last contiguous unused segment of circular array.
-    using span::last_unused_segment;
+    using view::last_unused_segment;
 };
 
 } // namespace circular
