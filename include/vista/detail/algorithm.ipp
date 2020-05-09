@@ -13,28 +13,33 @@
 
 namespace vista
 {
-namespace heap
-{
 
 template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
-void push(RandomAccessIterator first, RandomAccessIterator last)
+void push_heap(RandomAccessIterator first,
+               RandomAccessIterator last)
 {
-    push<false>(std::move(first),
-                std::move(last),
-                constexpr_less<decltype(*first)>{});
+    push_heap<false>(std::move(first),
+                     std::move(last),
+                     constexpr_less<decltype(*first)>{});
 }
 
-template <typename RandomAccessIterator, typename Compare>
+template <typename RandomAccessIterator,
+          typename Compare>
 VISTA_CXX14_CONSTEXPR
-inline void push(RandomAccessIterator first, RandomAccessIterator last, Compare comp)
+inline void push_heap(RandomAccessIterator first,
+                      RandomAccessIterator last,
+                      Compare comp)
 {
-    push<false>(std::move(first), std::move(last), std::move(comp));
+    push_heap<false>(std::move(first), std::move(last), std::move(comp));
 }
 
-template <bool WithConstexpr, typename RandomAccessIterator, typename Compare>
+template <bool WithConstexpr,
+          typename RandomAccessIterator,
+          typename Compare>
 VISTA_CXX14_CONSTEXPR
-inline void push(RandomAccessIterator first, RandomAccessIterator last, Compare comp)
+inline void push_heap(RandomAccessIterator first,
+                      RandomAccessIterator last, Compare comp)
 {
     auto position = last - first;
     auto parent = position >> 1;
@@ -48,23 +53,30 @@ inline void push(RandomAccessIterator first, RandomAccessIterator last, Compare 
 
 template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
-void pop(RandomAccessIterator first, RandomAccessIterator last)
+void pop_heap(RandomAccessIterator first,
+              RandomAccessIterator last)
 {
-    pop(std::move(first),
-        std::move(last),
-        constexpr_less<decltype(*first)>{});
+    pop_heap(std::move(first),
+             std::move(last),
+             constexpr_less<decltype(*first)>{});
 }
 
-template <typename RandomAccessIterator, typename Compare>
+template <typename RandomAccessIterator,
+          typename Compare>
 VISTA_CXX14_CONSTEXPR
-void pop(RandomAccessIterator first, RandomAccessIterator last, Compare comp)
+void pop_heap(RandomAccessIterator first,
+              RandomAccessIterator last, Compare comp)
 {
-    pop<false>(std::move(first), std::move(last), std::move(comp));
+    pop_heap<false>(std::move(first), std::move(last), std::move(comp));
 }
 
-template <bool WithConstexpr, typename RandomAccessIterator, typename Compare>
+template <bool WithConstexpr,
+          typename RandomAccessIterator,
+          typename Compare>
 VISTA_CXX14_CONSTEXPR
-void pop(RandomAccessIterator first, RandomAccessIterator last, Compare comp)
+void pop_heap(RandomAccessIterator first,
+              RandomAccessIterator last,
+              Compare comp)
 {
     --last;
     vista::swap<WithConstexpr>(*first, *last);
@@ -84,5 +96,4 @@ void pop(RandomAccessIterator first, RandomAccessIterator last, Compare comp)
     }
 }
 
-} // namespace heap
 } // namespace vista

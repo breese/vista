@@ -10,7 +10,7 @@
 
 #include <vista/constexpr/array.hpp>
 #include <vista/constexpr/algorithm.hpp>
-#include <vista/heap/algorithm.hpp>
+#include <vista/algorithm.hpp>
 
 using namespace vista;
 
@@ -31,7 +31,7 @@ public:
     template <std::size_t N>
     static constexpr auto pop(vista::constexpr_array<T, N> original)
     {
-        heap::pop<true>(original.begin(), original.end(), Compare{});
+        vista::pop_heap<true>(original.begin(), original.end(), Compare{});
         vista::constexpr_array<T, N - 1> result{};
         constexpr_copy(original.begin(), original.end() - 1, result.begin());
         return result;
@@ -54,7 +54,7 @@ private:
                                  Arg&& arg)
     {
         *position = arg;
-        heap::push<true>(first, position + 1, Compare{});
+        vista::push_heap<true>(first, position + 1, Compare{});
     }
 
     template <typename RandomAccessIterator, typename... Args>

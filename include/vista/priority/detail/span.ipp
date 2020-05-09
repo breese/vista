@@ -8,7 +8,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <vista/heap/algorithm.hpp>
+#include <vista/algorithm.hpp>
 
 namespace vista
 {
@@ -76,7 +76,7 @@ void span<T, E, C>::push(value_type input) noexcept(std::is_nothrow_move_constru
     assert(!full());
     *member.last = std::move(input);
     ++member.last;
-    heap::push(member.span.data(), member.last, member.comparator);
+    push_heap(member.span.data(), member.last, member.comparator);
 }
 
 template <typename T, std::size_t E, typename C>
@@ -84,7 +84,7 @@ VISTA_CXX14_CONSTEXPR
 void span<T, E, C>::pop() noexcept (std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
 {
     assert(!empty());
-    heap::pop(member.span.data(), member.last, member.comparator);
+    pop_heap(member.span.data(), member.last, member.comparator);
     --member.last;
 }
 

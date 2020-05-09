@@ -1,5 +1,5 @@
-#ifndef VISTA_HEAP_ALGORITHM_HPP
-#define VISTA_HEAP_ALGORITHM_HPP
+#ifndef VISTA_ALGORITHM_HPP
+#define VISTA_ALGORITHM_HPP
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -15,8 +15,6 @@
 
 namespace vista
 {
-namespace heap
-{
 
 //! @brief Same as std::push_heap
 //!
@@ -25,7 +23,7 @@ namespace heap
 
 template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
-void push(RandomAccessIterator first, RandomAccessIterator last);
+void push_heap(RandomAccessIterator first, RandomAccessIterator last);
 
 //! @brief Same as std::push_heap
 //!
@@ -35,13 +33,13 @@ void push(RandomAccessIterator first, RandomAccessIterator last);
 template <typename RandomAccessIterator,
           typename Compare>
 VISTA_CXX14_CONSTEXPR
-void push(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
+void push_heap(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
 
 template <bool WithConstexpr,
           typename RandomAccessIterator,
           typename Compare>
 VISTA_CXX14_CONSTEXPR
-void push(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
+void push_heap(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
 
 //! @brief Same as std::pop_heap
 //!
@@ -50,7 +48,7 @@ void push(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
 
 template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
-void pop(RandomAccessIterator first, RandomAccessIterator last);
+void pop_heap(RandomAccessIterator first, RandomAccessIterator last);
 
 //! @brief Same as std::pop_heap
 //!
@@ -60,17 +58,16 @@ void pop(RandomAccessIterator first, RandomAccessIterator last);
 template <typename RandomAccessIterator,
           typename Compare>
 VISTA_CXX14_CONSTEXPR
-void pop(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
+void pop_heap(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
 
 template <bool WithConstexpr,
           typename RandomAccessIterator,
           typename Compare>
 VISTA_CXX14_CONSTEXPR
-void pop(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
+void pop_heap(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
 
-} // namespace heap
 } // namespace vista
 
-#include <vista/heap/detail/algorithm.ipp>
+#include <vista/detail/algorithm.ipp>
 
-#endif // VISTA_HEAP_ALGORITHM_HPP
+#endif // VISTA_ALGORITHM_HPP
