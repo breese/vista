@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <vista/array.hpp>
-#include <vista/constexpr/functional.hpp>
+#include <vista/functional.hpp>
 #include <vista/algorithm.hpp>
 
 using namespace vista;
@@ -21,7 +21,7 @@ using namespace vista;
 namespace heap_suite
 {
 
-template <typename T, typename Compare = constexpr_less<T>>
+template <typename T, typename Compare = vista::less<T>>
 class heap_factory
 {
 public:
@@ -82,7 +82,7 @@ static_assert(increasing[1] == 33, "");
 static_assert(increasing[2] == 22, "");
 static_assert(increasing[3] == 11, "");
 
-constexpr auto increasing_predicate = heap_factory<int, constexpr_greater<int>>::make(11, 22, 33, 44);
+constexpr auto increasing_predicate = heap_factory<int, vista::greater<int>>::make(11, 22, 33, 44);
 
 static_assert(increasing_predicate.size() == 4, "");
 static_assert(increasing_predicate[0] == 11, "");
@@ -98,7 +98,7 @@ static_assert(decreasing[1] == 33, "");
 static_assert(decreasing[2] == 22, "");
 static_assert(decreasing[3] == 11, "");
 
-constexpr auto decreasing_predicate = heap_factory<int, constexpr_greater<int>>::make(44, 33, 22, 11);
+constexpr auto decreasing_predicate = heap_factory<int, vista::greater<int>>::make(44, 33, 22, 11);
 
 static_assert(decreasing_predicate.size() == 4, "");
 static_assert(decreasing_predicate[0] == 11, "");
@@ -115,7 +115,7 @@ static_assert(increasing_popped[0] == 33, "");
 static_assert(increasing_popped[1] == 11, "");
 static_assert(increasing_popped[2] == 22, "");
 
-constexpr auto increasing_predicate_popped = heap_factory<int, constexpr_greater<int>>::pop(increasing_predicate);
+constexpr auto increasing_predicate_popped = heap_factory<int, vista::greater<int>>::pop(increasing_predicate);
 
 static_assert(increasing_predicate_popped.size() == 3, "");
 static_assert(increasing_predicate_popped[0] == 22, "");
@@ -150,7 +150,7 @@ static_assert(increasing_appended[5] == 22, "");
 namespace sorted_suite
 {
 
-template <typename T, typename Compare = constexpr_less<T>>
+template <typename T, typename Compare = vista::less<T>>
 struct sorted_factory
 {
     template <typename Array, typename Arg>
@@ -191,7 +191,7 @@ static_assert(increasing[1] == 22, "");
 static_assert(increasing[2] == 33, "");
 static_assert(increasing[3] == 44, "");
 
-constexpr auto increasing_predicate = sorted_factory<int, constexpr_greater<int>>::make(11, 22, 33, 44);
+constexpr auto increasing_predicate = sorted_factory<int, vista::greater<int>>::make(11, 22, 33, 44);
 
 static_assert(increasing_predicate[0] == 44, "");
 static_assert(increasing_predicate[1] == 33, "");
@@ -205,7 +205,7 @@ static_assert(decreasing[1] == 22, "");
 static_assert(decreasing[2] == 33, "");
 static_assert(decreasing[3] == 44, "");
 
-constexpr auto decreasing_predicate = sorted_factory<int, constexpr_greater<int>>::make(44, 33, 22, 11);
+constexpr auto decreasing_predicate = sorted_factory<int, vista::greater<int>>::make(44, 33, 22, 11);
 
 static_assert(decreasing_predicate[0] == 44, "");
 static_assert(decreasing_predicate[1] == 33, "");
@@ -221,7 +221,7 @@ static_assert(increasing99[1] == 33, "");
 static_assert(increasing99[2] == 44, "");
 static_assert(increasing99[3] == 99, "");
 
-constexpr auto increasing_predicate99 = sorted_factory<int, constexpr_greater<int>>::make_with_99(11, 22, 33, 44);
+constexpr auto increasing_predicate99 = sorted_factory<int, vista::greater<int>>::make_with_99(11, 22, 33, 44);
 
 static_assert(increasing_predicate99[0] == 99, "");
 static_assert(increasing_predicate99[1] == 33, "");
@@ -235,7 +235,7 @@ static_assert(decreasing99[1] == 33, "");
 static_assert(decreasing99[2] == 44, "");
 static_assert(decreasing99[3] == 99, "");
 
-constexpr auto decreasing_predicate99 = sorted_factory<int, constexpr_greater<int>>::make_with_99(44, 33, 22, 11);
+constexpr auto decreasing_predicate99 = sorted_factory<int, vista::greater<int>>::make_with_99(44, 33, 22, 11);
 
 static_assert(decreasing_predicate99[0] == 99, "");
 static_assert(decreasing_predicate99[1] == 33, "");

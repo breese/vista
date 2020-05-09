@@ -1,5 +1,5 @@
-#ifndef VISTA_CONSTEXPR_FUNCTIONAL_HPP
-#define VISTA_CONSTEXPR_FUNCTIONAL_HPP
+#ifndef VISTA_FUNCTIONAL_HPP
+#define VISTA_FUNCTIONAL_HPP
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -18,11 +18,8 @@
 namespace vista
 {
 
-template <typename T>
-using constexpr_less = std::less<T>;
-
-template <typename T>
-using constexpr_greater = std::greater<T>;
+using std::less;
+using std::greater;
 
 } // namespace vista
 
@@ -32,7 +29,7 @@ namespace vista
 {
 
 template <typename T>
-struct constexpr_less
+struct less
 {
     constexpr bool operator()(const T& lhs, const T& rhs) const noexcept
     {
@@ -41,7 +38,7 @@ struct constexpr_less
 };
 
 template <typename T>
-struct constexpr_greater
+struct greater
 {
     constexpr bool operator()(const T& lhs, const T& rhs) const noexcept
     {
@@ -53,4 +50,4 @@ struct constexpr_greater
 
 #endif
 
-#endif // VISTA_CONSTEXPR_FUNCTIONAL_HPP
+#endif // VISTA_FUNCTIONAL_HPP

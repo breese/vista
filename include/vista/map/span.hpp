@@ -12,7 +12,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <vista/constexpr/utility.hpp> // pair
-#include <vista/constexpr/functional.hpp> // constexpr_less
+#include <vista/functional.hpp> // less
 #include <vista/span.hpp>
 
 namespace vista
@@ -27,7 +27,7 @@ namespace map
 template <typename Key,
           typename T,
           std::size_t Extent = dynamic_extent,
-          typename Compare = std::less<Key>>
+          typename Compare = vista::less<Key>>
 class span
     : protected vista::span<vista::pair<Key, T>, Extent>
 {

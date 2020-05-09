@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
-#include <vista/constexpr/functional.hpp> // constexpr_less
+#include <vista/functional.hpp> // less
 #include <vista/constexpr/utility.hpp> // swap
 
 namespace vista
@@ -51,7 +51,7 @@ void push_heap(RandomAccessIterator first,
 {
     push_heap<false>(std::move(first),
                      std::move(last),
-                     constexpr_less<decltype(*first)>{});
+                     vista::less<decltype(*first)>{});
 }
 
 template <typename RandomAccessIterator,
@@ -88,7 +88,7 @@ void pop_heap(RandomAccessIterator first,
 {
     pop_heap(std::move(first),
              std::move(last),
-             constexpr_less<decltype(*first)>{});
+             vista::less<decltype(*first)>{});
 }
 
 template <typename RandomAccessIterator,
@@ -139,7 +139,7 @@ RandomAccessIterator lower_bound_sorted(RandomAccessIterator first,
     return lower_bound_sorted(std::move(first),
                               std::move(last),
                               needle,
-                              constexpr_less<T>{});
+                              vista::less<T>{});
 }
 
 template <typename RandomAccessIterator, typename T, typename Compare>
@@ -171,7 +171,7 @@ RandomAccessIterator push_sorted(RandomAccessIterator first,
 {
     return push_sorted<false>(std::move(first),
                               std::move(last),
-                              constexpr_less<decltype(*first)>{});
+                              vista::less<decltype(*first)>{});
 }
 
 template <typename RandomAccessIterator, typename Compare>
