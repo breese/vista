@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <vista/constexpr/array.hpp>
-#include <vista/constexpr/algorithm.hpp>
+#include <vista/constexpr/functional.hpp>
 #include <vista/algorithm.hpp>
 
 using namespace vista;
@@ -38,7 +38,7 @@ public:
     {
         vista::pop_heap<true>(original.begin(), original.end(), Compare{});
         vista::constexpr_array<T, N - 1> result{};
-        constexpr_copy(original.begin(), original.end() - 1, result.begin());
+        vista::copy(original.begin(), original.end() - 1, result.begin());
         return result;
     }
 
@@ -47,7 +47,7 @@ public:
                                  Args&&... args) -> vista::constexpr_array<T, N + sizeof...(args)>
     {
         vista::constexpr_array<T, N + sizeof...(args)> result{};
-        constexpr_copy(original.begin(), original.end(), result.begin());
+        vista::copy(original.begin(), original.end(), result.begin());
         insert(result.begin(), result.begin() + N, std::forward<Args>(args)...);
         return result;
     }

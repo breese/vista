@@ -18,10 +18,19 @@ namespace vista
 {
 
 //-----------------------------------------------------------------------------
+// Modifying sequence operations
+//-----------------------------------------------------------------------------
+
+//! @brief Constexpr std::copy
+//!
+//! template <typename InputIterator, typename OutputIterator>
+//! constexpr OutputIterator copy(InputIterator first, InputIterator last, OutputIterator output);
+
+//-----------------------------------------------------------------------------
 // Heap algorithms
 //-----------------------------------------------------------------------------
 
-//! @brief Same as std::push_heap
+//! @brief Constexpr std::push_heap
 //!
 //! @pre is_heap(first, last - 1)
 //! @post is_heap(first, last)
@@ -30,7 +39,7 @@ template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
 void push_heap(RandomAccessIterator first, RandomAccessIterator last);
 
-//! @brief Same as std::push_heap
+//! @brief Constexpr std::push_heap
 //!
 //! @pre is_heap(first, last - 1)
 //! @post is_heap(first, last)
@@ -46,7 +55,7 @@ template <bool WithConstexpr,
 VISTA_CXX14_CONSTEXPR
 void push_heap(RandomAccessIterator first, RandomAccessIterator last, Compare comp);
 
-//! @brief Same as std::pop_heap
+//! @brief Constexpr std::pop_heap
 //!
 //! @pre is_heap(first, last)
 //! @pre is_heap(first, last - 1)
@@ -55,7 +64,7 @@ template <typename RandomAccessIterator>
 VISTA_CXX14_CONSTEXPR
 void pop_heap(RandomAccessIterator first, RandomAccessIterator last);
 
-//! @brief Same as std::pop_heap
+//! @brief Constexpr std::pop_heap
 //!
 //! @pre is_heap(first, last)
 //! @pre is_heap(first, last - 1)

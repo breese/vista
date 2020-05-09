@@ -8,11 +8,37 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 #include <vista/constexpr/functional.hpp> // constexpr_less
-#include <vista/constexpr/utility.hpp> // constexpr_swap
+#include <vista/constexpr/utility.hpp> // swap
 
 namespace vista
 {
+
+//-----------------------------------------------------------------------------
+// Constexpr modifying sequence operations
+//-----------------------------------------------------------------------------
+
+#if __cpp_lib_constexpr_algorithm
+
+using std::copy;
+
+#else
+
+template <typename InputIterator, typename OutputIterator>
+VISTA_CXX14_CONSTEXPR
+OutputIterator copy(InputIterator first,
+                    InputIterator last,
+                    OutputIterator output)
+{
+    while (first != last)
+    {
+        *output++ = *first++;
+    }
+    return output;
+}
+
+#endif
 
 //-----------------------------------------------------------------------------
 // Heap algorithms
