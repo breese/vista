@@ -21,5 +21,5 @@ endfunction()
 
 vista_add_benchmark(circular_span_benchmark circular/span_benchmark.cpp)
 
-vista_add_benchmark(heap_algorithm_benchmark heap/algorithm_benchmark.cpp)
-vista_add_benchmark(heap_std_algorithm_benchmark heap/std_algorithm_benchmark.cpp)
+vista_add_benchmark(algorithm_benchmark algorithm_benchmark.cpp)
+vista_add_benchmark(std_algorithm_benchmark std_algorithm_benchmark.cpp)

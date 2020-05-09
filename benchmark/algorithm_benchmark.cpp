@@ -12,10 +12,10 @@
 #include <string>
 #include <benchmark/benchmark.h>
 #include <vista/circular/span.hpp>
-#include <vista/heap/algorithm.hpp>
+#include <vista/algorithm.hpp>
 
 template <typename T, int Amount>
-void vista_heap_push(benchmark::State& state)
+void vista_push_heap(benchmark::State& state)
 {
     T input[Amount];
     std::random_device device;
@@ -33,17 +33,17 @@ void vista_heap_push(benchmark::State& state)
     for (auto _ : state)
     {
         heap.push_back(input[k % Amount]);
-        vista::heap::push(heap.begin(), heap.end(), std::less<T>());
+        vista::push_heap(heap.begin(), heap.end(), std::less<T>());
         ++k;
     }
 }
 
-BENCHMARK_TEMPLATE(vista_heap_push, int, 64);
-BENCHMARK_TEMPLATE(vista_heap_push, int, 256);
-BENCHMARK_TEMPLATE(vista_heap_push, int, 1024);
+BENCHMARK_TEMPLATE(vista_push_heap, int, 64);
+BENCHMARK_TEMPLATE(vista_push_heap, int, 256);
+BENCHMARK_TEMPLATE(vista_push_heap, int, 1024);
 
 template <int Amount>
-void vista_heap_push_string(benchmark::State& state)
+void vista_push_heap_string(benchmark::State& state)
 {
     constexpr const char * mapping[] = {
         "alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel",
@@ -68,17 +68,17 @@ void vista_heap_push_string(benchmark::State& state)
     for (auto _ : state)
     {
         heap.push_back(mapping[input[k % Amount] % (sizeof(mapping) / sizeof(mapping[0]))]);
-        vista::heap::push(heap.begin(), heap.end(), std::less<std::string>());
+        vista::push_heap(heap.begin(), heap.end(), std::less<std::string>());
         ++k;
     }
 }
 
-BENCHMARK_TEMPLATE(vista_heap_push_string, 64);
-BENCHMARK_TEMPLATE(vista_heap_push_string, 256);
-BENCHMARK_TEMPLATE(vista_heap_push_string, 1024);
+BENCHMARK_TEMPLATE(vista_push_heap_string, 64);
+BENCHMARK_TEMPLATE(vista_push_heap_string, 256);
+BENCHMARK_TEMPLATE(vista_push_heap_string, 1024);
 
 template <typename T, int Amount>
-void vista_heap_push_pop(benchmark::State& state)
+void vista_push_pop_heap(benchmark::State& state)
 {
     T input[Amount];
     std::random_device device;
@@ -96,18 +96,18 @@ void vista_heap_push_pop(benchmark::State& state)
     for (auto _ : state)
     {
         heap.push_back(input[k % Amount]);
-        vista::heap::push(heap.begin(), heap.end(), std::less<T>());
-        vista::heap::pop(heap.begin(), heap.end(), std::less<T>());
+        vista::push_heap(heap.begin(), heap.end(), std::less<T>());
+        vista::pop_heap(heap.begin(), heap.end(), std::less<T>());
         ++k;
     }
 }
 
-BENCHMARK_TEMPLATE(vista_heap_push_pop, int, 64);
-BENCHMARK_TEMPLATE(vista_heap_push_pop, int, 256);
-BENCHMARK_TEMPLATE(vista_heap_push_pop, int, 1024);
+BENCHMARK_TEMPLATE(vista_push_pop_heap, int, 64);
+BENCHMARK_TEMPLATE(vista_push_pop_heap, int, 256);
+BENCHMARK_TEMPLATE(vista_push_pop_heap, int, 1024);
 
 template <int Amount>
-void vista_heap_push_pop_string(benchmark::State& state)
+void vista_push_pop_heap_string(benchmark::State& state)
 {
     constexpr const char * mapping[] = {
         "alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel",
@@ -132,14 +132,14 @@ void vista_heap_push_pop_string(benchmark::State& state)
     for (auto _ : state)
     {
         heap.push_back(mapping[input[k % Amount] % (sizeof(mapping) / sizeof(mapping[0]))]);
-        vista::heap::push(heap.begin(), heap.end(), std::less<std::string>());
-        vista::heap::pop(heap.begin(), heap.end(), std::less<std::string>());
+        vista::push_heap(heap.begin(), heap.end(), std::less<std::string>());
+        vista::pop_heap(heap.begin(), heap.end(), std::less<std::string>());
         ++k;
     }
 }
 
-BENCHMARK_TEMPLATE(vista_heap_push_pop_string, 64);
-BENCHMARK_TEMPLATE(vista_heap_push_pop_string, 256);
-BENCHMARK_TEMPLATE(vista_heap_push_pop_string, 1024);
+BENCHMARK_TEMPLATE(vista_push_pop_heap_string, 64);
+BENCHMARK_TEMPLATE(vista_push_pop_heap_string, 256);
+BENCHMARK_TEMPLATE(vista_push_pop_heap_string, 1024);
 
 BENCHMARK_MAIN();
