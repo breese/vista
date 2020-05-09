@@ -49,9 +49,9 @@ VISTA_CXX14_CONSTEXPR
 void push_heap(RandomAccessIterator first,
                RandomAccessIterator last)
 {
-    push_heap<false>(std::move(first),
-                     std::move(last),
-                     vista::less<decltype(*first)>{});
+    vista::push_heap<false>(std::move(first),
+                            std::move(last),
+                            vista::less<decltype(*first)>{});
 }
 
 template <typename RandomAccessIterator,
@@ -61,7 +61,7 @@ inline void push_heap(RandomAccessIterator first,
                       RandomAccessIterator last,
                       Compare comp)
 {
-    push_heap<false>(std::move(first), std::move(last), std::move(comp));
+    vista::push_heap<false>(std::move(first), std::move(last), std::move(comp));
 }
 
 template <bool WithConstexpr,
@@ -86,9 +86,9 @@ VISTA_CXX14_CONSTEXPR
 void pop_heap(RandomAccessIterator first,
               RandomAccessIterator last)
 {
-    pop_heap(std::move(first),
-             std::move(last),
-             vista::less<decltype(*first)>{});
+    vista::pop_heap(std::move(first),
+                    std::move(last),
+                    vista::less<decltype(*first)>{});
 }
 
 template <typename RandomAccessIterator,
@@ -97,7 +97,7 @@ VISTA_CXX14_CONSTEXPR
 void pop_heap(RandomAccessIterator first,
               RandomAccessIterator last, Compare comp)
 {
-    pop_heap<false>(std::move(first), std::move(last), std::move(comp));
+    vista::pop_heap<false>(std::move(first), std::move(last), std::move(comp));
 }
 
 template <bool WithConstexpr,
