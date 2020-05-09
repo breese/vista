@@ -8,7 +8,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <vista/constexpr/array.hpp>
+#include <vista/array.hpp>
 #include <vista/constexpr/functional.hpp>
 #include <vista/algorithm.hpp>
 
@@ -26,27 +26,27 @@ class heap_factory
 {
 public:
     template <typename... Args>
-    static constexpr auto make(Args&&... args) -> vista::constexpr_array<T, sizeof...(args)>
+    static constexpr auto make(Args&&... args) -> vista::array<T, sizeof...(args)>
     {
-        vista::constexpr_array<T, sizeof...(args)> result{};
+        vista::array<T, sizeof...(args)> result{};
         insert(result.begin(), result.begin(), std::forward<Args>(args)...);
         return result;
     }
 
     template <std::size_t N>
-    static constexpr auto pop(vista::constexpr_array<T, N> original)
+    static constexpr auto pop(vista::array<T, N> original)
     {
         vista::pop_heap<true>(original.begin(), original.end(), Compare{});
-        vista::constexpr_array<T, N - 1> result{};
+        vista::array<T, N - 1> result{};
         vista::copy(original.begin(), original.end() - 1, result.begin());
         return result;
     }
 
     template <std::size_t N, typename... Args>
-    static constexpr auto append(const vista::constexpr_array<T, N>& original,
-                                 Args&&... args) -> vista::constexpr_array<T, N + sizeof...(args)>
+    static constexpr auto append(const vista::array<T, N>& original,
+                                 Args&&... args) -> vista::array<T, N + sizeof...(args)>
     {
-        vista::constexpr_array<T, N + sizeof...(args)> result{};
+        vista::array<T, N + sizeof...(args)> result{};
         vista::copy(original.begin(), original.end(), result.begin());
         insert(result.begin(), result.begin() + N, std::forward<Args>(args)...);
         return result;
@@ -161,9 +161,9 @@ struct sorted_factory
     }
 
     template <typename... Args>
-    static constexpr auto make(Args&&... args) -> vista::constexpr_array<T, sizeof...(args)>
+    static constexpr auto make(Args&&... args) -> vista::array<T, sizeof...(args)>
     {
-        vista::constexpr_array<T, sizeof...(args)> result{};
+        vista::array<T, sizeof...(args)> result{};
         auto k = 0U;
         int expander[] = { 0, ((void)emplace(result, k++, std::forward<Args>(args)), 0)... };
         (void)expander;
@@ -171,7 +171,7 @@ struct sorted_factory
     }
 
     template <typename... Args>
-    static constexpr auto make_with_99(Args&&... args) -> vista::constexpr_array<T, sizeof...(args)>
+    static constexpr auto make_with_99(Args&&... args) -> vista::array<T, sizeof...(args)>
     {
         auto result = make(std::forward<Args>(args)...);
         // Replace front with 99

@@ -1,5 +1,5 @@
-#ifndef VISTA_CONSTEXPR_ARRAY_HPP
-#define VISTA_CONSTEXPR_ARRAY_HPP
+#ifndef VISTA_ARRAY_HPP
+#define VISTA_ARRAY_HPP
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -18,8 +18,7 @@
 namespace vista
 {
 
-template <typename T, std::size_t N>
-using constexpr_array = std::array<T, N>;
+using std::array;
 
 } // namespace vista
 
@@ -31,7 +30,7 @@ namespace vista
 {
 
 template <typename T, std::size_t N>
-class constexpr_array
+class array
 {
 public:
     using value_type = T;
@@ -73,15 +72,14 @@ public:
     constexpr const_iterator end() const noexcept { return storage + N; }
     constexpr const_iterator cend() const noexcept { return storage + N; }
 
-private:
     value_type storage[N] {};
 };
 
 template <typename T>
-class constexpr_array<T, 0>;
+class array<T, 0>;
 
 } // namespace vista
 
 #endif
 
-#endif // VISTA_CONSTEXPR_ARRAY_HPP
+#endif // VISTA_ARRAY_HPP

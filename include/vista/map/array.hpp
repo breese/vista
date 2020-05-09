@@ -11,7 +11,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <vista/constexpr/array.hpp>
+#include <vista/array.hpp>
 #include <vista/map/span.hpp>
 
 namespace vista
@@ -32,10 +32,10 @@ template <typename Key,
           std::size_t N,
           typename Compare = std::less<Key>>
 class array
-    : protected constexpr_array<pair<Key, T>, N>,
+    : protected vista::array<pair<Key, T>, N>,
       protected map::span<Key, T, N, Compare>
 {
-    using storage = constexpr_array<pair<Key, T>, N>;
+    using storage = vista::array<pair<Key, T>, N>;
     using span = map::template span<Key, T, N, Compare>;
 
 public:
