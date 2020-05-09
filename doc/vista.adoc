@@ -33,9 +33,14 @@ using namespace vista;
 
 Spans operate on borrowed continguous memory. Some <<rationale.adoc#,design decisions>> are common to all spans.
 
-- <<circular/span.adoc#,Circular span>> is a circular queue operating on borrowed storage.
 - <<map/span.adoc#,Map span>> is an associative array operating on borrowed storage.
 - <<priority/span.adoc#,Priority span>> is a priority queue operating on borrowed storage.
+
+== View
+
+Views operate on borrowed continguous memory. Some <<rationale.adoc#,design decisions>> are common to all views.
+
+- <<circular_view.adoc#,Circular view>> is a circular queue operating on borrowed storage.
 
 == Fixed-Capacity Container
 
