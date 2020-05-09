@@ -12,58 +12,56 @@
 
 namespace vista
 {
-namespace priority
-{
 
 template <typename T, std::size_t E, typename C>
 template <std::size_t N,
           typename std::enable_if<(E == N || E == dynamic_extent), int>::type>
-constexpr span<T, E, C>::span(element_type (&array)[N]) noexcept
+constexpr priority_view<T, E, C>::priority_view(element_type (&array)[N]) noexcept
     : member(array, array + N)
 {
 }
 
 template <typename T, std::size_t E, typename C>
-constexpr span<T, E, C>::span(pointer data,
-                              size_type size) noexcept
+constexpr priority_view<T, E, C>::priority_view(pointer data,
+                                                size_type size) noexcept
     : member(data, data + size)
 {
 }
 
 template <typename T, std::size_t E, typename C>
 template <typename ContiguousIterator>
-constexpr span<T, E, C>::span(ContiguousIterator begin,
-                              ContiguousIterator end) noexcept
+constexpr priority_view<T, E, C>::priority_view(ContiguousIterator begin,
+                                                ContiguousIterator end) noexcept
     : member(&*begin, &*end)
 {
 }
 
 template <typename T, std::size_t E, typename C>
-constexpr bool span<T, E, C>::empty() const noexcept
+constexpr bool priority_view<T, E, C>::empty() const noexcept
 {
     return size() == 0;
 }
 
 template <typename T, std::size_t E, typename C>
-constexpr bool span<T, E, C>::full() const noexcept
+constexpr bool priority_view<T, E, C>::full() const noexcept
 {
     return size() == capacity();
 }
 
 template <typename T, std::size_t E, typename C>
-constexpr auto span<T, E, C>::size() const noexcept -> size_type
+constexpr auto priority_view<T, E, C>::size() const noexcept -> size_type
 {
     return member.last - member.span.data();
 }
 
 template <typename T, std::size_t E, typename C>
-constexpr auto span<T, E, C>::capacity() const noexcept -> size_type
+constexpr auto priority_view<T, E, C>::capacity() const noexcept -> size_type
 {
     return member.span.size();
 }
 
 template <typename T, std::size_t E, typename C>
-constexpr auto span<T, E, C>::top() const noexcept -> const value_type&
+constexpr auto priority_view<T, E, C>::top() const noexcept -> const value_type&
 {
     VISTA_CXX14(assert(size() > 0));
     return member.span.front();
@@ -71,7 +69,7 @@ constexpr auto span<T, E, C>::top() const noexcept -> const value_type&
 
 template <typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-void span<T, E, C>::push(value_type input) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
+void priority_view<T, E, C>::push(value_type input) noexcept(std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
 {
     assert(!full());
     *member.last = std::move(input);
@@ -81,12 +79,11 @@ void span<T, E, C>::push(value_type input) noexcept(std::is_nothrow_move_constru
 
 template <typename T, std::size_t E, typename C>
 VISTA_CXX14_CONSTEXPR
-void span<T, E, C>::pop() noexcept (std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
+void priority_view<T, E, C>::pop() noexcept (std::is_nothrow_move_constructible<value_type>::value && std::is_nothrow_move_assignable<value_type>::value)
 {
     assert(!empty());
     vista::pop_heap(member.span.data(), member.last, member.comparator);
     --member.last;
 }
 
-} // namespace priority
 } // namespace vista

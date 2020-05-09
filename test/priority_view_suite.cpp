@@ -10,7 +10,7 @@
 
 #include <array>
 #include <boost/detail/lightweight_test.hpp>
-#include <vista/priority/span.hpp>
+#include <vista/priority_view.hpp>
 
 using namespace vista;
 
@@ -21,34 +21,34 @@ namespace api_dynamic_suite
 
 void dynamic_ctor_default()
 {
-    priority::span<int> span;
+    priority_view<int> span;
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
 }
 
 void dynamic_predicate_ctor_default()
 {
-    priority::span<int, vista::dynamic_extent, std::greater<int>> span;
+    priority_view<int, vista::dynamic_extent, std::greater<int>> span;
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
 }
 
 void dynamic_ctor_copy()
 {
-    priority::span<int> span;
+    priority_view<int> span;
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
-    priority::span<int> clone(span);
+    priority_view<int> clone(span);
     BOOST_TEST_EQ(clone.size(), 0);
     BOOST_TEST_EQ(clone.capacity(), 0);
 }
 
 void dynamic_ctor_move()
 {
-    priority::span<int> span;
+    priority_view<int> span;
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
-    priority::span<int> clone(std::move(span));
+    priority_view<int> clone(std::move(span));
     BOOST_TEST_EQ(clone.size(), 0);
     BOOST_TEST_EQ(clone.capacity(), 0);
 }
@@ -56,7 +56,7 @@ void dynamic_ctor_move()
 void dynamic_ctor_array()
 {
     int array[4] = {};
-    priority::span<int> span(array);
+    priority_view<int> span(array);
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -64,7 +64,7 @@ void dynamic_ctor_array()
 void dynamic_ctor_pointer_size()
 {
     std::array<int, 4> array = { 11, 22, 33, 44 };
-    priority::span<int> span(array.data(), array.size());
+    priority_view<int> span(array.data(), array.size());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -72,7 +72,7 @@ void dynamic_ctor_pointer_size()
 void dynamic_ctor_iterator()
 {
     std::array<int, 4> array = { 11, 22, 33, 44 };
-    priority::span<int> span(array.begin(), array.end());
+    priority_view<int> span(array.begin(), array.end());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -80,7 +80,7 @@ void dynamic_ctor_iterator()
 void dynamic_empty()
 {
     int array[4] = {};
-    priority::span<int> span(array);
+    priority_view<int> span(array);
     BOOST_TEST(span.empty());
     span.push(11);
     BOOST_TEST(!span.empty());
@@ -89,7 +89,7 @@ void dynamic_empty()
 void dynamic_full()
 {
     int array[4] = {};
-    priority::span<int> span(array);
+    priority_view<int> span(array);
     BOOST_TEST(!span.full());
     span.push(11);
     span.push(22);
@@ -102,7 +102,7 @@ void dynamic_full()
 void dynamic_size()
 {
     int array[4] = {};
-    priority::span<int> span(array);
+    priority_view<int> span(array);
     BOOST_TEST_EQ(span.size(), 0);
     span.push(11);
     BOOST_TEST_EQ(span.size(), 1);
@@ -117,14 +117,14 @@ void dynamic_size()
 void dynamic_capacity()
 {
     int array[4] = {};
-    priority::span<int> span(array);
+    priority_view<int> span(array);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void dynamic_top()
 {
     int array[4] = {};
-    priority::span<int> span(array);
+    priority_view<int> span(array);
     span.push(11);
     BOOST_TEST_EQ(span.top(), 11);
 }
@@ -132,15 +132,15 @@ void dynamic_top()
 void dynamic_top_const()
 {
     int array[4] = {};
-    priority::span<int> span(array);
+    priority_view<int> span(array);
     span.push(11);
-    BOOST_TEST_EQ(const_cast<const priority::span<int>&>(span).top(), 11);
+    BOOST_TEST_EQ(const_cast<const priority_view<int>&>(span).top(), 11);
 }
 
 void dynamic_push()
 {
     int array[4] = {};
-    priority::span<int> span(array);
+    priority_view<int> span(array);
     BOOST_TEST_EQ(span.size(), 0);
     span.push(11);
     BOOST_TEST_EQ(span.size(), 1);
@@ -149,7 +149,7 @@ void dynamic_push()
 void dynamic_pop()
 {
     int array[4] = {};
-    priority::span<int> span(array);
+    priority_view<int> span(array);
     BOOST_TEST_EQ(span.size(), 0);
     span.push(11);
     BOOST_TEST_EQ(span.size(), 1);
@@ -185,34 +185,34 @@ namespace api_fixed_suite
 
 void fixed_ctor_default()
 {
-    priority::span<int, 0> span;
+    priority_view<int, 0> span;
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
 }
 
 void fixed_predicate_ctor_default()
 {
-    priority::span<int, 0, std::greater<int>> span;
+    priority_view<int, 0, std::greater<int>> span;
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
 }
 
 void fixed_ctor_copy()
 {
-    priority::span<int, 0> span;
+    priority_view<int, 0> span;
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
-    priority::span<int, 0> clone(span);
+    priority_view<int, 0> clone(span);
     BOOST_TEST_EQ(clone.size(), 0);
     BOOST_TEST_EQ(clone.capacity(), 0);
 }
 
 void fixed_ctor_move()
 {
-    priority::span<int, 0> span;
+    priority_view<int, 0> span;
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 0);
-    priority::span<int, 0> clone(std::move(span));
+    priority_view<int, 0> clone(std::move(span));
     BOOST_TEST_EQ(clone.size(), 0);
     BOOST_TEST_EQ(clone.capacity(), 0);
 }
@@ -220,7 +220,7 @@ void fixed_ctor_move()
 void fixed_ctor_array()
 {
     int array[4] = {};
-    priority::span<int, 4> span(array);
+    priority_view<int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -228,7 +228,7 @@ void fixed_ctor_array()
 void fixed_ctor_pointer_size()
 {
     std::array<int, 4> array = { 11, 22, 33, 44 };
-    priority::span<int, 4> span(array.data(), array.size());
+    priority_view<int, 4> span(array.data(), array.size());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -236,7 +236,7 @@ void fixed_ctor_pointer_size()
 void fixed_ctor_iterator()
 {
     std::array<int, 4> array = { 11, 22, 33, 44 };
-    priority::span<int, 4> span(array.begin(), array.end());
+    priority_view<int, 4> span(array.begin(), array.end());
     BOOST_TEST_EQ(span.size(), 0);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
@@ -244,7 +244,7 @@ void fixed_ctor_iterator()
 void fixed_empty()
 {
     int array[4] = {};
-    priority::span<int, 4> span(array);
+    priority_view<int, 4> span(array);
     BOOST_TEST(span.empty());
     span.push(11);
     BOOST_TEST(!span.empty());
@@ -253,7 +253,7 @@ void fixed_empty()
 void fixed_full()
 {
     int array[4] = {};
-    priority::span<int, 4> span(array);
+    priority_view<int, 4> span(array);
     BOOST_TEST(!span.full());
     span.push(11);
     span.push(22);
@@ -266,7 +266,7 @@ void fixed_full()
 void fixed_size()
 {
     int array[4] = {};
-    priority::span<int, 4> span(array);
+    priority_view<int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 0);
     span.push(11);
     BOOST_TEST_EQ(span.size(), 1);
@@ -281,14 +281,14 @@ void fixed_size()
 void fixed_capacity()
 {
     int array[4] = {};
-    priority::span<int, 4> span(array);
+    priority_view<int, 4> span(array);
     BOOST_TEST_EQ(span.capacity(), 4);
 }
 
 void fixed_top()
 {
     int array[4] = {};
-    priority::span<int, 4> span(array);
+    priority_view<int, 4> span(array);
     span.push(11);
     BOOST_TEST_EQ(span.top(), 11);
 }
@@ -296,15 +296,15 @@ void fixed_top()
 void fixed_top_const()
 {
     int array[4] = {};
-    priority::span<int, 4> span(array);
+    priority_view<int, 4> span(array);
     span.push(11);
-    BOOST_TEST_EQ((const_cast<const priority::span<int, 4>&>(span).top()), 11);
+    BOOST_TEST_EQ((const_cast<const priority_view<int, 4>&>(span).top()), 11);
 }
 
 void fixed_push()
 {
     int array[4] = {};
-    priority::span<int, 4> span(array);
+    priority_view<int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 0);
     span.push(11);
     BOOST_TEST_EQ(span.size(), 1);
@@ -313,7 +313,7 @@ void fixed_push()
 void fixed_pop()
 {
     int array[4] = {};
-    priority::span<int, 4> span(array);
+    priority_view<int, 4> span(array);
     BOOST_TEST_EQ(span.size(), 0);
     span.push(11);
     BOOST_TEST_EQ(span.size(), 1);
@@ -350,7 +350,7 @@ namespace push_suite
 void push_increasing()
 {
     std::array<int, 4> array = {};
-    priority::span<int> span(array.begin(), array.end());
+    priority_view<int> span(array.begin(), array.end());
     span.push(11);
     {
         std::array<int, 4> expect = { 11, 0, 0, 0 };
@@ -380,7 +380,7 @@ void push_increasing()
 void push_increasing_predicate()
 {
     std::array<int, 4> array = {};
-    priority::span<int, dynamic_extent, std::greater<int>> span(array.begin(), array.end());
+    priority_view<int, dynamic_extent, std::greater<int>> span(array.begin(), array.end());
     span.push(11);
     {
         std::array<int, 4> expect = { 11, 0, 0, 0 };
@@ -410,7 +410,7 @@ void push_increasing_predicate()
 void push_decreasing()
 {
     std::array<int, 4> array = {};
-    priority::span<int> span(array.begin(), array.end());
+    priority_view<int> span(array.begin(), array.end());
     span.push(44);
     {
         std::array<int, 4> expect = { 44, 0, 0, 0 };
@@ -440,7 +440,7 @@ void push_decreasing()
 void push_decreasing_predicate()
 {
     std::array<int, 4> array = {};
-    priority::span<int, dynamic_extent, std::greater<int>> span(array.begin(), array.end());
+    priority_view<int, dynamic_extent, std::greater<int>> span(array.begin(), array.end());
     span.push(44);
     {
         std::array<int, 4> expect = { 44, 0, 0, 0 };
@@ -485,7 +485,7 @@ namespace pop_suite
 void pop_increasing()
 {
     std::array<int, 4> array = {};
-    priority::span<int> span(array.begin(), array.end());
+    priority_view<int> span(array.begin(), array.end());
     span.push(11);
     span.push(22);
     span.push(33);
@@ -525,7 +525,7 @@ void pop_increasing()
 void pop_increasing_predicate()
 {
     std::array<int, 4> array = {};
-    priority::span<int, dynamic_extent, std::greater<int>> span(array.begin(), array.end());
+    priority_view<int, dynamic_extent, std::greater<int>> span(array.begin(), array.end());
     span.push(11);
     span.push(22);
     span.push(33);
@@ -565,7 +565,7 @@ void pop_increasing_predicate()
 void pop_decreasing()
 {
     std::array<int, 4> array = {};
-    priority::span<int> span(array.begin(), array.end());
+    priority_view<int> span(array.begin(), array.end());
     span.push(44);
     span.push(33);
     span.push(22);
@@ -605,7 +605,7 @@ void pop_decreasing()
 void pop_decreasing_predicate()
 {
     std::array<int, 4> array = {};
-    priority::span<int, dynamic_extent, std::greater<int>> span(array.begin(), array.end());
+    priority_view<int, dynamic_extent, std::greater<int>> span(array.begin(), array.end());
     span.push(44);
     span.push(33);
     span.push(22);

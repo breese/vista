@@ -38,7 +38,7 @@ vista_add_test(circular_view_segment_suite circular_view_segment_suite.cpp)
 vista_add_test(circular_array_suite circular_array_suite.cpp)
 vista_add_test(circular_array_numeric_suite circular_array_numeric_suite.cpp)
 
-vista_add_test(priority_span_suite priority/span_suite.cpp)
+vista_add_test(priority_view_suite priority_view_suite.cpp)
 
 vista_add_test(map_span_suite map/span_suite.cpp)
 vista_add_test(map_array_suite map/array_suite.cpp)

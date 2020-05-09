@@ -23,8 +23,8 @@ vista_add_doc(vista-doc-rationale rationale.adoc)
 vista_add_doc(vista-doc-algorithm algorithm.adoc)
 vista_add_doc(vista-doc-circular-view circular_view.adoc)
 vista_add_doc(vista-doc-circular-array circular_array.adoc)
+vista_add_doc(vista-doc-priority-view priority_view.adoc)
 include(map/CMakeLists.txt)
-include(priority/CMakeLists.txt)
 
 if (AsciiDoctor_FOUND)
 
@@ -35,7 +35,7 @@ if (AsciiDoctor_FOUND)
     DEPENDS vista-doc-circular-view
     DEPENDS vista-doc-circular-array
     DEPENDS vista-doc-map
-    DEPENDS vista-doc-priority
+    DEPENDS vista-doc-priority-view
     )
 
 else() # No AsciiDoctor
