@@ -43,4 +43,4 @@ Spans operate on borrowed continguous memory. Some <<rationale.adoc#,design deci
 
 == Algorithm
 
-- <<sorted/algorithm.adoc#,Sorted algorithms>> operate on sorted sequences.
+- <<algorithm.adoc#,Algorithms>> operate on heap or sorted sequences.

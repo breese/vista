@@ -8,20 +8,21 @@
 :icons: font
 :stem: latexmath
 
-= Sorted Algorithms
+= Algorithms
 
 == Introduction
 
-The `sorted` algorithms operate on already sorted sequences. They include:
+The algorithms extends those already provided by `<algorithm>` in the pass:[C++] standard.
 
-- Binary search. Optimized version of `std::lower_bound()`.
-- Incremental insertion and removal. Provides same functionality for sorted sequences as `std::push_heap()` and `std::pop_heap()` does for binary heaps.
+- `lower_bound_sorted()` is a binary search on a sorted sequence. Optimized version of `std::lower_bound()`.
+- `push_sorted()` is incremental insertion into a sorted sequence. Provides same functionality for sorted sequences as `std::push_heap()` does for binary heaps.
+- `pop_sorted()` is incremental removal from a sorted sequence. Provides same functionality for sorted sequences as `std::pop_heap()` does for binary heaps.
 
 == Reference
 
-Defined in header `<vista/sorted/algorithm.hpp>`.
+Defined in header `<vista/algorithm.hpp>`.
 
-Defined in namespace `vista::sorted`.
+Defined in namespace `vista`.
 
 === Non-member functions
 
@@ -30,12 +31,12 @@ Defined in namespace `vista::sorted`.
 | Function | Description
 | `template <typename RandomAccessIterator, typename T>
  +
- constexpr{wj}footnote:constexpr11[Not constexpr in pass:[C++11].] lower_bound(RandomAccessIterator first, RandomAccessIterator last, const T& value) noexcept`
+ constexpr{wj}footnote:constexpr11[Not constexpr in pass:[C++11].] lower_bound_sorted(RandomAccessIterator first, RandomAccessIterator last, const T& value) noexcept`
  +
  +
  `template <typename RandomAccessIterator, typename T, typename Compare>
  +
- constexpr{wj}footnote:constexpr11[Not constexpr in pass:[C++11].] lower_bound(RandomAccessIterator first, RandomAccessIterator last, const T& value, Compare compare) noexcept`
+ constexpr{wj}footnote:constexpr11[Not constexpr in pass:[C++11].] lower_bound_sorted(RandomAccessIterator first, RandomAccessIterator last, const T& value, Compare compare) noexcept`
  | Returns position where element is or would have been.
  +
  +
@@ -52,12 +53,12 @@ Defined in namespace `vista::sorted`.
  _Expects:_ `is_sorted(first, last)`
 | `template <typename RandomAccessIterator>
  +
- constexpr{wj}footnote:constexpr11[] push(RandomAccessIterator first, RandomAccessIterator last) noexcept(_see Remarks_)`
+ constexpr{wj}footnote:constexpr11[] push_sorted(RandomAccessIterator first, RandomAccessIterator last) noexcept(_see Remarks_)`
  +
  +
  `template <typename RandomAccessIterator, typename Compare>
  +
- constexpr{wj}footnote:constexpr11[] push(RandomAccessIterator first, RandomAccessIterator last, Compare compare) noexcept(_see Remarks_)`
+ constexpr{wj}footnote:constexpr11[] push_sorted(RandomAccessIterator first, RandomAccessIterator last, Compare compare) noexcept(_see Remarks_)`
  | Inserts trailing element into sorted range.
  +
  +
@@ -84,7 +85,7 @@ Defined in namespace `vista::sorted`.
  _Remarks:_ `noexcept` if `decltype(*first)` is nothrow _Swappable_.
  | `template <typename RandomAccessIterator>
  +
- constexpr{wj}footnote:constexpr11[] pop(RandomAccessIterator first, RandomAccessIterator last) noexcept(_see Remarks_)`
+ constexpr{wj}footnote:constexpr11[] pop_sorted(RandomAccessIterator first, RandomAccessIterator last) noexcept(_see Remarks_)`
  | Removes first element from sorted range.
  +
  +

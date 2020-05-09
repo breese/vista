@@ -20,9 +20,9 @@ endfunction()
 
 vista_add_doc(vista-doc-vista vista.adoc)
 vista_add_doc(vista-doc-rationale rationale.adoc)
+vista_add_doc(vista-doc-algorithm algorithm.adoc)
 include(circular/CMakeLists.txt)
 include(map/CMakeLists.txt)
-include(sorted/CMakeLists.txt)
 include(priority/CMakeLists.txt)
 
 if (AsciiDoctor_FOUND)
@@ -30,9 +30,9 @@ if (AsciiDoctor_FOUND)
   add_custom_target(doc
     DEPENDS vista-doc-vista
     DEPENDS vista-doc-rationale
+    DEPENDS vista-doc-algorithm
     DEPENDS vista-doc-circular
     DEPENDS vista-doc-map
-    DEPENDS vista-doc-sorted
     DEPENDS vista-doc-priority
     )
 
