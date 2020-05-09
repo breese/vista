@@ -38,7 +38,7 @@ public:
     using key_compare = Compare;
     struct value_compare
     {
-        bool operator()(const value_type& lhs, const value_type& rhs)
+        constexpr bool operator()(const value_type& lhs, const value_type& rhs) const
         {
             return Compare{}(lhs.first, rhs.first);
         }
