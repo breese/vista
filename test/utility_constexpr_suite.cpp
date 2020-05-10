@@ -28,6 +28,18 @@ static_assert(alpha == bravo, "");
 
 //-----------------------------------------------------------------------------
 
+namespace get_pair_suite
+{
+
+constexpr vista::pair<int, int> alpha(1, 2);
+
+static_assert(vista::get<0>(alpha) == 1, "");
+static_assert(vista::get<1>(alpha) == 2, "");
+
+} // namespace get_pair_suite
+
+//-----------------------------------------------------------------------------
+
 #if __cplusplus >= 201402L
 
 namespace swap_suite

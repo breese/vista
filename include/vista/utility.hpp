@@ -59,6 +59,73 @@ constexpr bool operator==(const pair<T1, T2>& lhs,
 #endif
 
 //-----------------------------------------------------------------------------
+// get(pair)
+//-----------------------------------------------------------------------------
+
+#if __cpp_lib_constexpr_utility >= 201811L
+
+using std::get
+
+#else
+
+namespace detail
+{
+
+template <std::size_t I, typename T1, typename T2>
+struct get_overloader;
+
+template <typename T1, typename T2>
+struct get_overloader<0, T1, T2>
+{
+    using type = T1;
+
+    static VISTA_CXX14_CONSTEXPR
+    type get(pair<T1, T2>& input) noexcept
+    {
+        return input.first;
+    }
+
+    static constexpr const type& get(const pair<T1, T2>& input) noexcept
+    {
+        return input.first;
+    }
+};
+
+template <typename T1, typename T2>
+struct get_overloader<1, T1, T2>
+{
+    using type = T2;
+
+    static VISTA_CXX14_CONSTEXPR
+    type get(pair<T1, T2>& input) noexcept
+    {
+        return input.second;
+    }
+
+    static constexpr const type& get(const pair<T1, T2>& input) noexcept
+    {
+        return input.second;
+    }
+};
+
+} // namespace detail
+
+template <std::size_t I, typename T1, typename T2>
+VISTA_CXX14_CONSTEXPR
+auto get(pair<T1, T2>& input) noexcept -> typename detail::get_overloader<I, T1, T2>::type&
+{
+    return detail::get_overloader<I, T1, T2>::get(std::forward<decltype(input)>(input));
+}
+
+template <std::size_t I, typename T1, typename T2>
+constexpr auto get(const pair<T1, T2>& input) noexcept -> const typename detail::get_overloader<I, T1, T2>::type&
+{
+    return detail::get_overloader<I, T1, T2>::get(std::forward<decltype(input)>(input));
+}
+
+#endif
+
+//-----------------------------------------------------------------------------
 // swap
 //-----------------------------------------------------------------------------
 
