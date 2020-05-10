@@ -25,6 +25,8 @@ function(vista_add_compile_test name)
 endfunction()
 
 vista_add_test(algorithm_suite algorithm_suite.cpp)
+vista_add_test(funtional_suite functional_suite.cpp)
+vista_add_compile_test(funtional_constexpr_suite functional_constexpr_suite.cpp)
 
 vista_add_test(span_suite span_suite.cpp)
 vista_add_test(span_constexpr_suite span_constexpr_suite.cpp)
