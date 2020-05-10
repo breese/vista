@@ -45,8 +45,8 @@ struct pair
           second(std::forward<U2>(second))
     {}
 
-    first_type first;
-    second_type second;
+    first_type first {};
+    second_type second {};
 };
 
 template <typename T1, typename T2>
