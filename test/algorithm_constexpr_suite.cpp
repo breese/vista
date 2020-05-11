@@ -243,3 +243,38 @@ static_assert(decreasing_predicate99[2] == 22, "");
 static_assert(decreasing_predicate99[3] == 11, "");
 
 } // namespace sorted_suite
+
+//-----------------------------------------------------------------------------
+
+namespace insertion_sort_suite
+{
+
+template <typename T, typename Compare = vista::less<T>>
+struct insertion_factory
+{
+    template <typename... Args>
+    static constexpr auto make(Args&&... args) -> vista::array<T, sizeof...(args)>
+    {
+        vista::array<T, sizeof...(args)> result{ std::forward<Args>(args)... };
+        vista::insertion_sort<true>(result.begin(), result.end(), Compare{});
+        return result;
+    }
+};
+
+constexpr auto increasing = insertion_factory<int>::make(11, 22, 33, 44);
+
+static_assert(increasing.size() == 4, "");
+static_assert(increasing[0] == 11, "");
+static_assert(increasing[1] == 22, "");
+static_assert(increasing[2] == 33, "");
+static_assert(increasing[3] == 44, "");
+
+constexpr auto decreasing = insertion_factory<int>::make(44, 33, 22, 11);
+
+static_assert(decreasing.size() == 4, "");
+static_assert(decreasing[0] == 11, "");
+static_assert(decreasing[1] == 22, "");
+static_assert(decreasing[2] == 33, "");
+static_assert(decreasing[3] == 44, "");
+
+} // namespace insertion_sort_suite

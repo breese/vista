@@ -23,3 +23,6 @@ vista_add_benchmark(circular_view_benchmark circular_view_benchmark.cpp)
 
 vista_add_benchmark(algorithm_benchmark algorithm_benchmark.cpp)
 vista_add_benchmark(std_algorithm_benchmark std_algorithm_benchmark.cpp)
+
+vista_add_benchmark(sort_benchmark sort_benchmark.cpp)
+vista_add_benchmark(std_sort_benchmark std_sort_benchmark.cpp)

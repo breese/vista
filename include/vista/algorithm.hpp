@@ -183,6 +183,30 @@ VISTA_CXX14_CONSTEXPR
 RandomAccessIterator pop_sorted(RandomAccessIterator first,
                                 RandomAccessIterator last) noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
 
+//! @brief Sorts all elements within range.
+//!
+//! @post is_sorted(first, last, compare)
+
+template <typename RandomAccessIterator>
+VISTA_CXX14_CONSTEXPR
+void insertion_sort(RandomAccessIterator first,
+                    RandomAccessIterator last)  noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
+
+template <typename RandomAccessIterator,
+          typename Compare>
+VISTA_CXX14_CONSTEXPR
+void insertion_sort(RandomAccessIterator first,
+                    RandomAccessIterator last,
+                    Compare compare)  noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
+
+template <bool WithConstexpr,
+          typename RandomAccessIterator,
+          typename Compare>
+VISTA_CXX14_CONSTEXPR
+void insertion_sort(RandomAccessIterator first,
+                    RandomAccessIterator last,
+                    Compare compare)  noexcept(detail::is_nothrow_swappable<decltype(*first)>::value);
+
 } // namespace vista
 
 #include <vista/detail/algorithm.ipp>

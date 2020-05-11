@@ -227,4 +227,40 @@ RandomAccessIterator pop_sorted(RandomAccessIterator first,
     return last - 1;
 }
 
+template <typename RandomAccessIterator>
+VISTA_CXX14_CONSTEXPR
+void insertion_sort(RandomAccessIterator first,
+                    RandomAccessIterator last)  noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
+{
+    insertion_sort(std::move(first),
+                   std::move(last),
+                   vista::less<decltype(*first)>{});
+}
+
+template <typename RandomAccessIterator,
+          typename Compare>
+VISTA_CXX14_CONSTEXPR
+void insertion_sort(RandomAccessIterator first,
+                    RandomAccessIterator last,
+                    Compare compare)  noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
+{
+    insertion_sort<false>(std::move(first),
+                          std::move(last),
+                          std::move(compare));
+}
+
+template <bool WithConstexpr,
+          typename RandomAccessIterator,
+          typename Compare>
+VISTA_CXX14_CONSTEXPR
+void insertion_sort(RandomAccessIterator first,
+                    RandomAccessIterator last,
+                    Compare compare)  noexcept(detail::is_nothrow_swappable<decltype(*first)>::value)
+{
+    for (auto current = first; current != last; ++current)
+    {
+        push_sorted<WithConstexpr>(first, current + 1, compare);
+    }
+}
+
 } // namespace vista

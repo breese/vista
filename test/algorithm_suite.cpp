@@ -1417,6 +1417,89 @@ void run()
 
 //-----------------------------------------------------------------------------
 
+namespace insertion_sort_suite
+{
+
+void sort_1234()
+{
+    std::array<int, 4> storage = { 11, 22, 33, 44 };
+    insertion_sort(storage.begin(), storage.end());
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void sort_1234_predicate()
+{
+    std::array<int, 4> storage = { 11, 22, 33, 44 };
+    insertion_sort(storage.begin(), storage.end(), vista::greater<int>{});
+    {
+        std::array<int, 4> expect = { 44, 33, 22, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void sort_4321()
+{
+    std::array<int, 4> storage = { 44, 33, 22, 11 };
+    insertion_sort(storage.begin(), storage.end());
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void sort_4321_predicate()
+{
+    std::array<int, 4> storage = { 44, 33, 22, 11 };
+    insertion_sort(storage.begin(), storage.end(), vista::greater<int>{});
+    {
+        std::array<int, 4> expect = { 44, 33, 22, 11 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void sort_3142()
+{
+    std::array<int, 4> storage = { 33, 11, 44, 22 };
+    insertion_sort(storage.begin(), storage.end());
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void sort_4231()
+{
+    std::array<int, 4> storage = { 44, 22, 33, 11 };
+    insertion_sort(storage.begin(), storage.end());
+    {
+        std::array<int, 4> expect = { 11, 22, 33, 44 };
+        BOOST_TEST_ALL_EQ(storage.begin(), storage.end(),
+                          expect.begin(), expect.end());
+    }
+}
+
+void run()
+{
+    sort_1234();
+    sort_1234_predicate();
+    sort_4321();
+    sort_4321_predicate();
+    sort_3142();
+    sort_4231();
+}
+
+} // namespace insertion_sort_suite
+
+//-----------------------------------------------------------------------------
+
 int main()
 {
     push_heap_suite::run();
@@ -1425,6 +1508,7 @@ int main()
     lower_bound_sorted_suite::run();
     push_sorted_suite::run();
     pop_sorted_suite::run();
+    insertion_sort_suite::run();
 
     return boost::report_errors();
 }
