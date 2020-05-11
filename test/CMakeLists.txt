@@ -46,11 +46,15 @@ vista_add_test(priority_view_suite priority_view_suite.cpp)
 
 vista_add_test(map_view_suite map_view_suite.cpp)
 vista_add_test(map_array_suite map_array_suite.cpp)
+vista_add_test(constant_map_suite constant_map_suite.cpp)
 
 if ("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
 
   vista_add_compile_test(algorithm_constexpr_suite algorithm_constexpr_suite.cpp)
   target_compile_features(algorithm_constexpr_suite PRIVATE cxx_std_14)
+
+  vista_add_compile_test(constant_map_constexpr_suite constant_map_constexpr_suite.cpp)
+  target_compile_features(constant_map_constexpr_suite PRIVATE cxx_std_14)
 
 else()
   message("Skipping C++14 test suites")
