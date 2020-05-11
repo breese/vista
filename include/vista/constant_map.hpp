@@ -119,7 +119,8 @@ public:
     constexpr value_compare value_comp() const noexcept;
 
 private:
-    static constexpr storage to_sorted(value_type (&&input)[N]) noexcept(vista::detail::is_nothrow_swappable<value_type>::value);
+    static VISTA_CXX14_CONSTEXPR
+    storage to_sorted(value_type (&&input)[N]) noexcept(vista::detail::is_nothrow_swappable<value_type>::value);
 
 private:
     // Error functions deliberately left non-constexpr to trigger compile-time error.
@@ -140,7 +141,8 @@ template <typename Key,
           typename T,
           std::size_t N,
           typename Compare = vista::less<Key>>
-constexpr auto make_constant_map(pair<Key, T> (&&input)[N]) noexcept(vista::detail::is_nothrow_swappable<decltype(*input)>::value) -> constant_map<Key, T, N, Compare>
+VISTA_CXX14_CONSTEXPR
+auto make_constant_map(pair<Key, T> (&&input)[N]) noexcept(vista::detail::is_nothrow_swappable<decltype(*input)>::value) -> constant_map<Key, T, N, Compare>
 {
     return constant_map<Key, T, N, Compare>{ std::forward<decltype(input)>(input) };
 }

@@ -69,7 +69,8 @@ constexpr auto constant_map<K, T, N, C>::value_comp() const noexcept -> value_co
 }
 
 template <typename K, typename T, std::size_t N, typename C>
-constexpr auto constant_map<K, T, N, C>::to_sorted(value_type (&&input)[N]) noexcept(vista::detail::is_nothrow_swappable<value_type>::value) -> storage
+VISTA_CXX14_CONSTEXPR
+auto constant_map<K, T, N, C>::to_sorted(value_type (&&input)[N]) noexcept(vista::detail::is_nothrow_swappable<value_type>::value) -> storage
 {
     storage result {};
     vista::copy(input, input + N, result.begin());
